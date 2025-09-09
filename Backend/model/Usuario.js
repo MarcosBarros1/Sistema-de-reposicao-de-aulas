@@ -1,4 +1,6 @@
 // Classe responsável por representar um Usuário no sistema
+// Conceito de POO usado: Classe abstrata
+
 class Usuario {
   /**
    * @param {number} idUsuario - Identificador único do usuário.

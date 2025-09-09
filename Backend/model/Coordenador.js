@@ -1,4 +1,6 @@
 // Classe responsável por representar um Coordenador no sistema
+// Conceitos de POO usados: herança e sobrescrita
+
 const Usuario = require('./Usuario');
 
 class Coordenador extends Usuario {
@@ -40,7 +42,7 @@ class Coordenador extends Usuario {
   cadastrarTurma(nome, semestre, alunos, idDisciplina) {
     // TODO: Implementar lógica de cadastro da turma
   }
-  
+
   // Método para realizar o cadastro, sobrescrevendo o da classe pai
   cadastrar(dadosCoordenador) {
     // Chama o método da classe pai com os dados básicos

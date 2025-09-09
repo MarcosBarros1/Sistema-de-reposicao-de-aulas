@@ -1,4 +1,6 @@
 // Classe responsável por representar um Professor no sistema
+// Conceitos de POO usados: herança e sobrescrita
+
 const Usuario = require('./Usuario');
 
 class Professor extends Usuario {

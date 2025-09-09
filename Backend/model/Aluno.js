@@ -1,4 +1,6 @@
 // Classe responsável por representar um Aluno no sistema
+// Conceitos de POO usados: herança e sobrescrita
+
 const Usuario = require('./Usuario');
 
 class Aluno extends Usuario {
