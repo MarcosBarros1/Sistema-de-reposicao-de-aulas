@@ -1,0 +1,25 @@
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+yarn.lock
+.pnpm-debug.log
+
+.env
+
+# Logs
+logs
+*.log
+*.out
+*.pid
+*.seed
+
+# Build
+dist/
+build/
+.cache/
+.next/
+out/
+coverage/
+*.tsbuildinfo
