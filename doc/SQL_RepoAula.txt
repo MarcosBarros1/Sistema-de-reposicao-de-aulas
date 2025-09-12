@@ -1,0 +1,101 @@
+-- Criação da tabela de superclasse 'Usuario'
+CREATE TABLE usuario (
+    id_usuario INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    tipo VARCHAR(50) NOT NULL -- Para diferenciar Professor, Coordenador, Aluno
+);
+
+-- Criação das tabelas de subclasses que herdam de 'Usuario'
+CREATE TABLE professor (
+    matricula_professor INT PRIMARY KEY,
+	id_usuario INT UNIQUE NOT NULL,
+	senha varchar(255) NOT NULL,
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE coordenador (
+    matricula_coordenador INT PRIMARY KEY,
+	id_usuario INT UNIQUE NOT NULL,
+    departamento VARCHAR(255) NOT NULL,
+	senha varchar(255) NOT NULL,
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+CREATE TABLE aluno (
+    matricula_aluno INT PRIMARY KEY,
+	id_usuario INT UNIQUE NOT NULL,
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+);
+
+
+CREATE TABLE nutricionista (
+    id_nutricionista INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    nome VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE turma (
+    id_turma INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    semestre VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE disciplina (
+    id_disciplina INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    nome VARCHAR(255) NOT NULL,
+    carga_horaria INT NOT NULL,
+    codigo VARCHAR(50) NOT NULL
+);
+
+-- Tabela de junção para o relacionamento N:M entre 'Professor' e 'Disciplina'
+CREATE TABLE professor_disciplina (
+    id_disciplina INT,
+    matricula_professor INT,
+    PRIMARY KEY (id_disciplina, matricula_professor),
+    FOREIGN KEY (id_disciplina) REFERENCES disciplina(id_disciplina),
+    FOREIGN KEY (matricula_professor) REFERENCES professor(matricula_professor)
+);
+
+-- Tabela de junção para o relacionamento N:M entre 'Aluno' e 'Turma'
+CREATE TABLE aluno_turma (
+    id_turma INT,
+    matricula_aluno INT,
+    PRIMARY KEY (id_turma, matricula_aluno),
+    FOREIGN KEY (id_turma) REFERENCES turma(id_turma),
+    FOREIGN KEY (matricula_aluno) REFERENCES aluno(matricula_aluno)
+);
+
+-- Tabela de Entidade com relacionamentos (Relacionamento 1:N com Professor e Aluno)
+CREATE TABLE solicitacao_reposicao (
+    id_solicitacao INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    motivo VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    data DATE NOT NULL,
+    horario varchar(15) NOT NULL,
+    sala VARCHAR(50) NOT NULL,
+    id_turma INT,
+    matricula_professor INT,
+    FOREIGN KEY (matricula_professor) REFERENCES professor(matricula_professor),
+    FOREIGN KEY (id_turma) REFERENCES turma(id_turma)
+);
+
+
+-- Tabela para registrar o apoio (assinatura) dos alunos a uma solicitação
+CREATE TABLE assinatura_solicitacao (
+    id_solicitacao INT,
+    matricula_aluno INT,
+    data_assinatura TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP, -- Opcional, mas recomendado para auditoria
+	concorda BOOLEAN NOT NULL,
+	
+    -- A chave primária composta garante que um aluno só possa assinar cada solicitação uma única vez.
+    PRIMARY KEY (id_solicitacao, matricula_aluno),
+
+    -- Chave estrangeira para a solicitação que está sendo assinada
+    FOREIGN KEY (id_solicitacao) REFERENCES solicitacao_reposicao(id_solicitacao)
+        ON DELETE CASCADE, -- Se a solicitação for deletada, as assinaturas somem junto.
+
+    -- Chave estrangeira para o aluno que está assinando
+    FOREIGN KEY (matricula_aluno) REFERENCES aluno(matricula_aluno)
+        ON DELETE CASCADE -- Se o aluno for removido, sua assinatura também é.
+);
