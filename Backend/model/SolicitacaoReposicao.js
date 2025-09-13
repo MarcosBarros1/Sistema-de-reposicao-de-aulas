@@ -11,7 +11,7 @@ class SolicitacaoReposicao {
    * @param {Date} data
    * @param {string} horario
    * @param {string} sala
-   * @param {number} qtAlunos
+   * @param {number} qt_alunos
    * @param {number} idProfessor - Chave estrangeira do professor (matrícula).
    * @param {number} idTurma - Chave estrangeira da turma.
    */
@@ -22,7 +22,7 @@ class SolicitacaoReposicao {
     data,
     horario,
     sala,
-    qtAlunos,
+    qt_alunos,
     idProfessor,
     idTurma
   ) {
@@ -32,7 +32,7 @@ class SolicitacaoReposicao {
     this.data = data;
     this.horario = horario;
     this.sala = sala;
-    this.qtAlunos = qtAlunos;
+    this.qt_alunos = qt_alunos;
     this.idProfessor = idProfessor;
     this.idTurma = idTurma;
   }
