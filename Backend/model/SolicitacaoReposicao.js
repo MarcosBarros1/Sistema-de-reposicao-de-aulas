@@ -1,3 +1,7 @@
+// model/SolicitacaoReposicao.js
+
+const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
+
 // Classe responsável por representar uma Solicitação de Reposição
 class SolicitacaoReposicao {
   /**
@@ -8,9 +12,20 @@ class SolicitacaoReposicao {
    * @param {string} horario
    * @param {string} sala
    * @param {number} qtAlunos
-   * @param {number} idProfessor - Chave estrangeira do professor.
+   * @param {number} idProfessor - Chave estrangeira do professor (matrícula).
+   * @param {number} idTurma - Chave estrangeira da turma.
    */
-  constructor(idSolicitacao, motivo, status, data, horario, sala, qtAlunos, idProfessor) {
+  constructor(
+    idSolicitacao,
+    motivo,
+    status,
+    data,
+    horario,
+    sala,
+    qtAlunos,
+    idProfessor,
+    idTurma
+  ) {
     this.idSolicitacao = idSolicitacao;
     this.motivo = motivo;
     this.status = status;
@@ -19,11 +34,31 @@ class SolicitacaoReposicao {
     this.sala = sala;
     this.qtAlunos = qtAlunos;
     this.idProfessor = idProfessor;
+    this.idTurma = idTurma;
   }
 
-  // Método para atualizar o status da solicitação
+  // Atualiza o status da solicitação validando com as constantes
   atualizarStatus(novoStatus) {
-    // TODO: Implementar atualização de status
+    const statusPermitidos = Object.values(SolicitacaoStatus);
+    if (!statusPermitidos.includes(novoStatus)) {
+      throw new Error(`Status inválido: ${novoStatus}`);
+    }
+    this.status = novoStatus;
+  }
+
+  // Constrói um objeto a partir de um registro do banco
+  static fromDatabase(row) {
+    return new SolicitacaoReposicao(
+      row.id_solicitacao,
+      row.motivo,
+      row.status,
+      row.data,
+      row.horario,
+      row.sala,
+      row.qt_alunos,
+      row.matricula_professor,
+      row.id_turma
+    );
   }
 }
 

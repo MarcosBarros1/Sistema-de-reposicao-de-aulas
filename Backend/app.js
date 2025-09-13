@@ -14,6 +14,7 @@ app.use(express.json()); // Middleware para o Express entender JSON
 // Usa as rotas (prefixando-as com /api)
 app.use('/professor', professorRoutes);
 app.use('/coordenador', coordenadorRoutes);
+app.use('/reposicoes', reposicaoRoutes);
 
 // Rota principal da API
 app.get('/', (req, res) => {
