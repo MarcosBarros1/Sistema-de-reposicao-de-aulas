@@ -27,7 +27,7 @@ class CoordenadorRepository {
       // 2. Insere na tabela 'coordenador'
       const coordenadorSql = 'INSERT INTO coordenador (matricula_coordenador, id_usuario, departamento, senha) VALUES ($1, $2, $3, $4)';
       await client.query(coordenadorSql, [matricula, usuarioSalvo.idUsuario, departamento, senha]);
-      
+
       await client.query('COMMIT');
       return new Coordenador(usuarioSalvo.idUsuario, nome, email, matricula, senha, departamento);
 
@@ -55,7 +55,7 @@ class CoordenadorRepository {
         JOIN usuario u ON c.id_usuario = u.id_usuario
         WHERE c.matricula_coordenador = $1;
       `;
-      
+
       const result = await db.query(sql, [matricula]);
 
       if (result.rows.length > 0) {
@@ -65,6 +65,33 @@ class CoordenadorRepository {
       return null;
     } catch (error) {
       console.error(`Erro ao buscar coordenador por matrícula ${matricula}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Busca um coordenador pelo seu email, juntando dados do usuário.
+   * @param {string} email - O email do coordenador.
+   * @returns {Promise<Coordenador|null>}
+   */
+  async buscarPorEmail(email) {
+    try {
+      const sql = `
+        SELECT
+          u.id_usuario, u.nome, u.email,
+          c.matricula_coordenador, c.senha, c.departamento
+        FROM coordenador c
+        JOIN usuario u ON c.id_usuario = u.id_usuario
+        WHERE u.email = $1;
+      `;
+      const result = await db.query(sql, [email]);
+      if (result.rows.length > 0) {
+        const row = result.rows[0];
+        return new Coordenador(row.id_usuario, row.nome, row.email, row.matricula_coordenador, row.senha, row.departamento);
+      }
+      return null;
+    } catch (error) {
+      console.error(`Erro ao buscar coordenador por email ${email}:`, error);
       throw error;
     }
   }

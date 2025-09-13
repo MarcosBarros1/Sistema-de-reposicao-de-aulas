@@ -28,7 +28,7 @@ class ProfessorRepository {
       // 2. Insere na tabela 'professor' usando o id_usuario retornado
       const professorSql = 'INSERT INTO professor (matricula_professor, id_usuario, senha) VALUES ($1, $2, $3)';
       await client.query(professorSql, [matricula, usuarioSalvo.idUsuario, senha]);
-      
+
       // 3. Insere as associações na tabela 'professor_disciplina'
       if (disciplinas && disciplinas.length > 0) {
         for (const idDisciplina of disciplinas) {
@@ -67,7 +67,7 @@ class ProfessorRepository {
         WHERE p.matricula_professor = $1
         GROUP BY u.id_usuario, p.matricula_professor;
       `;
-      
+
       const result = await db.query(sql, [matricula]);
 
       if (result.rows.length > 0) {
@@ -77,6 +77,36 @@ class ProfessorRepository {
       return null;
     } catch (error) {
       console.error(`Erro ao buscar professor por matrícula ${matricula}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+     * Busca um professor pelo seu email, juntando dados do usuário.
+     * @param {string} email - O email do professor.
+     * @returns {Promise<Professor|null>}
+  */
+  async buscarPorEmail(email) {
+    try {
+      const sql = `
+        SELECT
+          u.id_usuario, u.nome, u.email,
+          p.matricula_professor, p.senha,
+          COALESCE(array_agg(pd.id_disciplina) FILTER (WHERE pd.id_disciplina IS NOT NULL), '{}') AS disciplinas
+        FROM professor p
+        JOIN usuario u ON p.id_usuario = u.id_usuario
+        LEFT JOIN professor_disciplina pd ON p.matricula_professor = pd.matricula_professor
+        WHERE u.email = $1
+        GROUP BY u.id_usuario, p.matricula_professor;
+      `;
+      const result = await db.query(sql, [email]);
+      if (result.rows.length > 0) {
+        const row = result.rows[0];
+        return new Professor(row.id_usuario, row.nome, row.email, row.matricula_professor, row.senha, row.disciplinas);
+      }
+      return null;
+    } catch (error) {
+      console.error(`Erro ao buscar professor por email ${email}:`, error);
       throw error;
     }
   }
