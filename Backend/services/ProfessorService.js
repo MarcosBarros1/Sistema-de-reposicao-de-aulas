@@ -23,8 +23,6 @@ class ProfessorService {
       // Lança um erro de negócio específico
       throw new RegraDeNegocioException('O e-mail informado já está em uso.');
     }
-    
-    // (Outras validações podem ser adicionadas aqui)
 
     // 2. Lógica de negócio: Criptografar a senha
     const salt = await bcrypt.genSalt(10);
