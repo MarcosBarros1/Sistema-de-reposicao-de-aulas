@@ -74,6 +74,7 @@ CREATE TABLE solicitacao_reposicao (
     data DATE NOT NULL,
     horario varchar(15) NOT NULL,
     sala VARCHAR(50) NOT NULL,
+    qt_alunos INT NOT NULL,
     id_turma INT,
     matricula_professor INT,
     FOREIGN KEY (matricula_professor) REFERENCES professor(matricula_professor),

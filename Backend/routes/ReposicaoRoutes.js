@@ -1,7 +1,7 @@
 // routes/reposicaoRoutes.js
 
 const express = require('express');
-const ReposicaoController = require('../controllers/ReposicaoController');
+const ReposicaoController = require('../controller/ReposicaoController');
 
 const router = express.Router();
 

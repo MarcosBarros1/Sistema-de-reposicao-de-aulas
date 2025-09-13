@@ -4,6 +4,7 @@ const cors = require('cors');
 // Importa os arquivos de rota
 const professorRoutes = require('./routes/ProfessorRoutes');
 const coordenadorRoutes = require('./routes/CoordenadorRoutes');
+const reposicaoRoutes = require('./routes/ReposicaoRoutes')
 
 const app = express();
 

@@ -1,6 +1,6 @@
 // persistence/SolicitacaoReposicaoRepository.js
 
-const db = require('./db');
+const db = require('../config/db');
 const SolicitacaoReposicao = require('../model/SolicitacaoReposicao');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
 
