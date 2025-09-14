@@ -6,7 +6,7 @@ class Turma {
    * @param {string} semestre
    * @param {number[]} alunos - Lista de IDs dos alunos na turma.
    */
-  constructor(idTurma, nome, semestre, alunos) {
+  constructor(idTurma, nome, semestre, alunos = []) {
     this.idTurma = idTurma;
     this.nome = nome;
     this.semestre = semestre;
@@ -14,13 +14,17 @@ class Turma {
   }
 
   // Método para adicionar um aluno à turma
-  adicionarAluno(aluno) {
-    // TODO: Implementar lógica para adicionar aluno
+  adicionarAluno(alunoId) {
+    if (!this.alunos.includes(alunoId)) {
+      this.alunos.push(alunoId);
+      console.log(`Aluno ${alunoId} adicionado à turma ${this.nome}`);
+    }
   }
 
   // Método para remover um aluno da turma
-  removerAluno(aluno) {
-    // TODO: Implementar lógica para remover aluno
+  removerAluno(alunoId) {
+    this.alunos = this.alunos.filter(id => id !== alunoId);
+    console.log(`Aluno ${alunoId} removido da turma ${this.nome}`);
   }
 }
 
