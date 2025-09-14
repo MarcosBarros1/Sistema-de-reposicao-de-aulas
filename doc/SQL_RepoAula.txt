@@ -74,6 +74,7 @@ CREATE TABLE solicitacao_reposicao (
     data DATE NOT NULL,
     horario varchar(15) NOT NULL,
     sala VARCHAR(50) NOT NULL,
+    qt_alunos INT NOT NULL,
     id_turma INT,
     matricula_professor INT,
     FOREIGN KEY (matricula_professor) REFERENCES professor(matricula_professor),
@@ -98,4 +99,16 @@ CREATE TABLE assinatura_solicitacao (
     -- Chave estrangeira para o aluno que está assinando
     FOREIGN KEY (matricula_aluno) REFERENCES aluno(matricula_aluno)
         ON DELETE CASCADE -- Se o aluno for removido, sua assinatura também é.
+);
+
+CREATE TABLE notificacao (
+    id_notificacao INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    mensagem TEXT NOT NULL,
+    data_envio TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    lida BOOLEAN DEFAULT FALSE NOT NULL,
+    id_destinatario INT NOT NULL, -- Chave estrangeira para o usuário que recebe
+
+    -- Define o relacionamento com a tabela de usuários
+    FOREIGN KEY (id_destinatario) REFERENCES usuario(id_usuario)
+        ON DELETE CASCADE -- Se o usuário for deletado, suas notificações também são.
 );
