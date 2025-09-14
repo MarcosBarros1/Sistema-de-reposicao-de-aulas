@@ -1,4 +1,4 @@
-// controllers/ReposicaoController.js
+// controller/ReposicaoController.js
 
 const ReposicaoService = require('../services/ReposicaoService');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
