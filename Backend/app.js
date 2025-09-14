@@ -15,10 +15,10 @@ app.use(cors());
 app.use(express.json()); // Middleware para o Express entender JSON
 
 // Rotas principais
-app.use('/professores', professorRoutes);
-app.use('/coordenadores', coordenadorRoutes);
-app.use('/reposicoes', reposicaoRoutes);
-app.use('/disciplinas', disciplinaRoutes); 
+app.use('/professor', professorRoutes);
+app.use('/coordenador', coordenadorRoutes);
+app.use('/reposicao', reposicaoRoutes);
+app.use('/disciplina', disciplinaRoutes); 
 app.use('/auth', autenticacaoRoutes);
 
 // Rota de teste
