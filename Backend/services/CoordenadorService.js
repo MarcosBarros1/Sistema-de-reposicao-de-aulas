@@ -2,6 +2,8 @@
 
 const CoordenadorRepository = require('../persistence/CoordenadorRepository');
 const UsuarioRepository = require('../persistence/UsuarioRepository');
+const ProfessorRepository = require('../persistence/ProfessorRepository');
+const EmailService = require('./EmailService');
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
 
@@ -68,6 +70,52 @@ class CoordenadorService {
 
   async deletarCoordenador(matricula) {
     return await CoordenadorRepository.deletarPorMatricula(matricula);
+  }
+
+  /**
+   * Notifica um professor sobre uma ausência e envia o link para o formulário de reposição.
+   * (RF07)
+   * @param {number} matriculaProfessor - A matrícula do professor a ser notificado.
+   * @returns {Promise<void>}
+   */
+  async notificarFalta(matriculaProfessor) {
+    // 1. Buscar os dados do professor para obter o e-mail
+    const professor = await ProfessorRepository.buscarPorMatricula(matriculaProfessor);
+    if (!professor) {
+      throw new Error('Professor não encontrado.');
+    }
+
+    // 2. Preparar o conteúdo do e-mail
+    const linkFormulario = `https://docs.google.com/forms/d/e/1FAIpQLSfLNxEnLQOkrJbeBvb45yGeEqzONmLKsy2iUI7APh_hd7J8og/viewform?usp=header`;
+
+    const subject = 'Notificação de Ausência e Solicitação de Reposição';
+    const text = `
+      Olá, Prof(a). ${professor.nome},
+
+      Constatamos sua ausência na data de hoje.
+      Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:
+      ${linkFormulario}
+
+      Atenciosamente,
+      Coordenação - Sistema de Reposição de Aulas.
+    `;
+    const html = `
+      <p>Olá, Prof(a). <strong>${professor.nome}</strong>,</p>
+      <p>Constatamos sua ausência na data de hoje.</p>
+      <p>Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:</p>
+      <p><a href="${linkFormulario}">Preencher Formulário de Reposição</a></p>
+      <br>
+      <p>Atenciosamente,</p>
+      <p><strong>Coordenação - Sistema de Reposição de Aulas.</strong></p>
+    `;
+
+    // 3. Chamar o EmailService para enviar o e-mail
+    await EmailService.enviarEmail({
+      to: professor.email,
+      subject: subject,
+      text: text,
+      html: html,
+    });
   }
 
   /**
