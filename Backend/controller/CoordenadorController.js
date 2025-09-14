@@ -71,6 +71,30 @@ class CoordenadorController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  /**
+   * Lida com a requisição para notificar a falta de um professor.
+   */
+  async notificarFalta(req, res) {
+    try {
+      // Extrai a matrícula do professor dos parâmetros da URL
+      const { matricula } = req.params;
+
+      // Chama o serviço para executar a lógica de negócio
+      await CoordenadorService.notificarFalta(Number(matricula));
+
+      // Retorna uma resposta de sucesso
+      res.status(200).json({ message: 'Notificação de falta enviada com sucesso para o professor.' });
+    } catch (error) {
+      console.error('Erro no controller ao notificar falta:', error);
+      // Retorna um erro específico se o professor não for encontrado
+      if (error.message === 'Professor não encontrado.') {
+        return res.status(404).json({ message: error.message });
+      }
+      // Retorna um erro genérico para outras falhas
+      res.status(500).json({ message: 'Ocorreu um erro inesperado no servidor.' });
+    }
+  }
 }
 
 module.exports = new CoordenadorController();
