@@ -1,7 +1,7 @@
 // persistence/DisciplinaRepository.js
 
-const db = require('./db');
-const Disciplina = require('../models/Disciplina');
+const db = require('../config/db');
+const Disciplina = require('../model/Disciplina');
 
 /**
  * Classe Repository para acesso aos dados da entidade Disciplina.
@@ -10,18 +10,84 @@ class DisciplinaRepository {
   /**
    * Salva uma nova disciplina no banco de dados.
    * @param {Disciplina} disciplina - O objeto Disciplina a ser salvo.
+   * @returns {Promise<Disciplina>}
    */
   async salvar(disciplina) {
-    // TODO: Implementar a lógica de inserção no banco de dados.
+    const query = `
+      INSERT INTO disciplina (codigo, nome, carga_horaria)
+      VALUES ($1, $2, $3)
+      RETURNING id_disciplina
+    `;
+    const values = [disciplina.codigo, disciplina.nome, disciplina.cargaHoraria];
+    const result = await db.query(query, values);
+
+    disciplina.idDisciplina = result.rows[0].id_disciplina;
+
+    // se tiver professores vinculados, insere na tabela professor_disciplina
+    if (disciplina.professores && disciplina.professores.length > 0) {
+      for (const matriculaProfessor of disciplina.professores) {
+        await db.query(
+          `INSERT INTO professor_disciplina (id_disciplina, matricula_professor) VALUES ($1, $2)`,
+          [disciplina.idDisciplina, matriculaProfessor]
+        );
+      }
+    }
+
+    return disciplina;
   }
 
   /**
    * Busca uma disciplina por seu código.
    * @param {string} codigo - O código da disciplina.
-   * @returns {Disciplina} O objeto Disciplina encontrado.
+   * @returns {Promise<Disciplina|null>}
    */
   async buscarPorCodigo(codigo) {
-    // TODO: Implementar a lógica de busca no banco de dados.
+    const query = `
+      SELECT d.id_disciplina, d.codigo, d.nome, d.carga_horaria,
+             ARRAY_REMOVE(ARRAY_AGG(pd.matricula_professor), NULL) AS professores
+      FROM disciplina d
+      LEFT JOIN professor_disciplina pd ON d.id_disciplina = pd.id_disciplina
+      WHERE d.codigo = $1
+      GROUP BY d.id_disciplina
+    `;
+    const result = await db.query(query, [codigo]);
+
+    if (result.rows.length === 0) {
+      return null;
+    }
+
+    const row = result.rows[0];
+    return new Disciplina(
+      row.id_disciplina,
+      row.codigo,
+      row.nome,
+      row.carga_horaria,
+      row.professores || []
+    );
+  }
+
+  /**
+   * Lista todas as disciplinas
+   * @returns {Promise<Disciplina[]>}
+   */
+  async listarTodos() {
+    const query = `
+      SELECT d.id_disciplina, d.codigo, d.nome, d.carga_horaria,
+             ARRAY_REMOVE(ARRAY_AGG(pd.matricula_professor), NULL) AS professores
+      FROM disciplina d
+      LEFT JOIN professor_disciplina pd ON d.id_disciplina = pd.id_disciplina
+      GROUP BY d.id_disciplina
+      ORDER BY d.nome
+    `;
+    const result = await db.query(query);
+
+    return result.rows.map(row => new Disciplina(
+      row.id_disciplina,
+      row.codigo,
+      row.nome,
+      row.carga_horaria,
+      row.professores || []
+    ));
   }
 }
 
