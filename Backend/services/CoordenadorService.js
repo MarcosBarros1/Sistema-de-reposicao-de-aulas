@@ -25,19 +25,49 @@ class CoordenadorService {
     // 2. Lógica de negócio: Criptografar a senha
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(dadosCoordenador.senha, salt);
-    
+
     const dadosParaSalvar = {
-        ...dadosCoordenador,
-        senha: senhaHash
+      ...dadosCoordenador,
+      senha: senhaHash
     };
 
     // 3. Delegação: Pede para a camada de persistência salvar
     const novoCoordenador = await CoordenadorRepository.salvar(dadosParaSalvar);
-    
+
     // 4. Regra de apresentação: Nunca retornar a senha
     delete novoCoordenador.senha;
 
     return novoCoordenador;
+  }
+
+  async buscarPorMatricula(matricula) {
+    const coordenador = await CoordenadorRepository.buscarPorMatricula(matricula);
+    if (coordenador) {
+      delete coordenador.senha;
+    }
+    return coordenador;
+  }
+
+  async buscarTodos() {
+    const coordenadores = await CoordenadorRepository.buscarTodos();
+    coordenadores.forEach(c => delete c.senha);
+    return coordenadores;
+  }
+
+  async atualizarCoordenador(matricula, dados) {
+    // Validação básica para garantir que campos essenciais não sejam nulos
+    if (!dados.nome || !dados.email || !dados.departamento) {
+      throw new Error('Nome, email e departamento são obrigatórios para atualização.');
+    }
+    const coordenadorAtualizado = await CoordenadorRepository.atualizar(matricula, dados);
+    if (coordenadorAtualizado) {
+      delete coordenadorAtualizado.senha;
+    }
+    return coordenadorAtualizado;
+  }
+
+  async deletarCoordenador(matricula) {
+    return await CoordenadorRepository.deletarPorMatricula(matricula);
   }
 
   /**
