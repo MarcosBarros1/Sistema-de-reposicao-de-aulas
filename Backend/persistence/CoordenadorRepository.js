@@ -95,6 +95,95 @@ class CoordenadorRepository {
       throw error;
     }
   }
+
+  /**
+   * Lista todos os coordenadores cadastrados.
+   * @returns {Promise<Coordenador[]>}
+   */
+  async buscarTodos() {
+    try {
+      const sql = `
+        SELECT u.id_usuario, u.nome, u.email, c.matricula_coordenador, c.senha, c.departamento
+        FROM coordenador c
+        JOIN usuario u ON c.id_usuario = u.id_usuario
+        ORDER BY u.nome;
+      `;
+      const result = await db.query(sql);
+      return result.rows.map(row => new Coordenador(
+        row.id_usuario, row.nome, row.email, row.matricula_coordenador, row.senha, row.departamento
+      ));
+    } catch (error) {
+      console.error('Erro ao buscar todos os coordenadores:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Atualiza os dados de um coordenador (nome, email, departamento).
+   * @param {number} matricula - Matrícula do coordenador.
+   * @param {object} dados - Dados a serem atualizados { nome, email, departamento }.
+   * @returns {Promise<Coordenador|null>}
+   */
+  async atualizar(matricula, dados) {
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      const coordenadorResult = await client.query('SELECT id_usuario FROM coordenador WHERE matricula_coordenador = $1', [matricula]);
+      if (coordenadorResult.rows.length === 0) {
+        throw new Error('Coordenador não encontrado.');
+      }
+      const { id_usuario } = coordenadorResult.rows[0];
+
+      // Atualiza os dados na tabela 'usuario'
+      await UsuarioRepository.atualizar(id_usuario, { nome: dados.nome, email: dados.email, tipo: 'Coordenador' }, client);
+
+      // Atualiza o departamento na tabela 'coordenador'
+      const coordSql = 'UPDATE coordenador SET departamento = $1 WHERE matricula_coordenador = $2';
+      await client.query(coordSql, [dados.departamento, matricula]);
+
+      await client.query('COMMIT');
+      return await this.buscarPorMatricula(matricula);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao atualizar coordenador com matrícula ${matricula}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Deleta um coordenador pela matrícula.
+   * @param {number} matricula - Matrícula do coordenador.
+   * @returns {Promise<boolean>} Retorna true se a deleção foi bem-sucedida.
+   */
+  async deletarPorMatricula(matricula) {
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const coordenadorResult = await client.query('SELECT id_usuario FROM coordenador WHERE matricula_coordenador = $1', [matricula]);
+      if (coordenadorResult.rows.length === 0) {
+        return false; // Não encontrado
+      }
+      const { id_usuario } = coordenadorResult.rows[0];
+
+      // Deleta da tabela 'coordenador'
+      await client.query('DELETE FROM coordenador WHERE matricula_coordenador = $1', [matricula]);
+
+      // Deleta da tabela 'usuario'
+      await client.query('DELETE FROM usuario WHERE id_usuario = $1', [id_usuario]);
+
+      await client.query('COMMIT');
+      return true;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao deletar coordenador com matrícula ${matricula}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 }
 
 module.exports = new CoordenadorRepository();
