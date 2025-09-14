@@ -33,9 +33,55 @@ class ProfessorController {
     }
   }
 
-  // Futuramente, outros métodos do controller virão aqui:
-  // async buscarPorMatricula(req, res) { ... }
-  // async listarTodos(req, res) { ... }
+  async buscarPorMatricula(req, res) {
+    try {
+      const { matricula } = req.params;
+      const professor = await ProfessorService.buscarPorMatricula(Number(matricula));
+      if (!professor) {
+        return res.status(404).json({ message: 'Professor não encontrado.' });
+      }
+      res.status(200).json(professor);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async listarTodos(req, res) {
+    try {
+      const professores = await ProfessorService.buscarTodos();
+      res.status(200).json(professores);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async atualizar(req, res) {
+    try {
+      const { matricula } = req.params;
+      const dados = req.body;
+      const professor = await ProfessorService.atualizarProfessor(Number(matricula), dados);
+      if (!professor) {
+        return res.status(404).json({ message: 'Professor não encontrado.' });
+      }
+      res.status(200).json(professor);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  async deletar(req, res) {
+    try {
+      const { matricula } = req.params;
+      const sucesso = await ProfessorService.deletarProfessor(Number(matricula));
+      if (!sucesso) {
+        return res.status(404).json({ message: 'Professor não encontrado.' });
+      }
+      // 204 No Content é o status ideal para respostas de delete bem-sucedidas
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 module.exports = new ProfessorController();

@@ -110,6 +110,89 @@ class ProfessorRepository {
       throw error;
     }
   }
+
+  /**
+   * Lista todos os professores.
+   * @returns {Promise<Professor[]>}
+   */
+  async buscarTodos() {
+    try {
+      const sql = `
+        SELECT u.id_usuario, u.nome, u.email, p.matricula_professor, p.senha
+        FROM professor p
+        JOIN usuario u ON p.id_usuario = u.id_usuario
+        ORDER BY u.nome;
+      `;
+      const result = await db.query(sql);
+      return result.rows.map(row => new Professor(row.id_usuario, row.nome, row.email, row.matricula_professor, row.senha));
+    } catch (error) {
+      console.error('Erro ao buscar todos os professores:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Atualiza os dados de um professor.
+   * @param {number} matricula - Matrícula do professor a ser atualizado.
+   * @param {object} dados - Dados a serem atualizados { nome, email }.
+   * @returns {Promise<Professor|null>}
+   */
+  async atualizar(matricula, dados) {
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const professorResult = await client.query('SELECT id_usuario FROM professor WHERE matricula_professor = $1', [matricula]);
+      if (professorResult.rows.length === 0) {
+        throw new Error('Professor não encontrado.');
+      }
+      const { id_usuario } = professorResult.rows[0];
+
+      const usuarioAtualizado = await UsuarioRepository.atualizar(id_usuario, { nome: dados.nome, email: dados.email, tipo: 'Professor' }, client);
+
+      await client.query('COMMIT');
+      // Retornar um objeto Professor completo após a atualização
+      return await this.buscarPorMatricula(matricula);
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao atualizar professor com matrícula ${matricula}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  /**
+   * Deleta um professor pela matrícula.
+   * @param {number} matricula - Matrícula do professor a ser deletado.
+   * @returns {Promise<boolean>} Retorna true se a deleção foi bem-sucedida.
+   */
+  async deletarPorMatricula(matricula) {
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+      const professorResult = await client.query('SELECT id_usuario FROM professor WHERE matricula_professor = $1', [matricula]);
+      if (professorResult.rows.length === 0) {
+        return false; // Professor não encontrado
+      }
+      const { id_usuario } = professorResult.rows[0];
+
+      // Deletar da tabela professor (o CASCADE no banco pode cuidar disso, mas é mais seguro ser explícito)
+      await client.query('DELETE FROM professor_disciplina WHERE matricula_professor = $1', [matricula]);
+      await client.query('DELETE FROM professor WHERE matricula_professor = $1', [matricula]);
+
+      // Deletar da tabela usuario
+      await client.query('DELETE FROM usuario WHERE id_usuario = $1', [id_usuario]);
+
+      await client.query('COMMIT');
+      return true;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao deletar professor com matrícula ${matricula}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
 }
 
 module.exports = new ProfessorRepository();

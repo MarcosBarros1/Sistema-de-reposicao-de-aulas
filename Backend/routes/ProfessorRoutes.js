@@ -5,11 +5,17 @@ const ProfessorController = require('../controller/ProfessorController');
 
 const router = Router();
 
-// Define a rota para criar (POST) um novo professor
-// A URL será /api/professores
+// Create
 router.post('/cadastrar', ProfessorController.cadastrar);
 
-// Futuramente, outras rotas virão aqui:
-// router.get('/professores/:matricula', ProfessorController.buscarPorMatricula);
+// Read
+router.get('/', ProfessorController.listarTodos);
+router.get('/:matricula', ProfessorController.buscarPorMatricula);
+
+// Update
+router.put('/:matricula', ProfessorController.atualizar);
+
+// Delete
+router.delete('/:matricula', ProfessorController.deletar);
 
 module.exports = router;
