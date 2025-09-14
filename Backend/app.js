@@ -14,13 +14,13 @@ app.use(cors());
 app.use(express.json()); // Middleware para o Express entender JSON
 
 
-// Usa as rotas (prefixando-as com /api)
+// Rotas principais
 app.use('/professor', professorRoutes);
 app.use('/coordenador', coordenadorRoutes);
 app.use('/reposicoes', reposicaoRoutes);
 app.use('/auth', autenticacaoRoutes);
 
-// Rota principal da API
+// Rota de teste
 app.get('/', (req, res) => {
   res.send('API do Sistema de Reposição de Aulas - IFCE Boa Viagem');
 });
