@@ -58,6 +58,29 @@ class TurmaRepository {
     return result.rows; // Retorna um array com todas as turmas
   }
 
+  /**
+   * Busca todos os alunos (com matrícula, nome e email) associados a um ID de turma.
+   * ESSENCIAL para a funcionalidade de notificação.
+   * @param {number} idTurma - O ID da turma.
+   * @returns {Promise<any[]>} Uma lista de objetos de alunos.
+   */
+  async buscarAlunosPorTurmaId(idTurma) {
+    try {
+      const sql = `
+        SELECT a.matricula_aluno, u.nome, u.email
+        FROM aluno_turma at
+        JOIN aluno a ON at.matricula_aluno = a.matricula_aluno
+        JOIN usuario u ON a.id_usuario = u.id_usuario
+        WHERE at.id_turma = $1;
+      `;
+      const result = await db.query(sql, [idTurma]);
+      return result.rows;
+    } catch (error) {
+      console.error(`Erro ao buscar alunos da turma ${idTurma}:`, error);
+      throw error;
+    }
+  }
+
   // Os métodos adicionarAluno e removerAluno não precisam de alteração,
   // pois eles interagem com a tabela 'aluno_turma' que está correta.
   async adicionarAluno(id_turma, matricula_aluno) {
