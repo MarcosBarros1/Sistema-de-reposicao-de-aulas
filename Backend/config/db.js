@@ -18,6 +18,7 @@ class Database {
         ssl: {
             rejectUnauthorized: false
         },
+        family: 4,
       });
 
       console.log('Pool de conexões com o PostgreSQL inicializado.');
