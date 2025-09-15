@@ -2,6 +2,8 @@
 
 const CoordenadorRepository = require('../persistence/CoordenadorRepository');
 const UsuarioRepository = require('../persistence/UsuarioRepository');
+const ProfessorRepository = require('../persistence/ProfessorRepository');
+const EmailService = require('./EmailService');
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
 
@@ -25,19 +27,95 @@ class CoordenadorService {
     // 2. Lógica de negócio: Criptografar a senha
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(dadosCoordenador.senha, salt);
-    
+
     const dadosParaSalvar = {
-        ...dadosCoordenador,
-        senha: senhaHash
+      ...dadosCoordenador,
+      senha: senhaHash
     };
 
     // 3. Delegação: Pede para a camada de persistência salvar
     const novoCoordenador = await CoordenadorRepository.salvar(dadosParaSalvar);
-    
+
     // 4. Regra de apresentação: Nunca retornar a senha
     delete novoCoordenador.senha;
 
     return novoCoordenador;
+  }
+
+  async buscarPorMatricula(matricula) {
+    const coordenador = await CoordenadorRepository.buscarPorMatricula(matricula);
+    if (coordenador) {
+      delete coordenador.senha;
+    }
+    return coordenador;
+  }
+
+  async buscarTodos() {
+    const coordenadores = await CoordenadorRepository.buscarTodos();
+    coordenadores.forEach(c => delete c.senha);
+    return coordenadores;
+  }
+
+  async atualizarCoordenador(matricula, dados) {
+    // Validação básica para garantir que campos essenciais não sejam nulos
+    if (!dados.nome || !dados.email || !dados.departamento) {
+      throw new Error('Nome, email e departamento são obrigatórios para atualização.');
+    }
+    const coordenadorAtualizado = await CoordenadorRepository.atualizar(matricula, dados);
+    if (coordenadorAtualizado) {
+      delete coordenadorAtualizado.senha;
+    }
+    return coordenadorAtualizado;
+  }
+
+  async deletarCoordenador(matricula) {
+    return await CoordenadorRepository.deletarPorMatricula(matricula);
+  }
+
+  /**
+   * Notifica um professor sobre uma ausência e envia o link para o formulário de reposição.
+   * (RF07)
+   * @param {number} matriculaProfessor - A matrícula do professor a ser notificado.
+   * @returns {Promise<void>}
+   */
+  async notificarFalta(matriculaProfessor) {
+    // 1. Buscar os dados do professor para obter o e-mail
+    const professor = await ProfessorRepository.buscarPorMatricula(matriculaProfessor);
+    if (!professor) {
+      throw new Error('Professor não encontrado.');
+    }
+
+    // 2. Preparar o conteúdo do e-mail
+    const linkFormulario = `https://docs.google.com/forms/d/e/1FAIpQLSfLNxEnLQOkrJbeBvb45yGeEqzONmLKsy2iUI7APh_hd7J8og/viewform?usp=header`;
+
+    const subject = 'Notificação de Ausência e Solicitação de Reposição';
+    const text = `
+      Olá, Prof(a). ${professor.nome},
+
+      Constatamos sua ausência na data de hoje.
+      Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:
+      ${linkFormulario}
+
+      Atenciosamente,
+      Coordenação - Sistema de Reposição de Aulas.
+    `;
+    const html = `
+      <p>Olá, Prof(a). <strong>${professor.nome}</strong>,</p>
+      <p>Constatamos sua ausência na data de hoje.</p>
+      <p>Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:</p>
+      <p><a href="${linkFormulario}">Preencher Formulário de Reposição</a></p>
+      <br>
+      <p>Atenciosamente,</p>
+      <p><strong>Coordenação - Sistema de Reposição de Aulas.</strong></p>
+    `;
+
+    // 3. Chamar o EmailService para enviar o e-mail
+    await EmailService.enviarEmail({
+      to: professor.email,
+      subject: subject,
+      text: text,
+      html: html,
+    });
   }
 
   /**

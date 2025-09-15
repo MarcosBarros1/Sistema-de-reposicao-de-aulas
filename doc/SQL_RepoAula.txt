@@ -28,7 +28,7 @@ CREATE TABLE aluno (
 	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
 );
 
-
+-- Criação de tabelas que não são usuários
 CREATE TABLE nutricionista (
     id_nutricionista INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email VARCHAR(255) NOT NULL,
@@ -101,6 +101,8 @@ CREATE TABLE assinatura_solicitacao (
         ON DELETE CASCADE -- Se o aluno for removido, sua assinatura também é.
 );
 
+
+-- Tabela de notificação
 CREATE TABLE notificacao (
     id_notificacao INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     mensagem TEXT NOT NULL,

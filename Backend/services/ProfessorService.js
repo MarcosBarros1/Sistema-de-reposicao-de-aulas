@@ -3,7 +3,7 @@
 const ProfessorRepository = require('../persistence/ProfessorRepository');
 const UsuarioRepository = require('../persistence/UsuarioRepository');
 const bcrypt = require('bcrypt');
-const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException'); 
+const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
 
 /**
  * Camada de Serviço para a lógica de negócio de Professores.
@@ -27,19 +27,46 @@ class ProfessorService {
     // 2. Lógica de negócio: Criptografar a senha
     const salt = await bcrypt.genSalt(10);
     const senhaHash = await bcrypt.hash(dadosProfessor.senha, salt);
-    
+
     const dadosParaSalvar = {
-        ...dadosProfessor,
-        senha: senhaHash // Substitui a senha original pela versão criptografada
+      ...dadosProfessor,
+      senha: senhaHash // Substitui a senha original pela versão criptografada
     };
 
     // 3. Delegação: Pede para a camada de persistência salvar os dados
     const novoProfessor = await ProfessorRepository.salvar(dadosParaSalvar);
-    
+
     // 4. Regra de apresentação: Nunca retornar a senha (mesmo o hash) para o controller
     delete novoProfessor.senha;
 
     return novoProfessor;
+  }
+
+  async buscarPorMatricula(matricula) {
+    const professor = await ProfessorRepository.buscarPorMatricula(matricula);
+    if (professor) {
+      delete professor.senha;
+    }
+    return professor;
+  }
+
+  async buscarTodos() {
+    const professores = await ProfessorRepository.buscarTodos();
+    // Remover a senha de todos os objetos antes de retornar
+    professores.forEach(p => delete p.senha);
+    return professores;
+  }
+
+  async atualizarProfessor(matricula, dados) {
+    const professorAtualizado = await ProfessorRepository.atualizar(matricula, dados);
+    if (professorAtualizado) {
+      delete professorAtualizado.senha;
+    }
+    return professorAtualizado;
+  }
+
+  async deletarProfessor(matricula) {
+    return await ProfessorRepository.deletarPorMatricula(matricula);
   }
 
   /**
