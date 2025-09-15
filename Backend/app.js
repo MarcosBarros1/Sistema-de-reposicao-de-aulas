@@ -7,6 +7,8 @@ const professorRoutes = require('./routes/ProfessorRoutes');
 const coordenadorRoutes = require('./routes/CoordenadorRoutes');
 const reposicaoRoutes = require('./routes/ReposicaoRoutes')
 const autenticacaoRoutes = require('./routes/AuthRoutes');
+const alunoRoutes = require('./routes/AlunoRoutes');
+const turmaRoutes = require('./routes/TurmaRoutes');
 
 const app = express();
 
@@ -19,6 +21,8 @@ app.use('/professor', professorRoutes);
 app.use('/coordenador', coordenadorRoutes);
 app.use('/reposicoes', reposicaoRoutes);
 app.use('/auth', autenticacaoRoutes);
+app.use('/aluno', alunoRoutes);
+app.use('/turmas', turmaRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {

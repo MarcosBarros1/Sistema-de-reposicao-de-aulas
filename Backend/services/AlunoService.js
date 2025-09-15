@@ -1,58 +1,29 @@
 // services/AlunoService.js
-
 const AlunoRepository = require('../persistence/AlunoRepository');
-const Aluno = require('../models/Aluno');
+const UsuarioRepository = require('../persistence/UsuarioRepository');
+const Aluno = require('../model/Aluno');
+const RegraDeNegocioException = require('../exceptions/RegraDeNegocioException');
 
 class AlunoService {
-  /**
-   * Cadastra um novo aluno no sistema.
-   * @param {Object} dadosAluno - Dados para criar o aluno.
-   * @returns {Promise<Aluno>}
-   */
   async cadastrarAluno(dadosAluno) {
-    // Verifica se a matrícula já existe
-    const existente = await AlunoRepository.buscarPorMatricula(dadosAluno.matriculaAluno);
-    if (existente) {
-      throw new Error(`Matrícula ${dadosAluno.matriculaAluno} já cadastrada.`);
+    // 1. Regra de negócio: verificar se o e-mail já existe
+    const usuarioExistente = await UsuarioRepository.buscarPorEmail(dadosAluno.email);
+    if (usuarioExistente) {
+      throw new RegraDeNegocioException('O e-mail informado já está em uso.');
     }
 
-    // Cria o objeto Aluno
-    const novoAluno = new Aluno(
-      dadosAluno.idUsuario,
-      dadosAluno.nome,
-      dadosAluno.email,
-      dadosAluno.senha,
-      dadosAluno.matriculaAluno,
-      dadosAluno.turmas || []
-    );
+    // 2. Delegação: pede para a camada de persistência salvar
+    const novoAluno = await AlunoRepository.salvar(dadosAluno);
 
-    // Persiste no banco
-    return await AlunoRepository.salvar(novoAluno);
+    return novoAluno;
   }
 
-  /**
-   * Busca aluno pela matrícula.
-   * @param {string} matriculaAluno - Matrícula do aluno.
-   * @returns {Promise<Aluno|null>}
-   */
-  async buscarAluno(matriculaAluno) {
-    const aluno = await AlunoRepository.buscarPorMatricula(matriculaAluno);
-
+  async buscarAluno(matricula_aluno) {
+    const aluno = await AlunoRepository.buscarPorMatricula(matricula_aluno);
     if (!aluno) {
-      throw new Error(`Aluno com matrícula ${matriculaAluno} não encontrado.`);
+      throw new RegraDeNegocioException(`Aluno com matrícula ${matricula_aluno} não encontrado.`);
     }
-
     return aluno;
-  }
-
-  /**
-   * Lista as turmas de um aluno.
-   * @param {string} matriculaAluno
-   * @returns {Promise<string[]>}
-   */
-  async listarTurmas(matriculaAluno) {
-    const aluno = await this.buscarAluno(matriculaAluno);
-    return aluno.turmas;
   }
 }
 

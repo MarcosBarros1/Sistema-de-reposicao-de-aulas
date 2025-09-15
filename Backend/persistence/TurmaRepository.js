@@ -1,18 +1,80 @@
 // persistence/TurmaRepository.js
 
-const db = require('./db');
-const Turma = require('../models/Turma');
+const db = require('../config/db');
+// const Turma = require('../model/Turma'); // O modelo não é estritamente necessário aqui
 
-/**
- * Classe Repository para acesso aos dados da entidade Turma.
- */
 class TurmaRepository {
-  /**
-   * Salva uma nova turma no banco de dados.
-   * @param {Turma} turma - O objeto Turma a ser salvo.
-   */
-  async salvar(turma) {
-    // TODO: Implementar a lógica de inserção no banco de dados.
+  async criar(turmaData) {
+    // CORREÇÃO: Recebe 'semestre' e insere apenas 'nome' e 'semestre'.
+    const { nome, semestre } = turmaData;
+    const sql = `
+      INSERT INTO turma (nome, semestre)
+      VALUES ($1, $2)
+      RETURNING *;
+    `;
+    const result = await db.query(sql, [nome, semestre]);
+    return result.rows[0];
+  }
+
+  async buscarPorId(id_turma) {
+    // CORREÇÃO: Removido o JOIN com a tabela 'disciplina', pois não há como relacioná-las.
+    const sql = `
+      SELECT
+        t.id_turma, t.nome, t.semestre,
+        COALESCE(
+          json_agg(json_build_object('matricula_aluno', u.id_usuario, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
+          '[]'
+        ) as alunos
+      FROM turma t
+      LEFT JOIN aluno_turma at ON t.id_turma = at.id_turma
+      LEFT JOIN aluno a ON at.matricula_aluno = a.matricula_aluno
+      LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
+      WHERE t.id_turma = $1
+      GROUP BY t.id_turma;
+    `;
+    const result = await db.query(sql, [id_turma]);
+    return result.rows[0];
+  }
+
+  // NOVO MÉTODO
+  async buscarTodas() {
+    // A query é muito parecida com a de buscarPorId, mas sem o "WHERE"
+    // para que traga todas as turmas.
+    const sql = `
+      SELECT
+        t.id_turma, t.nome, t.semestre,
+        COALESCE(
+          json_agg(json_build_object('matricula_aluno', u.id_usuario, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
+          '[]'
+        ) as alunos
+      FROM turma t
+      LEFT JOIN aluno_turma at ON t.id_turma = at.id_turma
+      LEFT JOIN aluno a ON at.matricula_aluno = a.matricula_aluno
+      LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
+      GROUP BY t.id_turma
+      ORDER BY t.nome; -- Opcional: ordenar as turmas por nome
+    `;
+    const result = await db.query(sql);
+    return result.rows; // Retorna um array com todas as turmas
+  }
+
+  // Os métodos adicionarAluno e removerAluno não precisam de alteração,
+  // pois eles interagem com a tabela 'aluno_turma' que está correta.
+  async adicionarAluno(id_turma, matricula_aluno) {
+    const sql = `
+      INSERT INTO aluno_turma (id_turma, matricula_aluno)
+      VALUES ($1, $2);
+    `;
+    await db.query(sql, [id_turma, matricula_aluno]);
+  }
+
+  async removerAluno(id_turma, matricula_aluno) {
+    const sql = `
+      DELETE FROM aluno_turma
+      WHERE id_turma = $1 AND matricula_aluno = $2;
+    `;
+    const result = await db.query(sql, [id_turma, matricula_aluno]);
+    return result.rowCount > 0;
   }
 }
 

@@ -1,7 +1,7 @@
 // persistence/DisciplinaRepository.js
 
-const db = require('./db');
-const Disciplina = require('../models/Disciplina');
+const db = require('../config/db');
+const Disciplina = require('../model/Disciplina');
 
 /**
  * Classe Repository para acesso aos dados da entidade Disciplina.

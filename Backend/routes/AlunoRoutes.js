@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const AlunoController = require('../controllers/AlunoController');
+const AlunoController = require('../controller/AlunoController');
 
 // Criar aluno
-router.post('/', (req, res) => AlunoController.criar(req, res));
+router.post('/', (req, res) => AlunoController.cadastrar(req, res));
 
 // Buscar aluno por matrícula
-router.get('/:matricula', (req, res) => AlunoController.buscar(req, res));
+router.get('/:matricula', (req, res) => AlunoController.buscarPorMatricula(req, res));
 
 // Listar turmas do aluno
 router.get('/:matricula/turmas', async (req, res) => {
