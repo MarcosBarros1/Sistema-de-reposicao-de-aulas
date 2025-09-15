@@ -1,37 +1,45 @@
 // persistence/NutricionistaRepository.js
 
-const db = require('./db');
-const Nutricionista = require('../models/Nutricionista');
+// persistence/NutricionistaRepository.js
 
-/**
- * Classe Repository para acesso aos dados da entidade Nutricionista.
- * Responsável por buscar as informações da nutricionista para notificações.
- */
+const db = require('../config/db');
+
 class NutricionistaRepository {
-  /**
-   * Salva uma nova nutricionista no banco de dados.
-   * @param {Nutricionista} nutricionista - O objeto Nutricionista a ser salvo.
-   */
-  async salvar(nutricionista) {
-    // TODO: Implementar a lógica de inserção no banco de dados.
+  async criar(dadosNutricionista) {
+    const { nome, email } = dadosNutricionista;
+    const sql = `
+      INSERT INTO nutricionista (nome, email)
+      VALUES ($1, $2)
+      RETURNING *;
+    `;
+    const result = await db.query(sql, [nome, email]);
+    return result.rows[0];
   }
 
-  /**
-   * Busca uma nutricionista por seu ID.
-   * @param {number} id - O ID da nutricionista.
-   * @returns {Nutricionista} O objeto Nutricionista encontrado.
-   */
-  async buscarPorId(id) {
-    // TODO: Implementar a lógica de busca no banco de dados.
+  async atualizar(id_nutricionista, dadosNutricionista) {
+    const { nome, email } = dadosNutricionista;
+    const sql = `
+      UPDATE nutricionista
+      SET nome = $1, email = $2
+      WHERE id_nutricionista = $3
+      RETURNING *;
+    `;
+    const result = await db.query(sql, [nome, email, id_nutricionista]);
+    return result.rows[0];
   }
 
-  /**
-   * Busca uma nutricionista por seu e-mail.
-   * @param {string} email - O e-mail da nutricionista.
-   * @returns {Nutricionista} O objeto Nutricionista encontrado.
-   */
+  // Método auxiliar para o serviço validar se o ID existe antes de atualizar
+  async buscarPorId(id_nutricionista) {
+    const sql = `SELECT * FROM nutricionista WHERE id_nutricionista = $1`;
+    const result = await db.query(sql, [id_nutricionista]);
+    return result.rows[0];
+  }
+
+  // Método auxiliar para o serviço validar se o e-mail já está em uso
   async buscarPorEmail(email) {
-    // TODO: Implementar a lógica de busca no banco de dados.
+    const sql = `SELECT * FROM nutricionista WHERE email = $1`;
+    const result = await db.query(sql, [email]);
+    return result.rows[0];
   }
 }
 

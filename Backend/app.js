@@ -10,6 +10,7 @@ const disciplinaRoutes = require('./routes/DisciplinaRoutes');
 const autenticacaoRoutes = require('./routes/AuthRoutes');
 const alunoRoutes = require('./routes/AlunoRoutes');
 const turmaRoutes = require('./routes/TurmaRoutes');
+const nutricionistaRoutes = require('./routes/NutricionistaRoutes');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/disciplina', disciplinaRoutes);
 app.use('/auth', autenticacaoRoutes);
 app.use('/aluno', alunoRoutes);
 app.use('/turmas', turmaRoutes);
+app.use('/nutricionistas', nutricionistaRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {

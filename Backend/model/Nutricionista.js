@@ -1,14 +1,11 @@
 // Classe responsável por representar a Nutricionista
+// model/Nutricionista.js
+
 class Nutricionista {
-  /**
-   * @param {string} nome
-   * @param {string} email
-   * @param {string} idNutricionista - Identificador único da nutricionista.
-   */
-  constructor(nome, email, idNutricionista) {
+  constructor(id_nutricionista, nome, email) {
+    this.id_nutricionista = id_nutricionista;
     this.nome = nome;
     this.email = email;
-    this.idNutricionista = idNutricionista;
   }
 }
 
