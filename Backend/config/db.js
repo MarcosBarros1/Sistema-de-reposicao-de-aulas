@@ -15,6 +15,9 @@ class Database {
         database: process.env.DB_DATABASE,
         password: process.env.DB_PASSWORD,
         port: process.env.DB_PORT,
+        ssl: {
+            rejectUnauthorized: false
+        },
       });
 
       console.log('Pool de conexões com o PostgreSQL inicializado.');
