@@ -86,15 +86,15 @@ class CoordenadorService {
     }
 
     // 2. Preparar o conteúdo do e-mail
-    const linkFormulario = `https://docs.google.com/forms/d/e/1FAIpQLSfLNxEnLQOkrJbeBvb45yGeEqzONmLKsy2iUI7APh_hd7J8og/viewform?usp=header`;
+    const linkFront = `https://docs.google.com/forms/d/e/1FAIpQLSfLNxEnLQOkrJbeBvb45yGeEqzONmLKsy2iUI7APh_hd7J8og/viewform?usp=header`;
 
     const subject = 'Notificação de Ausência e Solicitação de Reposição';
     const text = `
       Olá, Prof(a). ${professor.nome},
 
       Constatamos sua ausência na data de hoje.
-      Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:
-      ${linkFormulario}
+      Por favor, acesse o link abaixo e faça uma solicitação de repoisção da aula:
+      ${linkFront}
 
       Atenciosamente,
       Coordenação - Sistema de Reposição de Aulas.
@@ -102,8 +102,8 @@ class CoordenadorService {
     const html = `
       <p>Olá, Prof(a). <strong>${professor.nome}</strong>,</p>
       <p>Constatamos sua ausência na data de hoje.</p>
-      <p>Por favor, acesse o link abaixo para preencher o formulário e agendar a aula de reposição:</p>
-      <p><a href="${linkFormulario}">Preencher Formulário de Reposição</a></p>
+      <p>Por favor, acesse o link abaixo e faça uma solicitação de repoisção da aula:</p>
+      <p><a href="${linkFront}">Sistema de reposição de aulas</a></p>
       <br>
       <p>Atenciosamente,</p>
       <p><strong>Coordenação - Sistema de Reposição de Aulas.</strong></p>
@@ -131,17 +131,6 @@ class CoordenadorService {
     console.log(`Avaliando solicitação ${idSolicitacao} com decisão: ${decisao}`);
   }
 
-  /**
-   * Cadastra uma nova turma no sistema. (RF05)
-   */
-  async cadastrarTurma(dadosTurma) {
-    // TODO: Implementar lógica
-    // 1. Validar os dados da turma.
-    // 2. Chamar o TurmaRepository para salvar a turma e suas disciplinas/horários.
-    console.log('Cadastrando nova turma:', dadosTurma);
-  }
-
-  // ... outros métodos de serviço para as demais responsabilidades do coordenador.
 }
 
 module.exports = new CoordenadorService();
