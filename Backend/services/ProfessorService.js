@@ -95,7 +95,7 @@ class ProfessorService {
     // 3. Preparar e enviar um e-mail para cada aluno
     for (const aluno of alunosDaTurma) {
       // O link do Google Form deve ser preparado para receber o ID da solicitação e a matrícula do aluno
-      const linkFormulario = `URL_DO_GOOGLE_FORM?usp=pp_url&entry.ID_SOLICITACAO=${novaSolicitacao.idSolicitacao}&entry.ID_MATRICULA_ALUNO=${aluno.matricula_aluno}`;
+      const linkFormulario = `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=sharing&ouid=114512436813058877584`;
 
       const subject = `Convite para Aula de Reposição`;
       const html = `
