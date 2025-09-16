@@ -11,6 +11,7 @@ const autenticacaoRoutes = require('./routes/AuthRoutes');
 const alunoRoutes = require('./routes/AlunoRoutes');
 const turmaRoutes = require('./routes/TurmaRoutes');
 const nutricionistaRoutes = require('./routes/NutricionistaRoutes');
+const webhookRoutes = require('./routes/WebhookRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/auth', autenticacaoRoutes);
 app.use('/aluno', alunoRoutes);
 app.use('/turmas', turmaRoutes);
 app.use('/nutricionistas', nutricionistaRoutes);
+app.use('/webhook', webhookRoutes);
 
 // Rota de teste
 app.get('/', (req, res) => {

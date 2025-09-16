@@ -15,10 +15,9 @@ class SolicitacaoReposicaoRepository {
    */
   async salvar(solicitacao) {
     const query = `
-      INSERT INTO solicitacao_reposicao 
-        (motivo, status, data, horario, sala, id_turma, matricula_professor)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING *;
+      INSERT INTO solicitacao_reposicao (motivo, status, data, horario, sala, qt_alunos, id_turma, matricula_professor)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        RETURNING id_solicitacao, motivo, status, data, horario, sala, qt_alunos, id_turma, matricula_professor AS id_professor;
     `;
 
     const values = [
@@ -27,6 +26,7 @@ class SolicitacaoReposicaoRepository {
       solicitacao.data,
       solicitacao.horario,
       solicitacao.sala,
+      solicitacao.qt_alunos,
       solicitacao.idTurma,
       solicitacao.idProfessor
     ];

@@ -1,0 +1,53 @@
+// Google Apps Script atualizado com snake_case e dados reais
+
+// URL do seu backend em produção no Render
+const webhook_url = 'https://sistema-de-reposicao-de-aulas.onrender.com/webhook/google-form';
+
+function on_form_submit(e) {
+  // Pega os dados da linha que acabou de ser adicionada na planilha
+  const response = e.values;
+
+  // Mapeia as colunas da sua planilha para variáveis.
+  // IMPORTANTE: Verifique se esta ordem bate com a sua planilha!
+  const carimbo_data_hora = response[0];       // Coluna 1: Carimbo de data/hora
+  const nome_aluno = response[1];              // Coluna 2: Nome (do seu formulário)
+  const email_aluno = response[2];             // Coluna 3: E-mail (do seu formulário)
+  const resposta_concordancia = response[3];  // Coluna 4: Resposta Sim/Não
+  const id_solicitacao = response[4];          // Coluna 5: ID da Solicitacao (campo oculto)
+  const matricula_aluno = response[5];         // Coluna 6: Matricula do Aluno (campo oculto)
+  
+  // Converte a resposta de texto para booleano (true/false)
+  const concorda = (resposta_concordancia.toLowerCase().indexOf('sim') > -1);
+
+  // Monta o objeto de dados (payload) a ser enviado para o backend
+  const payload = {
+    id_solicitacao: parseInt(id_solicitacao, 10),
+    matricula_aluno: parseInt(matricula_aluno, 10),
+    concorda: concorda
+  };
+
+  // Configura a requisição HTTP
+  const options = {
+    'method': 'post',
+    'contentType': 'application/json',
+    'payload': JSON.stringify(payload)
+  };
+
+  // Envia a notificação (webhook) para o backend
+  try {
+    UrlFetchApp.fetch(webhook_url, options);
+  } catch (error) {
+    Logger.log('Erro ao enviar webhook: ' + error.toString());
+  }
+}
+
+/**
+ * Função para criar o "gatilho" (trigger) que aciona o script automaticamente
+ * quando um formulário é enviado. Você só precisa executar esta função uma vez.
+ */
+function setup_trigger() {
+  ScriptApp.newTrigger('on_form_submit')
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onFormSubmit()
+    .create();
+}

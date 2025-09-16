@@ -82,6 +82,26 @@ class ProfessorController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  async iniciarSolicitacao(req, res) {
+    try {
+      const dados = req.body;
+
+      // Adicionamos uma validação para garantir que o idProfessor foi enviado
+      if (!dados.idProfessor) {
+        return res.status(400).json({ message: 'O campo idProfessor é obrigatório no corpo da requisição.' });
+      }
+
+      const solicitacaoCriada = await ProfessorService.iniciarSolicitacaoReposicao(dados);
+      res.status(201).json(solicitacaoCriada);
+
+    } catch (error) {
+
+      console.error('Erro ao iniciar solicitação:', error);
+      res.status(500).json({ message: 'Erro interno ao iniciar solicitação.' });
+      
+    }
+  }
 }
 
 module.exports = new ProfessorController();

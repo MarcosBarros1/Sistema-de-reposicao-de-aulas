@@ -2,6 +2,10 @@
 
 const ProfessorRepository = require('../persistence/ProfessorRepository');
 const UsuarioRepository = require('../persistence/UsuarioRepository');
+const TurmaRepository = require('../persistence/TurmaRepository');
+const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposicaoRepository');
+const EmailService = require('./EmailService');
+const SolicitacaoStatus = require('../constants/SolicitacaoStatus')
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
 
@@ -70,16 +74,53 @@ class ProfessorService {
   }
 
   /**
-   * Lógica para um professor solicitar uma reposição de aula.
-   * (RF07, RF08)
+   * Inicia o processo de solicitação de reposição, criando o registro
+   * e enviando os e-mails de convocação para os alunos da turma.
+   * @param {object} dadosSolicitacao - { motivo, data, horario, sala, qt_alunos, idTurma, idProfessor }
    */
-  async solicitarReposicao(idProfessor, dadosReposicao) {
-    // TODO: Implementar lógica de negócio para criar uma solicitação.
-    // 1. Buscar o professor para garantir que ele existe (usar ProfessorRepository).
-    // 2. Validar se os dados da reposição são válidos (horário, turma, etc.).
-    // 3. Chamar o SolicitacaoRepository para salvar a nova solicitação.
-    // 4. Disparar o envio do formulário por e-mail para a turma.
-    console.log(`Solicitando reposição para o professor ${idProfessor} com os dados:`, dadosReposicao);
+  async iniciar_solicitacao_reposicao(dados_solicitacao) {
+    // 1. Cria a solicitação de reposição no banco com status PENDENTE
+    const nova_solicitacao = await SolicitacaoReposicaoRepository.salvar({
+      ...dados_solicitacao,
+      status: SolicitacaoStatus.PENDENTE
+    });
+
+    // 2. Busca todos os alunos da turma informada
+    const alunos_da_turma = await TurmaRepository.buscarAlunosPorTurmaId(dados_solicitacao.idTurma);
+    if (alunos_da_turma.length === 0) {
+      console.log(`Nenhum aluno encontrado para a turma ${dados_solicitacao.idTurma}. Nenhum e-mail enviado.`);
+      return nova_solicitacao;
+    }
+
+    // 3. Preparar e enviar um e-mail para cada aluno
+    for (const aluno of alunos_da_turma) {
+      // Monta o link dinâmico com os dados reais
+      const link_formulario =
+        `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=pp_url` +
+        `&entry.1310486159=${nova_solicitacao.idSolicitacao}` + // Campo para o ID da Solicitação
+        `&entry.476576271=${aluno.matricula_aluno}`;           // Campo para a Matrícula do Aluno
+
+      const subject = `Convite para Aula de Reposição`;
+      const html = `
+        <p>Olá, ${aluno.nome},</p>
+        <p>Uma aula de reposição foi proposta para sua turma com os seguintes detalhes:</p>
+        <ul>
+          <li><strong>Data:</strong> ${new Date(nova_solicitacao.data).toLocaleDateString('pt-BR')}</li>
+          <li><strong>Horário:</strong> ${nova_solicitacao.horario}</li>
+          <li><strong>Sala:</strong> ${nova_solicitacao.sala}</li>
+        </ul>
+        <p>Por favor, confirme sua presença ou ausência através do formulário abaixo. Sua resposta é muito importante!</p>
+        <p><a href="${link_formulario}">Responder Formulário</a></p>
+      `;
+
+      await EmailService.enviarEmail({
+        to: aluno.email,
+        subject: subject,
+        html: html
+      });
+    }
+
+    return nova_solicitacao;
   }
 }
 
