@@ -82,7 +82,8 @@ class ProfessorService {
     // 1. Cria a solicitação de reposição no banco com status PENDENTE
     const nova_solicitacao = await SolicitacaoReposicaoRepository.salvar({
       ...dados_solicitacao,
-      status: SolicitacaoStatus.PENDENTE
+      status: SolicitacaoStatus.PENDENTE,
+      qt_alunos: 0
     });
 
     // 2. Busca todos os alunos da turma informada

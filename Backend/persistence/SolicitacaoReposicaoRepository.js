@@ -93,6 +93,23 @@ class SolicitacaoReposicaoRepository {
     const result = await db.query(query);
     return result.rows.map(row => SolicitacaoReposicao.fromDatabase(row));
   }
+
+  async incrementar_alunos_concordantes(id_solicitacao) {
+    try {
+      // Esta query é atômica e segura para concorrência.
+      // Ela lê o valor atual, soma 1 e salva de volta em uma única operação.
+      const sql = `
+        UPDATE solicitacao_reposicao 
+        SET qt_alunos = qt_alunos + 1 
+        WHERE id_solicitacao = $1;
+      `;
+      await db.query(sql, [id_solicitacao]);
+    } catch (error) {
+      console.error(`Erro ao incrementar contador para solicitação ${id_solicitacao}:`, error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new SolicitacaoReposicaoRepository();

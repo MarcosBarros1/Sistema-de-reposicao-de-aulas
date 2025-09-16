@@ -65,6 +65,10 @@ class ReposicaoService {
   async registrarAssinatura(dadosAssinatura) {
     await AssinaturaRepository.salvar(dadosAssinatura);
 
+    if (dados_assinatura.concorda === true) {
+      await SolicitacaoReposicaoRepository.incrementar_alunos_concordantes(dados_assinatura.idSolicitacao);
+    }
+
     const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dadosAssinatura.idSolicitacao);
     if (!solicitacao) throw new Error('Solicitação não encontrada');
 
@@ -72,9 +76,8 @@ class ReposicaoService {
     const totalAlunos = alunosDaTurma.length;
     if (totalAlunos === 0) return; // Evita divisão por zero
 
-    const totalConcordancias = await AssinaturaRepository.contarConcordancias(solicitacao.idSolicitacao);
-
-    const porcentagem = (totalConcordancias / totalAlunos) * 100;
+    const total_concordancias = solicitacao.qt_alunos;
+    const porcentagem = (total_concordancias / totalAlunos) * 100;
 
     if (porcentagem >= 75) {
       await SolicitacaoReposicaoRepository.atualizarStatus(solicitacao.idSolicitacao, 'AGUARDANDO_APROVACAO');
