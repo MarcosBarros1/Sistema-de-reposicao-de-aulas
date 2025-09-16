@@ -58,12 +58,13 @@ class ReposicaoService {
     return await SolicitacaoReposicaoRepository.listarTodos();
   }
 
-  /**
-   * Registra a assinatura de um aluno e verifica se o quórum foi atingido.
-   * @param {object} dadosAssinatura - { idSolicitacao, matriculaAluno, concorda }
-   */
-  async registrarAssinatura(dadosAssinatura) {
-    await AssinaturaRepository.salvar(dadosAssinatura);
+
+  async registrarAssinatura(dados_assinatura) {
+    await AssinaturaRepository.salvar({
+      idSolicitacao: dados_assinatura.id_solicitacao,
+      matriculaAluno: dados_assinatura.matricula_aluno,
+      concorda: dados_assinatura.concorda 
+    });
 
     if (dados_assinatura.concorda === true) {
       await SolicitacaoReposicaoRepository.incrementar_alunos_concordantes(dados_assinatura.idSolicitacao);
