@@ -59,7 +59,7 @@ class ReposicaoService {
   }
 
 
-  async registrarAssinatura(dados_assinatura) {
+  async registrar_assinatura(dados_assinatura) {
     await AssinaturaRepository.salvar({
       idSolicitacao: dados_assinatura.id_solicitacao,
       matriculaAluno: dados_assinatura.matricula_aluno,
