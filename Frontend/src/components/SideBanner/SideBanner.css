@@ -1,0 +1,21 @@
+.side-banner-container {
+  background-color: #ffffff;
+  width: 40%; /* Ocupa 40% da largura da tela */
+  display: flex;
+  flex-direction: column; /* Itens em coluna */
+  justify-content: center; /* Centraliza verticalmente */
+  align-items: center; /* Centraliza horizontalmente */
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  max-width: 200px; /* Define um tamanho máximo para o logo */
+  margin-bottom: 2rem; /* Espaço abaixo do logo */
+}
+
+.system-title {
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 500;
+}
