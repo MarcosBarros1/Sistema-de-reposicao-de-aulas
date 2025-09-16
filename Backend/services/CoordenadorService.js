@@ -145,7 +145,7 @@ class CoordenadorService {
     // 4. Disparar e-mails com base na decisão
     if (nova_decisao === SolicitacaoStatus.AUTORIZADA) {
       // -- FLUXO DE APROVAÇÃO --
-      const assunto = `Reposição Aprovada: Aula do dia ${new Date(solicitacao.data).toLocaleDateDateString('pt-BR')}`;
+      const assunto = `Reposição Aprovada: Aula do dia ${new Date(solicitacao.data).toLocaleDateString('pt-BR')}`;
       const corpo_html_confirmacao = `<p>A aula de reposição solicitada foi <strong>APROVADA</strong>.</p>
                                       <p><strong>Detalhes:</strong></p>
                                       <ul>
