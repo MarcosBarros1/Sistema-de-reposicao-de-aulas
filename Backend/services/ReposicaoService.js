@@ -1,5 +1,6 @@
 // services/ReposicaoService.js
 
+const AssinaturaRepository = require('../persistence/AssinaturaRepository');
 const SolicitacaoReposicao = require('../model/SolicitacaoReposicao');
 const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposicaoRepository');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
