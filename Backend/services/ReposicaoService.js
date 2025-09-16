@@ -70,7 +70,7 @@ class ReposicaoService {
       await SolicitacaoReposicaoRepository.incrementar_alunos_concordantes(dados_assinatura.idSolicitacao);
     }
 
-    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dadosAssinatura.idSolicitacao);
+    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dados_assinatura.idSolicitacao);
     if (!solicitacao) throw new Error('Solicitação não encontrada');
 
     const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
