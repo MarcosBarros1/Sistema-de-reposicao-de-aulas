@@ -6,6 +6,7 @@ const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposi
 const ProfessorRepository = require('../persistence/ProfessorRepository');
 const TurmaRepository = require('../persistence/TurmaRepository');
 const EmailService = require('./EmailService');
+const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
 
