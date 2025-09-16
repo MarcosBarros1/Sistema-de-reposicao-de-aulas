@@ -59,31 +59,41 @@ class ReposicaoService {
   }
 
 
-  async registrar_assinatura(dados_assinatura) {
+  async registrarAssinatura(dados_assinatura) {
+    // 1. Salva a resposta do aluno na tabela de assinaturas.
+    // O AssinaturaRepository espera { idSolicitacao, matriculaAluno, concorda }
+    // então fazemos a "tradução" aqui.
     await AssinaturaRepository.salvar({
       idSolicitacao: dados_assinatura.id_solicitacao,
       matriculaAluno: dados_assinatura.matricula_aluno,
-      concorda: dados_assinatura.concorda 
+      concorda: dados_assinatura.concorda
     });
 
+    // 2. Se o aluno concordou, incrementa o contador principal
     if (dados_assinatura.concorda === true) {
-      await SolicitacaoReposicaoRepository.incrementar_alunos_concordantes(dados_assinatura.idSolicitacao);
+      await SolicitacaoReposicaoRepository.incrementar_alunos_concordantes(dados_assinatura.id_solicitacao);
     }
 
-    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dados_assinatura.idSolicitacao);
-    if (!solicitacao) throw new Error('Solicitação não encontrada');
+    // 3. Após registrar e incrementar, verifica o quórum
+    // Usamos o id_solicitacao (snake_case) que veio corretamente nos dados
+    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dados_assinatura.id_solicitacao);
+    if (!solicitacao) {
+      // Esta é a linha que estava dando erro. Agora deve funcionar.
+      throw new Error('Solicitação não encontrada');
+    }
 
-    const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
-    const totalAlunos = alunosDaTurma.length;
-    if (totalAlunos === 0) return; // Evita divisão por zero
+    const alunos_da_turma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
+    const total_alunos = alunos_da_turma.length;
+    if (total_alunos === 0) return;
 
+    // A contagem de concordâncias agora vem direto do contador da solicitação, que foi atualizado
     const total_concordancias = solicitacao.qt_alunos;
-    const porcentagem = (total_concordancias / totalAlunos) * 100;
+    const porcentagem = (total_concordancias / total_alunos) * 100;
 
     if (porcentagem >= 75) {
       await SolicitacaoReposicaoRepository.atualizarStatus(solicitacao.idSolicitacao, 'AGUARDANDO_APROVACAO');
 
-      const coordenador = await CoordenadorRepository.buscarUmCoordenador(); // Chamada corrigida
+      const coordenador = await CoordenadorRepository.buscarUmCoordenador();
       if (coordenador) {
         await NotificacaoRepository.salvar({
           mensagem: `A solicitação de reposição #${solicitacao.idSolicitacao} atingiu 75% de concordância e aguarda sua aprovação.`,
