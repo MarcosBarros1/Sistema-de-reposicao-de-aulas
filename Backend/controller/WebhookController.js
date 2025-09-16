@@ -13,7 +13,7 @@ class WebhookController {
                 return res.status(400).json({ message: 'Dados insuficientes.' });
             }
 
-            await ReposicaoService.registrar_assinatura({
+            await ReposicaoService.registrarAssinatura({
                 id_solicitacao: id_solicitacao,
                 matricula_aluno: matricula_aluno,
                 concorda: concorda
