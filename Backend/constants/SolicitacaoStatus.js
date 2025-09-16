@@ -6,11 +6,11 @@
  * @description Enumeração para os possíveis status de uma solicitação de reposição.
  */
 const SolicitacaoStatus = Object.freeze({
-  PENDENTE: 'Pendente',
-  AGUARDANDO_APROVACAO: 'Aguardando_aprovacao',
-  AUTORIZADA: 'Autorizada',
-  NEGADA: 'Negada',
-  CONCLUIDA: 'Concluída',
+PENDENTE: 'PENDENTE',
+  AGUARDANDO_APROVACAO: 'AGUARDANDO_APROVACAO',
+  AUTORIZADA: 'AUTORIZADA',
+  NEGADA: 'NEGADA',
+  CONCLUIDA: 'CONCLUIDA',
 });
 
 module.exports = SolicitacaoStatus;
