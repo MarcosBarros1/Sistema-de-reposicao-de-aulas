@@ -2,7 +2,9 @@
 
 const CoordenadorRepository = require('../persistence/CoordenadorRepository');
 const UsuarioRepository = require('../persistence/UsuarioRepository');
+const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposicaoRepository');
 const ProfessorRepository = require('../persistence/ProfessorRepository');
+const TurmaRepository = require('../persistence/TurmaRepository');
 const EmailService = require('./EmailService');
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
