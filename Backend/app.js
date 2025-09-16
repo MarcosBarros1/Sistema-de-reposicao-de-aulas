@@ -11,7 +11,7 @@ const autenticacaoRoutes = require('./routes/AuthRoutes');
 const alunoRoutes = require('./routes/AlunoRoutes');
 const turmaRoutes = require('./routes/TurmaRoutes');
 const nutricionistaRoutes = require('./routes/NutricionistaRoutes');
-const webhookRoutes = require('./routes/webhookRoutes');
+const webhookRoutes = require('./routes/WebhookRoutes');
 
 const app = express();
 
