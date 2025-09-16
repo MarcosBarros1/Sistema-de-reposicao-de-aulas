@@ -78,36 +78,39 @@ class ProfessorService {
    * e enviando os e-mails de convocação para os alunos da turma.
    * @param {object} dadosSolicitacao - { motivo, data, horario, sala, qt_alunos, idTurma, idProfessor }
    */
-  async iniciarSolicitacaoReposicao(dadosSolicitacao) {
-    // 1. Criar a solicitação de reposição no banco com status PENDENTE
-    const novaSolicitacao = await SolicitacaoReposicaoRepository.salvar({
-      ...dadosSolicitacao,
+  async iniciar_solicitacao_reposicao(dados_solicitacao) {
+    // 1. Cria a solicitação de reposição no banco com status PENDENTE
+    const nova_solicitacao = await SolicitacaoReposicaoRepository.salvar({
+      ...dados_solicitacao,
       status: SolicitacaoStatus.PENDENTE
     });
 
-    // 2. Buscar todos os alunos da turma usando o novo método do TurmaRepository
-    const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(dadosSolicitacao.idTurma);
-    if (alunosDaTurma.length === 0) {
-      console.log(`Nenhum aluno encontrado para a turma ${dadosSolicitacao.idTurma}. Nenhum e-mail enviado.`);
-      return novaSolicitacao;
+    // 2. Busca todos os alunos da turma informada
+    const alunos_da_turma = await TurmaRepository.buscarAlunosPorTurmaId(dados_solicitacao.idTurma);
+    if (alunos_da_turma.length === 0) {
+      console.log(`Nenhum aluno encontrado para a turma ${dados_solicitacao.idTurma}. Nenhum e-mail enviado.`);
+      return nova_solicitacao;
     }
 
     // 3. Preparar e enviar um e-mail para cada aluno
-    for (const aluno of alunosDaTurma) {
-      // O link do Google Form deve ser preparado para receber o ID da solicitação e a matrícula do aluno
-      const linkFormulario = `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=sharing&ouid=114512436813058877584`;
+    for (const aluno of alunos_da_turma) {
+      // Monta o link dinâmico com os dados reais
+      const link_formulario =
+        `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=pp_url` +
+        `&entry.1310486159=${nova_solicitacao.idSolicitacao}` + // Campo para o ID da Solicitação
+        `&entry.476576271=${aluno.matricula_aluno}`;           // Campo para a Matrícula do Aluno
 
       const subject = `Convite para Aula de Reposição`;
       const html = `
         <p>Olá, ${aluno.nome},</p>
         <p>Uma aula de reposição foi proposta para sua turma com os seguintes detalhes:</p>
         <ul>
-          <li><strong>Data:</strong> ${new Date(novaSolicitacao.data).toLocaleDateString('pt-BR')}</li>
-          <li><strong>Horário:</strong> ${novaSolicitacao.horario}</li>
-          <li><strong>Sala:</strong> ${novaSolicitacao.sala}</li>
+          <li><strong>Data:</strong> ${new Date(nova_solicitacao.data).toLocaleDateString('pt-BR')}</li>
+          <li><strong>Horário:</strong> ${nova_solicitacao.horario}</li>
+          <li><strong>Sala:</strong> ${nova_solicitacao.sala}</li>
         </ul>
         <p>Por favor, confirme sua presença ou ausência através do formulário abaixo. Sua resposta é muito importante!</p>
-        <p><a href="${linkFormulario}">Responder Formulário</a></p>
+        <p><a href="${link_formulario}">Responder Formulário</a></p>
       `;
 
       await EmailService.enviarEmail({
@@ -117,7 +120,7 @@ class ProfessorService {
       });
     }
 
-    return novaSolicitacao;
+    return nova_solicitacao;
   }
 }
 
