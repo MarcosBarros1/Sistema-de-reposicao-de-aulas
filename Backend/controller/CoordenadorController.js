@@ -1,6 +1,7 @@
 // controller/CoordenadorController.js
 
 const CoordenadorService = require('../services/CoordenadorService');
+const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
 
 class CoordenadorController {
 
@@ -93,6 +94,29 @@ class CoordenadorController {
       }
       // Retorna um erro genérico para outras falhas
       res.status(500).json({ message: 'Ocorreu um erro inesperado no servidor.' });
+    }
+  }
+
+  async avaliar_solicitacao(req, res) {
+    try {
+      const { id_solicitacao } = req.params;
+      const { decisao, comentario } = req.body; // 'decisao' será 'AUTORIZADA' ou 'NEGADA'
+
+      // Validação básica da entrada
+      if (!decisao || ![SolicitacaoStatus.AUTORIZADA, SolicitacaoStatus.NEGADA].includes(decisao)) {
+        return res.status(400).json({ message: 'A decisão fornecida é inválida.' });
+      }
+
+      await CoordenadorService.avaliar_solicitacao(id_solicitacao, decisao, comentario);
+
+      res.status(200).json({ message: `Solicitação #${id_solicitacao} foi atualizada para ${decisao}.` });
+    } catch (error) {
+      console.error('Erro ao avaliar solicitação:', error);
+      if (error.name === 'RegraDeNegocioException') {
+        res.status(404).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: 'Erro interno no servidor.' });
+      }
     }
   }
 }

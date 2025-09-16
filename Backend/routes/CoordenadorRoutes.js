@@ -28,4 +28,7 @@ router.delete('/:matricula', CoordenadorController.deletar);
 // Esta rota aciona o envio de notificação de falta para um professor específico
 router.post('/professores/:matricula/notificar-falta', CoordenadorController.notificarFalta);
 
+// Rota para o coordenador aprovar ou negar uma solicitação
+router.post('/solicitacoes/:id_solicitacao/avaliar', CoordenadorController.avaliar_solicitacao);
+
 module.exports = router;

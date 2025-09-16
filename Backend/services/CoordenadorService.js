@@ -121,14 +121,62 @@ class CoordenadorService {
   /**
    * Avalia uma solicitação de reposição. (RF10)
    */
-  async avaliarSolicitacao(idSolicitacao, decisao, comentario) {
-    // TODO: Implementar lógica
-    // 1. Buscar a solicitação pelo ID.
-    // 2. Verificar se o status da solicitação permite avaliação.
-    // 3. Atualizar o status da solicitação com a decisão e comentário.
-    // 4. Se aprovado, disparar notificações para professor, turma e nutricionista (RF11).
-    // 5. Se reprovado, notificar o professor (RF10.1).
-    console.log(`Avaliando solicitação ${idSolicitacao} com decisão: ${decisao}`);
+  async avaliar_solicitacao(id_solicitacao, nova_decisao, comentario) {
+    // 1. Buscar a solicitação para garantir que ela existe e está no status correto
+    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(id_solicitacao);
+    if (!solicitacao) {
+      throw new Error('Solicitação de reposição não encontrada.');
+    }
+    if (solicitacao.status !== SolicitacaoStatus.AGUARDANDO_APROVACAO) {
+      throw new Error(`Esta solicitação não pode ser avaliada, pois seu status atual é '${solicitacao.status}'.`);
+    }
+
+    // 2. Atualizar o status da solicitação no banco de dados
+    await SolicitacaoReposicaoRepository.atualizarStatus(id_solicitacao, nova_decisao);
+
+    // 3. Buscar dados adicionais para os e-mails
+    const professor = await ProfessorRepository.buscarPorMatricula(solicitacao.idProfessor);
+    const alunos = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
+    const emails_alunos = alunos.map(aluno => aluno.email);
+
+    // 4. Disparar e-mails com base na decisão
+    if (nova_decisao === SolicitacaoStatus.AUTORIZADA) {
+      // -- FLUXO DE APROVAÇÃO --
+      const assunto = `Reposição Aprovada: Aula do dia ${new Date(solicitacao.data).toLocaleDateDateString('pt-BR')}`;
+      const corpo_html_confirmacao = `<p>A aula de reposição solicitada foi <strong>APROVADA</strong>.</p>
+                                      <p><strong>Detalhes:</strong></p>
+                                      <ul>
+                                        <li>Data: ${new Date(solicitacao.data).toLocaleDateString('pt-BR')}</li>
+                                        <li>Horário: ${solicitacao.horario}</li>
+                                        <li>Sala: ${solicitacao.sala}</li>
+                                      </ul>`;
+
+      // E-mail para Professor e Alunos
+      await EmailService.enviarEmail({ to: [professor.email, ...emails_alunos], subject: assunto, html: corpo_html_confirmacao });
+
+      // E-mail para Nutricionista (RF11.2)
+      await EmailService.enviarEmail({
+        to: 'email.nutricionista@ifce.edu.br', // Substituir por um e-mail real
+        subject: `Solicitação de Merenda para Reposição`,
+        html: `<p>Solicitação de merenda para uma aula de reposição aprovada.</p>
+               <p><strong>Detalhes:</strong></p>
+               <ul>
+                 <li>Data: ${new Date(solicitacao.data).toLocaleDateString('pt-BR')}</li>
+                 <li>Horário: ${solicitacao.horario}</li>
+                 <li>Quantidade de Alunos: ${solicitacao.qt_alunos}</li>
+               </ul>`
+      });
+
+    } else { // Se for SolicitacaoStatus.NEGADA
+      // -- FLUXO DE NEGAÇÃO --
+      const assunto = `Reposição Não Autorizada`;
+      const corpo_html_negacao = `<p>A aula de reposição solicitada para o dia ${new Date(solicitacao.data).toLocaleDateString('pt-BR')} foi <strong>NÃO AUTORIZADA</strong>.</p>
+                                  <p><strong>Motivo (Coordenador):</strong> ${comentario || 'Não especificado.'}</p>
+                                  <p>Por favor, professor, inicie uma nova solicitação com data/horário alternativos.</p>`;
+
+      // E-mail para Professor e Alunos
+      await EmailService.enviarEmail({ to: [professor.email, ...emails_alunos], subject: assunto, html: corpo_html_negacao });
+    }
   }
 
 }
