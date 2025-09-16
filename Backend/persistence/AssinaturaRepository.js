@@ -17,6 +17,22 @@ class AssinaturaRepository {
     // ON CONFLICT ... DO UPDATE garante que se o aluno mudar de ideia e votar de novo, a resposta será atualizada.
     await db.query(sql, [idSolicitacao, matriculaAluno, concorda]);
   }
+
+  /**
+   * Conta quantas assinaturas de concordância uma solicitação recebeu.
+   * @param {number} id_solicitacao - O ID da solicitação.
+   * @returns {Promise<number>} O número de alunos que concordaram.
+   */
+  async contarConcordancias(id_solicitacao) {
+    try {
+      const sql = 'SELECT COUNT(*) FROM assinatura_solicitacao WHERE id_solicitacao = $1 AND concorda = TRUE';
+      const result = await db.query(sql, [id_solicitacao]);
+      return parseInt(result.rows[0].count, 10);
+    } catch (error) {
+      console.error(`Erro ao contar concordâncias para solicitação ${id_solicitacao}:`, error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new AssinaturaRepository();
