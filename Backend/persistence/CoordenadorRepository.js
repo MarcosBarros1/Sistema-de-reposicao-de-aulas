@@ -184,6 +184,32 @@ class CoordenadorRepository {
       client.release();
     }
   }
+
+  /**
+   * Busca um coordenador (o primeiro que encontrar) para ser o destinatário de notificações.
+   * Em um sistema real, aqui teríamos uma lógica mais complexa para achar o coordenador correto.
+   * @returns {Promise<Coordenador|null>}
+   */
+  async buscarUmCoordenador() {
+    try {
+      // Pega o primeiro coordenador que encontrar na tabela de usuários
+      const sql = `
+        SELECT u.id_usuario, u.nome, u.email, c.matricula_coordenador, c.senha, c.departamento
+        FROM coordenador c
+        JOIN usuario u ON c.id_usuario = u.id_usuario
+        LIMIT 1;
+      `;
+      const result = await db.query(sql);
+      if (result.rows.length > 0) {
+        const row = result.rows[0];
+        return new Coordenador(row.id_usuario, row.nome, row.email, row.matricula_coordenador, row.senha, row.departamento);
+      }
+      return null;
+    } catch (error) {
+      console.error('Erro ao buscar um coordenador:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new CoordenadorRepository();

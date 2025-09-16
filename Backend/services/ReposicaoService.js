@@ -4,6 +4,10 @@ const AssinaturaRepository = require('../persistence/AssinaturaRepository');
 const SolicitacaoReposicao = require('../model/SolicitacaoReposicao');
 const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposicaoRepository');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
+const TurmaRepository = require('../persistence/TurmaRepository');
+const NotificacaoRepository = require('../persistence/NotificacaoRepository');
+const CoordenadorRepository = require('../persistence/CoordenadorRepository');
+const EmailService = require('./EmailService');
 
 class ReposicaoService {
   /**
@@ -59,38 +63,29 @@ class ReposicaoService {
    * @param {object} dadosAssinatura - { idSolicitacao, matriculaAluno, concorda }
    */
   async registrarAssinatura(dadosAssinatura) {
-    // 1. Salva a resposta do aluno no banco de dados
     await AssinaturaRepository.salvar(dadosAssinatura);
 
-    // 2. Após salvar, verifica o quórum (RN02)
     const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(dadosAssinatura.idSolicitacao);
     if (!solicitacao) throw new Error('Solicitação não encontrada');
 
-    // 3. Busca o total de alunos na turma
     const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
     const totalAlunos = alunosDaTurma.length;
+    if (totalAlunos === 0) return; // Evita divisão por zero
 
-    // 4. Busca o total de assinaturas de concordância
-    // (Precisaríamos de um novo método no AssinaturaRepository para contar as assinaturas 'true')
-    // Por simplicidade, vamos imaginar que ele retorna um número.
-    const totalConcordancias = await AssinaturaRepository.contarConcordancias(solicitacao.idSolicitacao); // Método a ser criado
+    const totalConcordancias = await AssinaturaRepository.contarConcordancias(solicitacao.idSolicitacao);
 
-    // 5. Calcula a porcentagem
     const porcentagem = (totalConcordancias / totalAlunos) * 100;
 
-    // 6. Aplica a regra de negócio (RF10)
     if (porcentagem >= 75) {
-      // QUÓRUM ATINGIDO!
-      // Atualiza o status da solicitação
       await SolicitacaoReposicaoRepository.atualizarStatus(solicitacao.idSolicitacao, 'AGUARDANDO_APROVACAO');
 
-      // Envia notificação para o coordenador
-      // (Precisamos buscar o coordenador para saber o id_destinatario)
-      const coordenador = await CoordenadorRepository.buscarCoordenadorDoCurso(); // Método a ser criado
-      await NotificacaoRepository.salvar({
-        mensagem: `A solicitação de reposição #${solicitacao.idSolicitacao} atingiu 75% de concordância e aguarda sua aprovação.`,
-        idDestinatario: coordenador.id_usuario
-      });
+      const coordenador = await CoordenadorRepository.buscarUmCoordenador(); // Chamada corrigida
+      if (coordenador) {
+        await NotificacaoRepository.salvar({
+          mensagem: `A solicitação de reposição #${solicitacao.idSolicitacao} atingiu 75% de concordância e aguarda sua aprovação.`,
+          idDestinatario: coordenador.idUsuario
+        });
+      }
     }
 
     return { message: 'Assinatura registrada com sucesso.' };
