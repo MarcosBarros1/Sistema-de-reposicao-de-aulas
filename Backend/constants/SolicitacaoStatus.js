@@ -7,6 +7,7 @@
  */
 const SolicitacaoStatus = Object.freeze({
   PENDENTE: 'Pendente',
+  AGUARDANDO_APROVACAO: 'Aguardando_aprovacao',
   AUTORIZADA: 'Autorizada',
   NEGADA: 'Negada',
   CONCLUIDA: 'Concluída',
