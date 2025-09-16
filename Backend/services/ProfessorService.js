@@ -78,7 +78,7 @@ class ProfessorService {
    * e enviando os e-mails de convocação para os alunos da turma.
    * @param {object} dadosSolicitacao - { motivo, data, horario, sala, qt_alunos, idTurma, idProfessor }
    */
-  async iniciar_solicitacao_reposicao(dados_solicitacao) {
+  async iniciarSolicitacaoReposicao(dados_solicitacao) {
     // 1. Cria a solicitação de reposição no banco com status PENDENTE
     const nova_solicitacao = await SolicitacaoReposicaoRepository.salvar({
       ...dados_solicitacao,
