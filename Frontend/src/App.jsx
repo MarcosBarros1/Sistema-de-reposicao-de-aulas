@@ -1,16 +1,17 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom'; // 1. Importe o Outlet
 
 function App() {
-  // O Outlet é um componente especial do React Router
-  // que renderiza a rota filha correspondente.
   return (
     <div>
-      {/* Você poderia ter um Header ou Navbar aqui */}
+      {/* Aqui você pode colocar elementos que se repetem em todas as páginas, 
+        como um menu de navegação ou um rodapé. 
+        Por enquanto, vamos deixar apenas o Outlet.
+      */}
+
       <main>
-        <Outlet /> 
+        <Outlet /> {/* 2. Adicione o Outlet aqui */}
       </main>
-      {/* Você poderia ter um Footer aqui */}
     </div>
   );
 }

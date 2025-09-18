@@ -1,0 +1,50 @@
+.dashboard-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  }
+  
+  .card-title {
+    color: #2E8B57; /* Verde Padrão */
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 16px;
+    height: 50px; /* Altura fixa para alinhar os títulos */
+  }
+  
+  .card-icon {
+    font-size: 64px; /* Tamanho do ícone */
+    color: #333;
+    margin-bottom: 24px;
+  }
+  
+  .card-button {
+    background-color: #3CB371; /* Verde Médio */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 0; /* 12px em cima/baixo, 0 nos lados para ocupar 100% */
+    width: 100%;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .card-button:hover {
+    background-color: #2E8B57; /* Verde mais escuro */
+  }
