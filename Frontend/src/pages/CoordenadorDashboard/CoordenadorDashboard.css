@@ -1,0 +1,33 @@
+.dashboard-container {
+    background-color: #F0F8FF; /* Um azul bem claro, similar ao da imagem */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
+  }
+  
+  .dashboard-content {
+    width: 100%;
+    max-width: 1200px;
+    background-color: #ffffff;
+    border-radius: 24px;
+    padding: 40px 60px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-title {
+    text-align: center;
+    font-size: 32px;
+    color: #333;
+    margin-bottom: 50px;
+  }
+  
+  .cards-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Garante que os cards tenham a mesma altura */
+    gap: 40px; /* Espaçamento entre os cards */
+    flex-wrap: wrap; /* Permite que os cards quebrem a linha em telas menores */
+  }
