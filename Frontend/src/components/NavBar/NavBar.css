@@ -1,0 +1,78 @@
+/* Arquivo: src/components/Navbar/Navbar.css */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #39883E; /* Verde escuro do IF */
+    color: #FFFFFF;
+    padding: 0 25px;
+    height: 60px;
+    width: 100%;
+    box-sizing: border-box; /* Garante que o padding não aumente a largura */
+  }
+  
+  .navbar-left,
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaçamento entre os itens */
+  }
+  
+  .navbar-logo {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .navbar-logo span:last-child {
+    font-size: 12px;
+    font-weight: normal;
+  }
+  
+  .navbar-icon-btn {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navbar-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-left: 1px solid #4a8a65; /* Linha divisória */
+    padding-left: 20px;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+  }
+  
+  .user-name {
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap; /* Evita que o nome quebre a linha */
+  }
+  
+  .user-id {
+    font-size: 12px;
+    color: #d1d1d1; /* Cinza claro para o ID */
+  }
+  
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #FFFFFF;
+    object-fit: cover; /* Garante que a imagem não fique distorcida */
+  }
