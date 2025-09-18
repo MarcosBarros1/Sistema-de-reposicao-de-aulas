@@ -1,33 +1,40 @@
-.dashboard-container {
-    background-color: #008b2e; /* Um azul bem claro, similar ao da imagem */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-    box-sizing: border-box;
-  }
-  
-  .dashboard-content {
-    width: 100%;
-    max-width: 1200px;
-    background-color: #ffffff;
-    border-radius: 24px;
-    padding: 40px 60px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dashboard-title {
-    text-align: center;
-    font-size: 32px;
-    color: #333;
-    margin-bottom: 50px;
-  }
-  
-  .cards-container {
-    display: flex;
-    justify-content: center;
-    align-items: stretch; /* Garante que os cards tenham a mesma altura */
-    gap: 40px; /* Espaçamento entre os cards */
-    flex-wrap: wrap; /* Permite que os cards quebrem a linha em telas menores */
-  }
+/* Arquivo: src/pages/CoordenadorDashboard/CoordenadorDashboard.css (Atualizado) */
+
+/* 1. Novo container principal que organiza a página em duas partes: Navbar e Conteúdo. */
+.page-container {
+  display: flex;
+  flex-direction: column; /* Organiza os filhos (Navbar e conteúdo) em uma coluna */
+  height: 100%; /* Ocupa 100% da altura da tela (definida no index.css) */
+  background-color: #f0f2f5; /* Fundo cinza claro para a área fora do conteúdo */
+}
+
+/* 2. O antigo ".dashboard-container" agora é a nossa área de conteúdo.
+      Ele ocupa o espaço restante e permite rolagem interna. */
+.dashboard-content-area {
+  flex-grow: 1; /* Faz esta div crescer e ocupar todo o espaço vertical disponível */
+  background-color: #FFFFFF;
+  padding: 40px 50px;
+  overflow-y: auto; /* Adiciona barra de rolagem se o conteúdo for maior que a tela */
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 32px;
+  color: #333;
+  margin-bottom: 50px;
+}
+
+.cards-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+/* 3. A regra de CSS para o ".app-header" antigo pode ser REMOVIDA, pois não usamos mais esse componente aqui. */
+/*
+.app-header {
+  ...
+}
+*/
