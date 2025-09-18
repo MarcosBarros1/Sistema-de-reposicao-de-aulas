@@ -65,3 +65,26 @@
   text-align: center;
   font-size: 0.9rem;
 }
+
+
+@media (max-width: 768px) {
+  .login-form-wrapper {
+    width: 100%; /* Ocupa a largura toda */
+    justify-content: flex-start; /* Alinha o card ao topo */
+    padding-top: 3rem;
+  }
+
+  .login-card {
+    padding: 2rem 1.5rem; /* Diminui o padding do card */
+    max-width: 90%; /* Limita a largura em 90% da tela */
+  }
+
+  /* MUITO IMPORTANTE: O texto do rodapé */
+  .footer-text {
+    position: relative; /* Remove a posição absoluta */
+    bottom: auto; /* Reseta a posição */
+    margin-top: 3rem; /* Adiciona um espaço acima dele */
+    margin-bottom: 2rem;
+    color: white; /* Garante a cor, caso ela se perca */
+  }
+}

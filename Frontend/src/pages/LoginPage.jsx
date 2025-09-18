@@ -1,19 +1,13 @@
 import React from 'react';
 import SideBanner from '../components/SideBanner/SideBanner';
 import LoginForm from '../components/LoginForm/LoginForm';
+import './LoginPage.css'; // 1. Importe o novo arquivo CSS
 
-// Um pouco de CSS diretamente aqui para o layout principal
-const styles = {
-  display: 'flex',
-  width: '100vw', 
-  height: '100vh', 
-  fontFamily: 'sans-serif' 
-};
-
-// Renomeamos a função de App para LoginPage
 function LoginPage() {
+  // 2. Removemos o 'const styles' que estava aqui
   return (
-    <div style={styles}>
+    // 3. Trocamos 'style={styles}' por 'className="login-page-container"'
+    <div className="login-page-container">
       <SideBanner />
       <LoginForm />
     </div>

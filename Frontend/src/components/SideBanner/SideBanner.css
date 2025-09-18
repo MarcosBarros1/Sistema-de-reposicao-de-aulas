@@ -19,3 +19,15 @@
   font-size: 1.8rem;
   font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  .side-banner-container {
+    width: 100%; /* Ocupa a largura toda */
+    padding: 3rem 1rem; /* Ajusta o padding para a versão mobile */
+    min-height: auto; /* Remove altura mínima se houver */
+  }
+
+  .logo {
+    max-width: 150px; /* Diminui um pouco o logo */
+  }
+}

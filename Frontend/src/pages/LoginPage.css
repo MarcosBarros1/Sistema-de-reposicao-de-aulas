@@ -1,0 +1,18 @@
+.login-page-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  font-family: sans-serif;
+}
+
+/* Esta é a nossa Media Query! */
+/* Ela aplica os estilos abaixo apenas quando a tela for de 768px de largura ou menor */
+@media (max-width: 768px) {
+  .login-page-container {
+    /* Muda a direção do flexbox de linha (lado a lado) para coluna (um em cima do outro) */
+    flex-direction: column;
+    /* Garante que o conteúdo não fique fixo em 100vh, permitindo a rolagem */
+    height: auto;
+    min-height: 100vh;
+  }
+}
