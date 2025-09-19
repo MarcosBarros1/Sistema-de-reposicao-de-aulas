@@ -1,7 +1,7 @@
 import React from 'react';
 // 1. REMOVA a importação do Header antigo, se houver
 // import Header from '../../components/Header/Header'; 
-import Navbar from '../../components/NavBar/NavBar'; // 2. ADICIONE a importação da nova Navbar
+import Navbar from '../../components/Navbar/NavBar'; // 2. ADICIONE a importação da nova Navbar
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import './ProfessorDashboard.css';
 import { FaAddressBook, FaUsers, FaClipboardCheck } from 'react-icons/fa';
