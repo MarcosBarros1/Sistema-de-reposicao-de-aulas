@@ -1,16 +1,18 @@
 import React from 'react';
 import './DashboardCard.css';
 
-// Recebe 'title' e 'children' como propriedades. 
-// 'children' será o ícone que passarmos para ele.
-const DashboardCard = ({ title, children }) => {
+// Adicionamos a prop 'onButtonClick'
+const DashboardCard = ({ title, children, onButtonClick }) => {
   return (
     <div className="dashboard-card">
       <h3 className="card-title">{title}</h3>
       <div className="card-icon">
         {children}
       </div>
-      <button className="card-button">Acessar</button>
+      {/* O botão agora chama a função que foi passada via props */}
+      <button className="card-button" onClick={onButtonClick}>
+        Acessar
+      </button>
     </div>
   );
 };

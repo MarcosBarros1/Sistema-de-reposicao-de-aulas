@@ -6,8 +6,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import InicioPage from './pages/InicioPage.jsx';
-// 👇 1. IMPORTANDO A NOVA PÁGINA
-import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx'; 
+import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx';
+import ProfessorDashboard from './pages/ProfessorDashboard/ProfessorDashboard.jsx'; // <-- NOVO
 import './index.css';
 
 // Aqui criamos nossas rotas
@@ -24,10 +24,13 @@ const router = createBrowserRouter([
         path: '/inicio', // Quando a URL for "/inicio",
         element: <InicioPage />, // renderize a InicioPage.
       },
-      // 👇 2. ADICIONANDO A ROTA QUE FALTAVA
       {
         path: '/coordenador/dashboard',
         element: <CoordenadorDashboard />,
+      },
+      { // Adicione a nova rota do professor aqui
+        path: '/professor/dashboard',
+        element: <ProfessorDashboard />, // <-- NOVO
       },
     ],
   },

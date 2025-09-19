@@ -1,0 +1,31 @@
+/* Adicione estas classes ao seu CSS global */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* Fundo padrão para as páginas internas */
+}
+
+.dashboard-content-area {
+  flex-grow: 1; /* Faz o conteúdo principal ocupar o espaço restante */
+  width: 100%;
+  max-width: 1200px; /* Limita a largura do conteúdo */
+  margin: 0 auto; /* Centraliza o conteúdo */
+  padding: 2rem;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 3rem;
+}
+
+/* Você já deve ter esta classe, mas garanta que ela esteja aqui */
+.cards-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}

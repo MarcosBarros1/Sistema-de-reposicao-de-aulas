@@ -1,0 +1,29 @@
+/* O container principal pode herdar estilos de um CSS global se você tiver */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f4f7f6; /* Um cinza bem claro para o fundo */
+}
+
+.dashboard-main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 3rem;
+}
+
+.cards-grid {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Espaço entre os cards */
+  flex-wrap: wrap; /* Permite que os cards quebrem para a linha de baixo em telas menores */
+}
