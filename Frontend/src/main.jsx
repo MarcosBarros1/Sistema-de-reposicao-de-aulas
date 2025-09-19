@@ -6,8 +6,8 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import InicioPage from './pages/InicioPage.jsx';
-import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx';
-import ProfessorDashboard from './pages/ProfessorDashboard/ProfessorDashboard.jsx'; // <-- NOVO
+import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx'; 
+import GerenciarProfessores from './pages/GerenciarProfessores/GerenciarProfessores.jsx'; // A importação já estava aqui, tudo certo.
 import './index.css';
 
 // Aqui criamos nossas rotas
@@ -28,9 +28,10 @@ const router = createBrowserRouter([
         path: '/coordenador/dashboard',
         element: <CoordenadorDashboard />,
       },
-      { // Adicione a nova rota do professor aqui
-        path: '/professor/dashboard',
-        element: <ProfessorDashboard />, // <-- NOVO
+      // 👇 ADICIONE ESTE NOVO OBJETO DE ROTA AQUI
+      {
+        path: '/coordenador/professores', // Novo caminho para a página
+        element: <GerenciarProfessores />, // Componente a ser renderizado
       },
     ],
   },

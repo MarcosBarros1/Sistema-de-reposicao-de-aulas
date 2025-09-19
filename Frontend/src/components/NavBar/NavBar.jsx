@@ -1,6 +1,7 @@
 import React from 'react';
 import './Navbar.css';
 
+
 // Importando os ícones que vamos usar
 import { FaBars, FaRegBell, FaCog } from 'react-icons/fa';
 
@@ -12,23 +13,12 @@ const Navbar = ({ userName, userIdentifier, userAvatarUrl }) => {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <button className="navbar-icon-btn">
-          <FaBars />
-        </button>
         <div className="navbar-logo">
-          {/* Você pode substituir isso pela imagem do logo se preferir */}
-          <span>INSTITUTO FEDERAL</span>
-          <span>Ceará</span>
+        <img src="../../assets/logo-instituicao-web.png" alt="logo-instituicao-web.png" className="header-logo" />
         </div>
       </div>
 
       <div className="navbar-right">
-        <button className="navbar-icon-btn">
-          <FaRegBell />
-        </button>
-        <button className="navbar-icon-btn">
-          <FaCog />
-        </button>
         <div className="navbar-user-profile">
           <div className="user-info">
             <span className="user-name">{userName}</span>
