@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import InicioPage from './pages/InicioPage.jsx';
 import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx'; 
 import GerenciarProfessores from './pages/GerenciarProfessores/GerenciarProfessores.jsx'; // A importação já estava aqui, tudo certo.
+import ProfessorDashboard from './pages/ProfessorDashboard/ProfessorDashboard.jsx'; // <-- NOVO
 import './index.css';
 
 // Aqui criamos nossas rotas
