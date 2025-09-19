@@ -18,7 +18,7 @@
   }
   
   .card-title {
-    color: #2E8B57; /* Verde Padrão */
+    color: #39883E; /* Verde Padrão */
     font-size: 20px;
     font-weight: bold;
     margin-top: 0;
@@ -33,7 +33,7 @@
   }
   
   .card-button {
-    background-color: #3CB371; /* Verde Médio */
+    background-color: #39883E; /* Verde Médio */
     color: white;
     border: none;
     border-radius: 8px;

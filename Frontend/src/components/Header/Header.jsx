@@ -1,7 +1,7 @@
 import React from 'react';
 import './Header.css';
 // Supondo que você tenha o logo na pasta assets
-import logo from '../../assets/logo-ifce.png'; // CRIE OU COLOQUE O LOGO AQUI!
+import logo from '../../assets/logo-instituicao-web.png'; // CRIE OU COLOQUE O LOGO AQUI!
 
 const Header = ({ userName }) => {
   return (
