@@ -1,5 +1,5 @@
 // Arquivo: src/pages/CoordenadorDashboard/CoordenadorDashboard.jsx (Atualizado)
-
+import { Link } from 'react-router-dom';
 import React from 'react';
 // 1. REMOVA a importação do Header antigo
 // import Header from '../../components/Header/Header'; 

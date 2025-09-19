@@ -18,6 +18,12 @@
     align-items: center;
     gap: 20px; /* Espaçamento entre os itens */
   }
+
+  .navbar-center {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaçamento entre os itens */
+  }
   
   .navbar-logo {
     display: flex;
