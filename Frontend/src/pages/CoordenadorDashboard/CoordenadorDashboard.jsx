@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 // 1. REMOVA a importação do Header antigo
 // import Header from '../../components/Header/Header'; 
-import Navbar from '../../components/NavBar/NavBar'; // 2. ADICIONE a importação da nova Navbar
+import Navbar from '../../components/Navbar/NavBar'; // 2. ADICIONE a importação da nova Navbar
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import './CoordenadorDashboard.css';
 import { BsPersonVcard, BsPeople, BsClipboard2Check } from 'react-icons/bs';

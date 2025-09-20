@@ -1,0 +1,121 @@
+/* Herda o layout principal do dashboard */
+@import '../CoordenadorDashboard/CoordenadorDashboard.css';
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  color: #333;
+}
+
+.add-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px; /* Espaço para o ícone */
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Garante que a tabela seja rolável em telas pequenas */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse; /* Tira o espaçamento entre as células */
+  font-size: 14px;
+}
+
+th, td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+thead tr {
+  background-color: #f1f3f5; /* Fundo do cabeçalho da tabela */
+  color: #555;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+tbody tr:nth-of-type(even) {
+  background-color: #fafafa; /* Efeito "zebrado" para as linhas */
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn, .remove-btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.edit-btn {
+  background-color: #39883E; /* Azul/verde para editar */
+}
+.edit-btn:hover {
+  background-color: #2f7734;
+}
+
+.remove-btn {
+  background-color: #dc3545; /* Vermelho para remover */
+}
+.remove-btn:hover {
+  background-color: #c82333;
+}
+
+.content-wrapper {
+    width: 100%; /* Ocupa toda a largura disponível até o limite */
+    max-width: 1100px; /* Largura máxima do conteúdo. Pode ajustar se quiser. */
+    margin: 0 auto; /* O truque mágico para centralizar horizontalmente! */
+    display: flex;
+    flex-direction: column;
+  }

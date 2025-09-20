@@ -1,0 +1,105 @@
+/* Reutiliza o layout principal que já criamos */
+@import '../CoordenadorDashboard/CoordenadorDashboard.css';
+
+/* Estilos específicos para a página de Aprovar Reposições */
+
+/* Estiliza o H1 como na imagem */
+.content-wrapper h1 {
+  font-size: 36px;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+/* Reutiliza o estilo da barra de busca que já temos */
+.search-bar {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 12px 16px;
+  padding-right: 40px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.search-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+/* Novo container para a tabela */
+.table-card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden; /* Garante que a tabela respeite as bordas arredondadas */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 16px;
+  text-align: left;
+  color: #555;
+}
+
+thead {
+  border-bottom: 1px solid #eee;
+}
+
+thead th {
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
+}
+
+tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+tbody tr:last-child {
+  border-bottom: none; /* Remove a borda da última linha */
+}
+
+/* Estilos para os botões de Ação */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.approve-btn, .reject-btn, .status-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.approve-btn { background-color: #28a745; }
+.approve-btn:hover { background-color: #218838; }
+
+.reject-btn { background-color: #dc3545; }
+.reject-btn:hover { background-color: #c82333; }
+
+.status-btn { cursor: default; }
+.status-btn.approved { background-color: #28a745; opacity: 0.7; }
+.status-btn.rejected { background-color: #dc3545; opacity: 0.7; }
