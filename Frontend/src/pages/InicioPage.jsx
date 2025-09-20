@@ -1,10 +1,15 @@
 import React from 'react';
+import SideBanner from '../components/SideBanner/SideBanner';
+import LoginForm from '../components/LoginForm/LoginForm';
+import './InicioPage.css'; // 1. Importe o novo arquivo CSS
 
 function InicioPage() {
+  // 2. Removemos o 'const styles' que estava aqui
   return (
-    <div>
-      <h1>Bem-vindo ao Sistema!</h1>
-      <p>Esta é a página principal após o login.</p>
+    // 3. Trocamos 'style={styles}' por 'className="login-page-container"'
+    <div className="login-page-container">
+      <SideBanner />
+      <LoginForm />
     </div>
   );
 }
