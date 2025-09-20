@@ -4,7 +4,6 @@ import { createBrowserRouter } from "react-router-dom";
 
 // Importando o layout principal e todas as páginas
 import App from "./App.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
 import InicioPage from "./pages/InicioPage.jsx";
 import CoordenadorDashboard from "./pages/CoordenadorDashboard/CoordenadorDashboard.jsx";
 import GerenciarProfessores from "./pages/GerenciarProfessores/GerenciarProfessores.jsx";
@@ -20,7 +19,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <LoginPage />,
+        element: <InicioPage />,
       },
       {
         path: "/inicio",
