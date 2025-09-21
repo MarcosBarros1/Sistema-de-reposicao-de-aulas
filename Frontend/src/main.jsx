@@ -9,6 +9,7 @@ import InicioPage from './pages/InicioPage.jsx';
 import CoordenadorDashboard from './pages/CoordenadorDashboard/CoordenadorDashboard.jsx'; 
 import GerenciarProfessores from './pages/GerenciarProfessores/GerenciarProfessores.jsx';
 import ProfessorDashboard from './pages/ProfessorDashboard/ProfessorDashboard.jsx';
+import MinhasReposicoesPage from './pages/MinhasReposicoesPage/MinhasReposicoesPage.jsx';
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
 import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx'; // 1. IMPORTANDO A NOVA PÁGINA
 
@@ -31,6 +32,14 @@ const router = createBrowserRouter([
       {
         path: '/coordenador/dashboard',
         element: <CoordenadorDashboard />,
+      },
+      {
+        path: '/professor/dashboard',
+        element: <ProfessorDashboard />,
+      },
+      { 
+        path: '/professor/minhas-reposicoes',
+        element: <MinhasReposicoesPage />,
       },
       {
         path: '/coordenador/professores',
