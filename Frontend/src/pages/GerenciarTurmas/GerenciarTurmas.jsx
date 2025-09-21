@@ -4,7 +4,7 @@ import './GerenciarTurmas.css';
 import { FaSearch } from 'react-icons/fa'; // Ícone para a barra de busca
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { buscar_turmas } from '../../services/api';
+import { buscar_turmas, remover_turma } from '../../services/api';
 
 
 const GerenciarTurmas = () => {
@@ -82,12 +82,11 @@ const GerenciarTurmas = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Usar o estado 'turmas' para renderizar a tabela */}
                 {turmas.map((turma) => (
                   <tr key={turma.id_turma}>
                     <td>{turma.nome}</td>
                     <td>{turma.semestre}</td>
-                    <td>{turma.alunos.length}</td> {/* Contamos os alunos do array */}
+                    <td>{turma.alunos.length}</td>
                     <td>
                       <div className="action-buttons">
                         <button className="edit-btn">Editar</button>

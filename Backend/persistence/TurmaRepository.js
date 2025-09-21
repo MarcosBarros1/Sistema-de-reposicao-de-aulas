@@ -100,12 +100,34 @@ class TurmaRepository {
     return result.rowCount > 0;
   }
 
-    async remover(id_turma) {
-    // Primeiro, removemos as associações na tabela aluno_turma
-    await db.query('DELETE FROM aluno_turma WHERE id_turma = $1', [id_turma]);
-    // Depois, removemos a turma
-    const result = await db.query('DELETE FROM turma WHERE id_turma = $1', [id_turma]);
-    return result.rowCount > 0;
+  async remover(id_turma) {
+    const client = await db.pool.connect();
+    try {
+      // Usamos uma transação para garantir que todas as deleções ocorram ou nenhuma ocorra
+      await client.query('BEGIN');
+
+      // 1. Remover dependências em 'assinatura_solicitacao' (via 'solicitacao_reposicao')
+      // Deleta todas as assinaturas que pertencem a solicitações da turma que será removida
+      await client.query('DELETE FROM assinatura_solicitacao WHERE id_solicitacao IN (SELECT id_solicitacao FROM solicitacao_reposicao WHERE id_turma = $1)', [id_turma]);
+
+      // 2. Remover dependências em 'solicitacao_reposicao'
+      await client.query('DELETE FROM solicitacao_reposicao WHERE id_turma = $1', [id_turma]);
+
+      // 3. Remover dependências em 'aluno_turma'
+      await client.query('DELETE FROM aluno_turma WHERE id_turma = $1', [id_turma]);
+
+      // 4. Finalmente, remover a turma em si
+      const result = await client.query('DELETE FROM turma WHERE id_turma = $1', [id_turma]);
+
+      await client.query('COMMIT');
+      return result.rowCount > 0;
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao remover turma ${id_turma}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }
 
