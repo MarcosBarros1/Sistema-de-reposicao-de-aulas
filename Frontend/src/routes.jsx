@@ -14,6 +14,7 @@ import MinhasReposicoesPage from "./pages/MinhasReposicoesPage/MinhasReposicoesP
 import VisualizarAssinaturasPage from './pages/VisualizarAssinaturasPage/VisualizarAssinaturasPage.jsx';
 import RegistrarReposicoes from './pages/RegistrarReposicoes/RegistrarReposicoes.jsx'
 import Login from './pages/Login/Login.jsx'
+import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx'; // 1. IMPORTE A NOVA PÁGINA
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
@@ -66,6 +67,10 @@ export const router = createBrowserRouter([
         path: "/login/:tipo_usuario", // ex: /login/coordenador ou /login/professor
         element: <Login />,
       },
+      {
+        path: "/cadastro/aluno",
+        element: <CadastroAlunoPage />,
+      }
     ],
   },
 ]);
