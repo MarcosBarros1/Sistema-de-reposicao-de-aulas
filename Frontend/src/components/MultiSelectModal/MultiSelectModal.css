@@ -1,0 +1,115 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+  }
+  
+  .modal-body {
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .modal-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .modal-option:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  /* Esconde a checkbox padrão */
+  .modal-option input[type="checkbox"] {
+    display: none;
+  }
+  
+  /* Cria o círculo personalizado */
+  .custom-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    margin-right: 12px;
+    display: inline-block;
+    position: relative;
+  }
+  
+  /* Mostra o círculo preenchido quando a checkbox está marcada */
+  .modal-option input[type="checkbox"]:checked + .custom-checkbox {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  /* Adiciona o "check" dentro do círculo */
+  .modal-option input[type="checkbox"]:checked + .custom-checkbox::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  
+  .modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .confirm-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+  }
