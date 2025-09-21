@@ -1,30 +1,40 @@
 import React, { useState } from 'react';
 import { FaUser, FaLock } from 'react-icons/fa'; // Ícones para os campos
 import './LoginForm.css';
-import logoIFCE from '../../assets/logo-ifce.png'; // Verifique se o caminho está correto
+import logoIFCE from '../../assets/logo-ifce.png';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const LoginForm = () => {
-  // Estados para armazenar o valor dos inputs
+// Recebe a prop 'tipo_usuario'
+const LoginForm = ({ tipo_usuario }) => { 
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [error, setError] = useState('');
+  
+  const { login } = useAuth(); // 2. Pegue a função de login do contexto
+  const navigate = useNavigate();
 
-  // Função que é chamada quando o formulário é enviado
-  const handleSubmit = (event) => {
-    // Previne o comportamento padrão do formulário de recarregar a página
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(''); // Limpa erros antigos
 
-    // Por enquanto, vamos apenas mostrar os dados no console
-    // Este é o local onde chamaremos a API no futuro
-    console.log('Dados para login:', { email, senha });
+    try {
+      // 3. Chame a função de login do contexto
+      const usuarioLogado = await login(email, senha);
 
-    // Lógica futura:
-    // try {
-    //   const data = await login(email, senha);
-    //   localStorage.setItem('authToken', data.token);
-    //   // Redirecionar para o dashboard
-    // } catch (error) {
-    //   alert(error.message);
-    // }
+      // 4. Lógica de redirecionamento
+      if (usuarioLogado.tipo.toLowerCase() === 'coordenador') {
+        navigate('/coordenador/dashboard');
+      } else if (usuarioLogado.tipo.toLowerCase() === 'professor') {
+        navigate('/professor/dashboard');
+      } else {
+        navigate('/inicio'); // Rota padrão
+      }
+
+    } catch (err) {
+      // Define a mensagem de erro para ser exibida na tela
+      setError(err.message || 'Falha no login. Verifique suas credenciais.');
+    }
   };
 
   return (

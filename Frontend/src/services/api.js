@@ -4,7 +4,7 @@ import axios from 'axios';
 // Cria uma instância do axios pré-configurada
 const api = axios.create({
   // URL base da nossa API que está no Render
-  baseURL: 'https://sistema-de-reposicao-de-aulas.onrender.com/'
+  baseURL: 'http://localhost:3000'
 });
 
 // "Interceptor" de Requisições: uma função que é executada ANTES de cada requisição sair
