@@ -5,7 +5,7 @@ const router = express.Router();
 const TurmaController = require('../controller/TurmaController');
 
 // Criar uma nova turma
-// POST /turmas
+// POST /turmas 
 router.post('/', TurmaController.criar);
 
 // NOVO: Buscar TODAS as turmas
@@ -24,7 +24,10 @@ router.post('/:id_turma/alunos', TurmaController.adicionarAluno);
 // DELETE /turmas/1/alunos/12345
 router.delete('/:id_turma/alunos/:matricula_aluno', TurmaController.removerAluno);
 
-//Deletar turma
+// Atualizar turma
+router.put('/:id_turma', TurmaController.atualizar);
+
+// Deletar turma
 router.delete('/:id_turma', TurmaController.remover);
 
 module.exports = router;

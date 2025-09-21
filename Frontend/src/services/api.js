@@ -65,4 +65,22 @@ export const remover_turma = async (id_turma) => {
   }
 };
 
+export const criar_turma = async (dados_turma) => {
+  try {
+    const response = await api.post('/turmas', dados_turma);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const atualizar_turma = async (id_turma, dados_turma) => {
+  try {
+    const response = await api.put(`/turmas/${id_turma}`, dados_turma);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;

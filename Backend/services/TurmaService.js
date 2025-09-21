@@ -50,7 +50,7 @@ class TurmaService {
     if (!aluno) {
       throw new RegraDeNegocioException('Aluno não encontrado.');
     }
-    
+
     const sucesso = await TurmaRepository.removerAluno(id_turma, matricula_aluno);
     if (!sucesso) {
       throw new RegraDeNegocioException('O aluno informado não faz parte desta turma.');
@@ -61,6 +61,10 @@ class TurmaService {
   async remover_turma(id_turma) {
     // Aqui poderíamos adicionar regras de negócio, como "não remover turmas com alunos"
     return await TurmaRepository.remover(id_turma);
+  }
+
+  async atualizar_turma(id_turma, dados_turma) {
+    return await TurmaRepository.atualizar(id_turma, dados_turma);
   }
 }
 
