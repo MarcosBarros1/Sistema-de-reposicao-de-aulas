@@ -1,0 +1,20 @@
+/* src/pages/Login.css */
+.login-page-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.side-banner-container {
+  flex: 1; /* Ocupa metade do espaço */
+  background-color: #f0f2f5; /* Um cinza claro de fundo */
+}
+
+.login-form-area {
+  flex: 1; /* Ocupa a outra metade */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
