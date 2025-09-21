@@ -1,49 +1,60 @@
 import React, { useState, useEffect } from 'react';
-// 1. Importações atualizadas
-import Navbar from '../../components/Navbar/NavBar'; // Trocamos Header por Navbar
+import Navbar from '../../components/Navbar/NavBar';
 import './GerenciarProfessores.css';
-
-// Dados de exemplo
-const mockProfessores = [
-  { id: 1, nome: 'Rafael Maciel', disciplina: 'IHC', email: 'rafaelmaciel@gmail.com', status: 'Ativo' },
-  { id: 2, nome: 'Erlano Benevides', disciplina: 'Eng. de Software', email: 'erlano10@gmail.com', status: 'Ativo' },
-  { id: 3, nome: 'Rafael Maciel', disciplina: 'IHC', email: 'rafaelmaciel@gmail.com', status: 'Ativo' },
-  { id: 4, nome: 'Rafael Maciel', disciplina: 'IHC', email: 'rafaelmaciel@gmail.com', status: 'Ativo' },
-  { id: 5, nome: 'Erlano Benevides', disciplina: 'Eng. de Software', email: 'erlano10@gmail.com', status: 'Ativo' },
-];
+import { useAuth } from '../../context/AuthContext';
+import { buscar_professores, notificar_falta_professor } from '../../services/api';
 
 function GerenciarProfessores() {
-  const [professores, setProfessores] = useState([]);
-  const [filtro, setFiltro] = useState('');
+  const { usuario } = useAuth();
+  const [professores, set_professores] = useState([]);
+  const [filtro, set_filtro] = useState('');
+  const [carregando, set_carregando] = useState(true);
 
-  // 2. Adicionamos os dados do usuário para a Navbar
-  const userData = {
-    name: "ERLANO BENEVIDES DE SOUSA",
-    id: "20241283000219",
-    avatar: ""
-  };
-
+  // Busca os dados da API quando o componente é carregado
   useEffect(() => {
-    setProfessores(mockProfessores);
+    const carregar_professores = async () => {
+      try {
+        const dados = await buscar_professores();
+        set_professores(dados || []);
+      } catch (error) {
+        console.error("Falha ao carregar professores:", error);
+        alert("Não foi possível carregar a lista de professores.");
+      } finally {
+        set_carregando(false);
+      }
+    };
+    carregar_professores();
   }, []);
 
-  const professoresFiltrados = professores.filter(prof =>
+  // Filtra os professores com base na busca
+  const professores_filtrados = professores.filter(prof =>
     prof.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-    prof.disciplina.toLowerCase().includes(filtro.toLowerCase())
+    (prof.disciplinas && prof.disciplinas.join(', ').toLowerCase().includes(filtro.toLowerCase()))
   );
 
+  // Função para lidar com a notificação de falta
+  const handle_notificar_falta = async (matricula) => {
+    if (window.confirm(`Tem certeza que deseja notificar a falta do professor de matrícula ${matricula}?`)) {
+      try {
+        const response = await notificar_falta_professor(matricula);
+        alert(response.message); // Exibe a mensagem de sucesso da API
+      } catch (error) {
+        alert(`Falha ao notificar falta: ${error.message}`);
+      }
+    }
+  };
+
+  if (carregando) return <div>Carregando...</div>;
+
   return (
-    // 3. Aplicamos a nossa estrutura de layout padrão
     <div className="page-container">
-      <Navbar 
-        userName={userData.name}
-        userIdentifier={userData.id}
-        userAvatarUrl={userData.avatar}
+      <Navbar
+        userName={usuario ? usuario.nome.toUpperCase() : ''}
+        userIdentifier={usuario ? usuario.matriculaCoordenador : ''}
+        userAvatarUrl={usuario ? usuario.avatar : ""}
       />
       <div className="content-area">
         <div className="content-wrapper">
-
-          {/* Todo o conteúdo da página antiga agora fica aqui dentro */}
           <div className="page-header">
             <h1>Gerenciar Professores</h1>
             <button className="add-button">+ Adicionar Professor</button>
@@ -54,7 +65,7 @@ function GerenciarProfessores() {
               type="text"
               placeholder="Buscar por nome ou disciplina..."
               value={filtro}
-              onChange={(e) => setFiltro(e.target.value)}
+              onChange={(e) => set_filtro(e.target.value)}
             />
           </div>
 
@@ -63,24 +74,22 @@ function GerenciarProfessores() {
               <thead>
                 <tr>
                   <th>Nome</th>
-                  <th>Disciplina</th>
+                  <th>Disciplinas</th>
                   <th>E-mail</th>
-                  <th>Status</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {professoresFiltrados.map((professor) => (
-                  <tr key={professor.id}>
+                {professores_filtrados.map((professor) => (
+                  <tr key={professor.matriculaProfessor}>
                     <td>{professor.nome}</td>
-                    <td>{professor.disciplina}</td>
+                    {/* Transforma o array de disciplinas em uma string separada por vírgula */}
+                    <td>{professor.disciplinasMinistradas.join(', ')}</td>
                     <td>{professor.email}</td>
-                    <td>
-                      <span className={`status status-${professor.status.toLowerCase()}`}>
-                        {professor.status}
-                      </span>
-                    </td>
                     <td className="actions-cell">
+                      <button className="action-button notify-button" onClick={() => handle_notificar_falta(professor.matriculaProfessor)}>
+                        Notificar Falta
+                      </button>
                       <button className="action-button edit-button">Editar</button>
                       <button className="action-button delete-button">Excluir</button>
                     </td>
@@ -89,7 +98,6 @@ function GerenciarProfessores() {
               </tbody>
             </table>
           </div>
-
         </div>
       </div>
     </div>
