@@ -47,4 +47,22 @@ export const cadastrarProfessor = async (dadosProfessor) => {
   }
 };
 
+// Função para buscar todas as turmas
+export const buscar_turmas = async () => {
+  try {
+    const response = await api.get('/turmas'); // Chama o endpoint GET /turmas
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const remover_turma = async (id_turma) => {
+  try {
+    await api.delete(`/turmas/${id_turma}`);
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
