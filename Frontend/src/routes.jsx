@@ -10,6 +10,9 @@ import GerenciarProfessores from "./pages/GerenciarProfessores/GerenciarProfesso
 import ProfessorDashboard from "./pages/ProfessorDashboard/ProfessorDashboard.jsx";
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
 import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx';
+import MinhasReposicoesPage from "./pages/MinhasReposicoesPage/MinhasReposicoesPage.jsx";
+import VisualizarAssinaturasPage from './pages/VisualizarAssinaturasPage/VisualizarAssinaturasPage.jsx';
+import RegistrarReposicoes from './pages/RegistrarReposicoes/RegistrarReposicoes.jsx'
 import Login from './pages/Login/Login.jsx'
 
 // Criamos o roteador centralizado aqui
@@ -39,6 +42,18 @@ export const router = createBrowserRouter([
       {
         path: "/professor/dashboard",
         element: <ProfessorDashboard />,
+      },
+      {
+        path: "/professor/minhas-reposicoes",
+        element: <MinhasReposicoesPage />,
+      },
+      { 
+        path: '/professor/assinaturas',
+        element: <VisualizarAssinaturasPage />,
+      },
+      { 
+        path: '/professor/registrar-reposicao',
+        element: <RegistrarReposicoes />,
       },
       {
         path: '/coordenador/turmas',
