@@ -8,14 +8,13 @@ function LoginArea() {
   const navigate = useNavigate();
 
   const handleCoordenadorClick = () => {
-    console.log("Botão 'Coordenador' foi clicado!");
-    // 3. Use a função navigate para mudar de página
-    navigate('/inicio'); 
+    // Navega para a página de login, passando 'coordenador' na URL
+    navigate('/login/coordenador');
   };
 
   const handleProfessorClick = () => {
-    console.log("Botão 'Professor' foi clicado!");
-    navigate('/inicio');
+    // Navega para a página de login, passando 'professor' na URL
+    navigate('/login/professor');
   };
 
   return (
@@ -23,14 +22,14 @@ function LoginArea() {
     <div className="login-form-wrapper">
       <div className="login-card">
         <h1>Faça login como:</h1>
-        
+
         <button className="login-button" onClick={handleCoordenadorClick}>
           Coordenador
         </button>
         <button className="login-button" onClick={handleProfessorClick}>
           Professor
         </button>
-        
+
         <a href="#" className="signup-link">Cadastre-se</a>
       </div>
       <p className="footer-text">

@@ -81,3 +81,16 @@
 .forgot-password-link:hover {
   text-decoration: underline;
 }
+
+.error-message {
+  color: #D32F2F; /* Vermelho forte para erros */
+  background-color: #FFCDD2; /* Fundo vermelho claro */
+  border: 1px solid #D32F2F;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 0.9rem;
+}
