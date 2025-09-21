@@ -1,4 +1,4 @@
-// src/routes.jsx (Atualizado)
+// src/routes.jsx (Atualizado e Completo)
 
 import { createBrowserRouter } from "react-router-dom";
 
@@ -20,8 +20,7 @@ export const router = createBrowserRouter([
   // GRUPO 1: Rotas DENTRO do layout principal (com Navbar)
   {
     path: "/",
-    element: <App />, // App.jsx é o nosso layout principal
-    // As rotas aninhadas (children) serão renderizadas dentro do <Outlet /> do App.jsx
+    element: <App />,
     children: [
       {
         path: "/",
@@ -60,7 +59,7 @@ export const router = createBrowserRouter([
         element: <GerenciarTurmas />,
       },
       {
-        path: '/coordenador/aprovar-reposicoes', // Corrigi o nome da rota para ser mais descritivo
+        path: '/coordenador/aprovar-reposicoes',
         element: <AprovarReposicoes />,
       },
       {
