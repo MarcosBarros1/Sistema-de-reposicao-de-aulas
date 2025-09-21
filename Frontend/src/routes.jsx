@@ -9,7 +9,8 @@ import CoordenadorDashboard from "./pages/CoordenadorDashboard/CoordenadorDashbo
 import GerenciarProfessores from "./pages/GerenciarProfessores/GerenciarProfessores.jsx";
 import ProfessorDashboard from "./pages/ProfessorDashboard/ProfessorDashboard.jsx";
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
-import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx'; // 1. IMPORTANDO A NOVA PÁGINA
+import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx';
+import Login from './pages/Login/Login.jsx'
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
@@ -46,6 +47,10 @@ export const router = createBrowserRouter([
       {
         path: '/coordenador/reposicoes',
         element: <AprovarReposicoes />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },

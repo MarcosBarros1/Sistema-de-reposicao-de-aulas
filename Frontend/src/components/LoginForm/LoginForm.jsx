@@ -1,43 +1,71 @@
-import React from 'react';
-// 1. Importe o useNavigate
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { FaUser, FaLock } from 'react-icons/fa'; // Ícones para os campos
 import './LoginForm.css';
+import logoIFCE from '../../assets/logo-ifce.png'; // Verifique se o caminho está correto
 
-function LoginForm() {
-  // 2. Inicialize o hook
-  const navigate = useNavigate();
+const LoginForm = () => {
+  // Estados para armazenar o valor dos inputs
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
 
-  const handleCoordenadorClick = () => {
-    console.log("Botão 'Coordenador' foi clicado!");
-    // 3. Use a função navigate para mudar de página
-    navigate('/inicio'); 
-  };
+  // Função que é chamada quando o formulário é enviado
+  const handleSubmit = (event) => {
+    // Previne o comportamento padrão do formulário de recarregar a página
+    event.preventDefault();
 
-  const handleProfessorClick = () => {
-    console.log("Botão 'Professor' foi clicado!");
-    navigate('/inicio');
+    // Por enquanto, vamos apenas mostrar os dados no console
+    // Este é o local onde chamaremos a API no futuro
+    console.log('Dados para login:', { email, senha });
+
+    // Lógica futura:
+    // try {
+    //   const data = await login(email, senha);
+    //   localStorage.setItem('authToken', data.token);
+    //   // Redirecionar para o dashboard
+    // } catch (error) {
+    //   alert(error.message);
+    // }
   };
 
   return (
-    // ... o resto do seu JSX continua o mesmo
-    <div className="login-form-wrapper">
-      <div className="login-card">
-        <h1>Faça login como:</h1>
-        
-        <button className="login-button" onClick={handleCoordenadorClick}>
-          Coordenador
+    <div className="login-form-container">
+      <img src={logoIFCE} alt="Logo do IFCE" className="login-logo" />
+      <h2>Acesso ao Sistema</h2>
+      <p>Bem-vindo! Por favor, insira suas credenciais.</p>
+
+      <form onSubmit={handleSubmit}>
+        <div className="input-group">
+          <FaUser className="input-icon" />
+          <input
+            type="email"
+            placeholder="Digite seu e-mail"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="input-group">
+          <FaLock className="input-icon" />
+          <input
+            type="password"
+            placeholder="Digite sua senha"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+            required
+          />
+        </div>
+
+        <button type="submit" className="login-button">
+          Entrar
         </button>
-        <button className="login-button" onClick={handleProfessorClick}>
-          Professor
-        </button>
-        
-        <a href="#" className="signup-link">Cadastre-se</a>
-      </div>
-      <p className="footer-text">
-        O sistema foi desenvolvido por alunos do IFCE, para facilitar o gerenciamento de faltas.
-      </p>
+      </form>
+      
+      <a href="#" className="forgot-password-link">
+        Esqueceu sua senha?
+      </a>
     </div>
   );
-}
+};
 
 export default LoginForm;
