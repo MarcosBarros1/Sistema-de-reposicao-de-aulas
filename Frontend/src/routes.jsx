@@ -45,7 +45,7 @@ export const router = createBrowserRouter([
         element: <GerenciarTurmas />,
       },
       {
-        path: '/coordenador/reposicoes',
+        path: '/coordenador/aprovar-reposicoes',
         element: <AprovarReposicoes />,
       },
       {
