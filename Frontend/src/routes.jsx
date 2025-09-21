@@ -1,4 +1,4 @@
-// src/routes.jsx
+// src/routes.jsx (Atualizado)
 
 import { createBrowserRouter } from "react-router-dom";
 
@@ -17,10 +17,10 @@ import Login from './pages/Login/Login.jsx'
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
+  // GRUPO 1: Rotas DENTRO do layout principal (com Navbar)
   {
     path: "/",
-    element: <App />, // App.jsx é o nosso layout principal (com header, navbar, etc.)
-
+    element: <App />, // App.jsx é o nosso layout principal
     // As rotas aninhadas (children) serão renderizadas dentro do <Outlet /> do App.jsx
     children: [
       {
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
         element: <GerenciarTurmas />,
       },
       {
-        path: '/coordenador/aprovar-reposicoes',
+        path: '/coordenador/aprovar-reposicoes', // Corrigi o nome da rota para ser mais descritivo
         element: <AprovarReposicoes />,
       },
       {
