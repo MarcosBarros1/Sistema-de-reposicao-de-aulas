@@ -4,15 +4,16 @@ import { createBrowserRouter } from "react-router-dom";
 
 // Importando o layout principal e todas as páginas
 import App from "./App.jsx";
-import LoginPage from "./pages/Login/Login.jsx";
 import InicioPage from "./pages/InicioPage.jsx";
 import CoordenadorDashboard from "./pages/CoordenadorDashboard/CoordenadorDashboard.jsx";
 import GerenciarProfessores from "./pages/GerenciarProfessores/GerenciarProfessores.jsx";
 import ProfessorDashboard from "./pages/ProfessorDashboard/ProfessorDashboard.jsx";
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
 import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx';
-import CadastroPage from './pages/CadastroPage/CadastroPage.jsx';
-import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx'; // Importação da nova página
+import MinhasReposicoesPage from "./pages/MinhasReposicoesPage/MinhasReposicoesPage.jsx";
+import VisualizarAssinaturasPage from './pages/VisualizarAssinaturasPage/VisualizarAssinaturasPage.jsx';
+import RegistrarReposicoes from './pages/RegistrarReposicoes/RegistrarReposicoes.jsx'
+import Login from './pages/Login/Login.jsx'
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
@@ -42,6 +43,18 @@ export const router = createBrowserRouter([
         element: <ProfessorDashboard />,
       },
       {
+        path: "/professor/minhas-reposicoes",
+        element: <MinhasReposicoesPage />,
+      },
+      { 
+        path: '/professor/assinaturas',
+        element: <VisualizarAssinaturasPage />,
+      },
+      { 
+        path: '/professor/registrar-reposicao',
+        element: <RegistrarReposicoes />,
+      },
+      {
         path: '/coordenador/turmas',
         element: <GerenciarTurmas />,
       },
@@ -49,25 +62,10 @@ export const router = createBrowserRouter([
         path: '/coordenador/aprovar-reposicoes',
         element: <AprovarReposicoes />,
       },
+      {
+        path: "/login/:tipo_usuario", // ex: /login/coordenador ou /login/professor
+        element: <Login />,
+      },
     ],
   },
-  
-  // GRUPO 2: Rotas FORA do layout principal (tela cheia, sem Navbar)
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/login/:tipo_usuario",
-    element: <LoginPage />,
-  },
-  {
-    path: "/cadastro",
-    element: <CadastroPage />
-  },
-  // 👇 A ÚNICA LINHA QUE FOI REALMENTE ADICIONADA 👇
-  {
-    path: "/cadastro/aluno",
-    element: <CadastroAlunoPage />
-  }
 ]);
