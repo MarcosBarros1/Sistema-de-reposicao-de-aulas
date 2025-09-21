@@ -70,6 +70,16 @@ class TurmaController {
       res.status(500).json({ message: 'Erro ao remover turma.' });
     }
   }
+
+  async atualizar(req, res) {
+    try {
+      const { id_turma } = req.params;
+      const turma = await TurmaService.atualizar_turma(id_turma, req.body);
+      res.status(200).json(turma);
+    } catch (error) {
+      res.status(400).json({ erro: error.message });
+    }
+  }
 }
 
 module.exports = new TurmaController();

@@ -1,28 +1,47 @@
 // persistence/TurmaRepository.js
 
 const db = require('../config/db');
-// const Turma = require('../model/Turma'); // O modelo não é estritamente necessário aqui
 
 class TurmaRepository {
-  async criar(turmaData) {
-    // CORREÇÃO: Recebe 'semestre' e insere apenas 'nome' e 'semestre'.
-    const { nome, semestre } = turmaData;
-    const sql = `
-      INSERT INTO turma (nome, semestre)
-      VALUES ($1, $2)
-      RETURNING *;
-    `;
-    const result = await db.query(sql, [nome, semestre]);
-    return result.rows[0];
+  async criar(dados_turma) {
+    const { nome, semestre, matriculas_alunos } = dados_turma;
+    const client = await db.pool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const turma_sql = `INSERT INTO turma (nome, semestre) VALUES ($1, $2) RETURNING *;`;
+      const result_turma = await client.query(turma_sql, [nome, semestre]);
+      const nova_turma = result_turma.rows[0];
+
+      if (matriculas_alunos && matriculas_alunos.length > 0) {
+        for (const matricula_aluno of matriculas_alunos) {
+          const aluno_turma_sql = `INSERT INTO aluno_turma (id_turma, matricula_aluno) VALUES ($1, $2)`;
+          await client.query(aluno_turma_sql, [nova_turma.id_turma, matricula_aluno]);
+        }
+      }
+
+      await client.query('COMMIT');
+
+      // --- CORREÇÃO DO PROBLEMA #1 ---
+      // Após criar, busca a turma completa para retornar ao frontend
+      return await this.buscarPorId(nova_turma.id_turma);
+
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error('Erro ao criar turma:', error);
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
   async buscarPorId(id_turma) {
-    // CORREÇÃO: Removido o JOIN com a tabela 'disciplina', pois não há como relacioná-las.
     const sql = `
       SELECT
         t.id_turma, t.nome, t.semestre,
         COALESCE(
-          json_agg(json_build_object('matricula_aluno', u.id_usuario, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
+          json_agg(json_build_object('matricula_aluno', a.matricula_aluno, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
           '[]'
         ) as alunos
       FROM turma t
@@ -36,15 +55,12 @@ class TurmaRepository {
     return result.rows[0];
   }
 
-  // NOVO MÉTODO
   async buscarTodas() {
-    // A query é muito parecida com a de buscarPorId, mas sem o "WHERE"
-    // para que traga todas as turmas.
     const sql = `
       SELECT
         t.id_turma, t.nome, t.semestre,
         COALESCE(
-          json_agg(json_build_object('matricula_aluno', u.id_usuario, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
+          json_agg(json_build_object('matricula_aluno', a.matricula_aluno, 'nome', u.nome)) FILTER (WHERE u.id_usuario IS NOT NULL),
           '[]'
         ) as alunos
       FROM turma t
@@ -52,10 +68,10 @@ class TurmaRepository {
       LEFT JOIN aluno a ON at.matricula_aluno = a.matricula_aluno
       LEFT JOIN usuario u ON a.id_usuario = u.id_usuario
       GROUP BY t.id_turma
-      ORDER BY t.nome; -- Opcional: ordenar as turmas por nome
+      ORDER BY t.nome;
     `;
     const result = await db.query(sql);
-    return result.rows; // Retorna um array com todas as turmas
+    return result.rows;
   }
 
   /**
@@ -124,6 +140,40 @@ class TurmaRepository {
     } catch (error) {
       await client.query('ROLLBACK');
       console.error(`Erro ao remover turma ${id_turma}:`, error);
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async atualizar(id_turma, dados_turma) {
+    const { nome, semestre, matriculas_alunos } = dados_turma;
+    const client = await db.pool.connect();
+    try {
+      await client.query('BEGIN');
+
+      // 1. Atualiza os dados principais da turma na tabela 'turma'
+      await client.query('UPDATE turma SET nome = $1, semestre = $2 WHERE id_turma = $3', [nome, semestre, id_turma]);
+
+      // 2. Limpa TODAS as associações antigas de alunos para esta turma
+      await client.query('DELETE FROM aluno_turma WHERE id_turma = $1', [id_turma]);
+
+      // 3. Insere as NOVAS associações de alunos que vieram do formulário
+      if (matriculas_alunos && matriculas_alunos.length > 0) {
+        for (const matricula_aluno of matriculas_alunos) {
+          const aluno_turma_sql = `INSERT INTO aluno_turma (id_turma, matricula_aluno) VALUES ($1, $2)`;
+          await client.query(aluno_turma_sql, [id_turma, matricula_aluno]);
+        }
+      }
+
+      await client.query('COMMIT');
+
+      // 4. Retorna a turma completa e atualizada, incluindo a nova lista de alunos
+      return await this.buscarPorId(id_turma);
+
+    } catch (error) {
+      await client.query('ROLLBACK');
+      console.error(`Erro ao atualizar turma ${id_turma}:`, error);
       throw error;
     } finally {
       client.release();
