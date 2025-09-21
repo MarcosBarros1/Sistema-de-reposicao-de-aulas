@@ -89,7 +89,7 @@ class CoordenadorService {
     }
 
     // 2. Preparar o conteúdo do e-mail
-    const linkFront = `https://docs.google.com/forms/d/e/1FAIpQLSfLNxEnLQOkrJbeBvb45yGeEqzONmLKsy2iUI7APh_hd7J8og/viewform?usp=header`;
+    const linkFront = `http://localhost:5173/login/professor`;
 
     const subject = 'Notificação de Ausência e Solicitação de Reposição';
     const text = `

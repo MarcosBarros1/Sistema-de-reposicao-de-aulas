@@ -83,4 +83,22 @@ export const atualizar_turma = async (id_turma, dados_turma) => {
   }
 };
 
+export const buscar_professores = async () => {
+  try {
+    const response = await api.get('/professor');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const notificar_falta_professor = async (matricula) => {
+  try {
+    const response = await api.post(`/coordenador/professores/${matricula}/notificar-falta`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
