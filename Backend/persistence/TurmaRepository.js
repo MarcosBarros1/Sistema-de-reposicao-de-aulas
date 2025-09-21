@@ -99,6 +99,14 @@ class TurmaRepository {
     const result = await db.query(sql, [id_turma, matricula_aluno]);
     return result.rowCount > 0;
   }
+
+    async remover(id_turma) {
+    // Primeiro, removemos as associações na tabela aluno_turma
+    await db.query('DELETE FROM aluno_turma WHERE id_turma = $1', [id_turma]);
+    // Depois, removemos a turma
+    const result = await db.query('DELETE FROM turma WHERE id_turma = $1', [id_turma]);
+    return result.rowCount > 0;
+  }
 }
 
 module.exports = new TurmaRepository();

@@ -2,31 +2,62 @@ import React from 'react';
 import Navbar from '../../components/Navbar/NavBar';
 import './GerenciarTurmas.css';
 import { FaSearch } from 'react-icons/fa'; // Ícone para a barra de busca
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { buscar_turmas } from '../../services/api';
 
-// Dados de exemplo para a tabela. No futuro, isso virá da sua API.
-const mockTurmas = [
-  { id: 1, turma: '1 ano', curso: 'Eng. Soft', semestre: '2024/1', alunos: 30 },
-  { id: 2, turma: '2 ano', curso: 'Redes', semestre: '2024/1', alunos: 25 },
-  { id: 3, turma: '3 ano', curso: 'Sistemas', semestre: '2023/2', alunos: 32 },
-  { id: 4, turma: 'Técnico 1', curso: 'Informática', semestre: '2024/1', alunos: 40 },
-  { id: 5, turma: 'Técnico 2', curso: 'Eletrônica', semestre: '2023/2', alunos: 35 },
-];
 
 const GerenciarTurmas = () => {
-  // Dados do usuário para a Navbar (você pode gerenciar isso de forma global depois)
-  const userData = {
-    name: "ERLANO BENEVIDES DE SOUSA",
-    id: "20241283000219",
-    avatar: ""
+  const { usuario } = useAuth();
+
+  // Estados para turmas, carregamento e erros
+  const [turmas, set_turmas] = useState([]);
+  const [carregando, set_carregando] = useState(true);
+  const [erro, set_erro] = useState('');
+
+  useEffect(() => {
+    const carregar_turmas = async () => {
+      try {
+        const dados = await buscar_turmas();
+        set_turmas(dados);
+      } catch (err) {
+        set_erro('Falha ao carregar as turmas.');
+      } finally {
+        set_carregando(false);
+      }
+    };
+    carregar_turmas();
+  }, []);
+
+  if (carregando) {
+    return <div>Carregando turmas...</div>;
+  }
+
+  if (erro) {
+    return <div>{erro}</div>;
+  }
+
+  const handle_remover_turma = async (id_turma) => {
+    // Pede confirmação ao usuário
+    if (window.confirm('Tem certeza que deseja excluir esta turma? Esta ação é irreversível.')) {
+      try {
+        await remover_turma(id_turma);
+        // Atualiza a lista de turmas no frontend, removendo a que foi excluída
+        set_turmas(turmas_atuais => turmas_atuais.filter(t => t.id_turma !== id_turma));
+      } catch (err) {
+        alert('Falha ao remover a turma.');
+      }
+    }
   };
 
   return (
     <div className="page-container">
-      <Navbar 
-        userName={userData.name}
-        userIdentifier={userData.id}
-        userAvatarUrl={userData.avatar}
+      <Navbar
+        userName={usuario ? usuario.nome.toUpperCase() : 'Carregando...'}
+        userIdentifier={usuario ? usuario.matriculaCoordenador : ''}
+        userAvatarUrl={usuario ? usuario.avatar : ""}
       />
+
       <div className="content-area">
         {/* 👇 ADICIONAMOS ESTE WRAPPER PARA CENTRALIZAR O CONTEÚDO 👇 */}
         <div className="content-wrapper">
@@ -45,23 +76,24 @@ const GerenciarTurmas = () => {
               <thead>
                 <tr>
                   <th>Turma</th>
-                  <th>Curso</th>
-                  <th>Ano/Semestre</th>
+                  <th>Semestre</th>
                   <th>Qtd de alunos</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
-                {mockTurmas.map((turma) => (
-                  <tr key={turma.id}>
-                    <td>{turma.turma}</td>
-                    <td>{turma.curso}</td>
+                {/* Usar o estado 'turmas' para renderizar a tabela */}
+                {turmas.map((turma) => (
+                  <tr key={turma.id_turma}>
+                    <td>{turma.nome}</td>
                     <td>{turma.semestre}</td>
-                    <td>{turma.alunos}</td>
+                    <td>{turma.alunos.length}</td> {/* Contamos os alunos do array */}
                     <td>
                       <div className="action-buttons">
                         <button className="edit-btn">Editar</button>
-                        <button className="remove-btn">Remover</button>
+                        <button className="remove-btn" onClick={() => handle_remover_turma(turma.id_turma)}>
+                          Remover
+                        </button>
                       </div>
                     </td>
                   </tr>

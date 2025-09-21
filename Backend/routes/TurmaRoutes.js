@@ -24,4 +24,7 @@ router.post('/:id_turma/alunos', TurmaController.adicionarAluno);
 // DELETE /turmas/1/alunos/12345
 router.delete('/:id_turma/alunos/:matricula_aluno', TurmaController.removerAluno);
 
+//Deletar turma
+router.delete('/:id_turma', TurmaController.remover);
+
 module.exports = router;

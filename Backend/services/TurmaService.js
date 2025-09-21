@@ -57,6 +57,11 @@ class TurmaService {
     }
     return this.buscarTurma(id_turma);
   }
+
+  async remover_turma(id_turma) {
+    // Aqui poderíamos adicionar regras de negócio, como "não remover turmas com alunos"
+    return await TurmaRepository.remover(id_turma);
+  }
 }
 
 module.exports = new TurmaService();

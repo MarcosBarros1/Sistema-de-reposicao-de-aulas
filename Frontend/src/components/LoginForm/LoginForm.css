@@ -1,90 +1,96 @@
-.login-form-wrapper {
-  background-color: #39883E; /* Verde principal */
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
-}
-
-.login-card {
-  background-color: #ffffff;
-  border-radius: 20px; /* Bordas arredondadas */
-  padding: 3rem 4rem;
+/* src/components/LoginForm/LoginForm.css */
+.login-form-container {
   width: 100%;
-  max-width: 450px; /* Largura máxima do card */
+  max-width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  background-color: #fff;
+  padding: 3rem 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.login-card h1 {
-  color: #39883E;
-  font-size: 2rem;
+.login-logo {
+  width: 150px;
+  margin-bottom: 1.5rem;
+}
+
+.login-form-container h2 {
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.login-form-container p {
   margin-bottom: 2rem;
+  color: #666;
+}
+
+.login-form-container form {
+  width: 100%;
+}
+
+.input-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.input-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #aaa;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 12px 12px 40px; /* Espaço para o ícone */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Garante que o padding não aumente a largura total */
 }
 
 .login-button {
-  background-color: #4CAF50; /* Verde do botão */
-  color: white;
+  width: 100%;
+  padding: 12px;
   border: none;
-  border-radius: 8px;
-  padding: 15px 0; /* 15px em cima/baixo, 0 nos lados */
-  width: 100%; /* Ocupa toda a largura do card */
-  font-size: 1.2rem;
+  border-radius: 4px;
+  background-color: #28a745; /* Verde IFCE (aproximado) */
+  color: white;
+  font-size: 1.1rem;
   font-weight: bold;
   cursor: pointer;
-  margin-bottom: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease-in-out;
+  transition: background-color 0.3s ease;
 }
 
 .login-button:hover {
-  transform: translateY(-2px); /* Efeito de "levantar" */
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.25);
+  background-color: #218838; /* Verde mais escuro */
 }
 
-.signup-link {
-  color: #4CAF50;
-  text-decoration: underline;
-  margin-top: 1rem;
-  font-size: 1.1rem;
-}
-
-.signup-link:hover {
-  color: #39883E;
-}
-
-.footer-text {
-  position: absolute; /* Posição absoluta em relação ao wrapper */
-  bottom: 20px; /* Fica a 20px da parte de baixo */
-  color: #ffffff;
-  max-width: 450px;
-  text-align: center;
+.forgot-password-link {
+  margin-top: 1.5rem;
+  color: #007bff;
+  text-decoration: none;
   font-size: 0.9rem;
 }
 
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
 
-@media (max-width: 768px) {
-  .login-form-wrapper {
-    width: 100%; /* Ocupa a largura toda */
-    justify-content: flex-start; /* Alinha o card ao topo */
-    padding-top: 3rem;
-  }
-
-  .login-card {
-    padding: 2rem 1.5rem; /* Diminui o padding do card */
-    max-width: 90%; /* Limita a largura em 90% da tela */
-  }
-
-  /* MUITO IMPORTANTE: O texto do rodapé */
-  .footer-text {
-    position: relative; /* Remove a posição absoluta */
-    bottom: auto; /* Reseta a posição */
-    margin-top: 3rem; /* Adiciona um espaço acima dele */
-    margin-bottom: 2rem;
-    color: white; /* Garante a cor, caso ela se perca */
-  }
+.error-message {
+  color: #D32F2F; /* Vermelho forte para erros */
+  background-color: #FFCDD2; /* Fundo vermelho claro */
+  border: 1px solid #D32F2F;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 0.9rem;
 }

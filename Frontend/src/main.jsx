@@ -1,3 +1,5 @@
+// src/main.jsx
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -13,7 +15,11 @@ import MinhasReposicoesPage from './pages/MinhasReposicoesPage/MinhasReposicoesP
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
 import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx'; // 1. IMPORTANDO A NOVA PÁGINA
 
+import { RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { router } from './routes.jsx';
 import './index.css';
+import './styles/global.css';
 
 // Aqui criamos nossas rotas
 const router = createBrowserRouter([
@@ -58,8 +64,11 @@ const router = createBrowserRouter([
   },
 ]);
 
+// Inicia a aplicação
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

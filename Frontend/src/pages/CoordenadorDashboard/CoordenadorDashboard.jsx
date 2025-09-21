@@ -1,43 +1,54 @@
 // Arquivo: src/pages/CoordenadorDashboard/CoordenadorDashboard.jsx (Atualizado)
 import { Link } from 'react-router-dom';
 import React from 'react';
-// 1. REMOVA a importação do Header antigo
-// import Header from '../../components/Header/Header'; 
-import Navbar from '../../components/Navbar/NavBar'; // 2. ADICIONE a importação da nova Navbar
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import Navbar from '../../components/Navbar/NavBar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import './CoordenadorDashboard.css';
 import { BsPersonVcard, BsPeople, BsClipboard2Check } from 'react-icons/bs';
 
 const CoordinatorDashboard = () => {
-  // 3. Crie um objeto com os dados do usuário para passar para a Navbar
-  const userData = {
-    name: "ERLANO BENEVIDES DE SOUSA",
-    id: "20241283000219",
-    avatar: "" // Deixe em branco para usar o avatar padrão
-  };
+  const navigate = useNavigate();
+  const { usuario } = useAuth();
+
+  // VERIFICA SE O USUÁRIO EXISTE ANTES DE TENTAR RENDERIZAR
+  if (!usuario) {
+    // Pode mostrar um loader ou simplesmente não renderizar nada até ter os dados
+    return <div>Carregando...</div>;
+  }
 
   return (
     // 4. Esta é a div principal que organiza a página inteira
-    <div className="page-container"> 
-      <Navbar 
-        userName={userData.name}
-        userIdentifier={userData.id}
-        userAvatarUrl={userData.avatar}
+    <div className="page-container">
+      <Navbar
+        userName={usuario.nome.toUpperCase()}
+        userIdentifier={usuario.matriculaCoordenador}
+        userAvatarUrl="" // O avatar ainda pode ser um placeholder
       />
 
       {/* 5. Criamos um container apenas para o conteúdo do painel */}
       <div className="dashboard-content-area">
         <h1 className="dashboard-title">Painel do Coordenador</h1>
         <main className="cards-container">
-          <DashboardCard title="Gerenciar Professores">
+          <DashboardCard
+            title="Gerenciar Professores"
+            onButtonClick={() => navigate('/coordenador/professores')}
+          >
             <BsPersonVcard />
           </DashboardCard>
 
-          <DashboardCard title="Gerenciar Turma">
+          <DashboardCard
+            title="Gerenciar Turma"
+            onButtonClick={() => navigate('/coordenador/turmas')}
+          >
             <BsPeople />
           </DashboardCard>
 
-          <DashboardCard title="Aprovar Reposições">
+          <DashboardCard
+            title="Aprovar Reposições"
+            onButtonClick={() => navigate('/coordenador/aprovar-reposicoes')}
+          >
             <BsClipboard2Check />
           </DashboardCard>
         </main>

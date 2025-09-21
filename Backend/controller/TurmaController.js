@@ -57,6 +57,19 @@ class TurmaController {
       res.status(400).json({ erro: error.message });
     }
   }
+
+  async remover(req, res) {
+    try {
+      const { id_turma } = req.params;
+      const sucesso = await TurmaService.remover_turma(id_turma);
+      if (!sucesso) {
+        return res.status(404).json({ message: 'Turma não encontrada.' });
+      }
+      res.status(204).send(); // Resposta de sucesso sem conteúdo
+    } catch (error) {
+      res.status(500).json({ message: 'Erro ao remover turma.' });
+    }
+  }
 }
 
 module.exports = new TurmaController();
