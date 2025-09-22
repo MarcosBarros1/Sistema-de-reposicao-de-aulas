@@ -118,13 +118,33 @@ class ProfessorRepository {
   async buscarTodos() {
     try {
       const sql = `
-        SELECT u.id_usuario, u.nome, u.email, p.matricula_professor, p.senha
+        SELECT
+          u.id_usuario,
+          u.nome,
+          u.email,
+          p.matricula_professor,
+          p.senha,
+          -- Agrega os nomes das disciplinas em um array de texto
+          COALESCE(array_agg(d.nome) FILTER (WHERE d.id_disciplina IS NOT NULL), '{}') AS disciplinas
         FROM professor p
         JOIN usuario u ON p.id_usuario = u.id_usuario
+        LEFT JOIN professor_disciplina pd ON p.matricula_professor = pd.matricula_professor
+        LEFT JOIN disciplina d ON pd.id_disciplina = d.id_disciplina
+        GROUP BY u.id_usuario, p.matricula_professor
         ORDER BY u.nome;
       `;
       const result = await db.query(sql);
-      return result.rows.map(row => new Professor(row.id_usuario, row.nome, row.email, row.matricula_professor, row.senha));
+      // O mapeamento para o objeto Professor continua similar
+      return result.rows.map(row =>
+        new Professor(
+          row.id_usuario,
+          row.nome,
+          row.email,
+          row.matricula_professor,
+          row.senha,
+          row.disciplinas // Passa o array de nomes de disciplinas
+        )
+      );
     } catch (error) {
       console.error('Erro ao buscar todos os professores:', error);
       throw error;

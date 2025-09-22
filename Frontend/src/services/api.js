@@ -47,6 +47,16 @@ export const cadastrarProfessor = async (dadosProfessor) => {
   }
 };
 
+export const cadastrarCoordenador = async (dadosCoordenador) => {
+  try {
+    // O endpoint provavelmente será diferente, ex: '/coordenador/cadastrar'
+    const response = await api.post('/coordenador/cadastrar', dadosCoordenador);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 // Função para buscar todas as turmas
 export const buscar_turmas = async () => {
   try {
@@ -83,13 +93,19 @@ export const atualizar_turma = async (id_turma, dados_turma) => {
   }
 };
 
-
-// Função para buscar as assinaturas de uma reposição específica
-export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
+export const buscar_professores = async () => {
   try {
-    // Vamos supor que seu endpoint no backend seja /reposicoes/:id/assinaturas
-    const response = await api.get(`/reposicoes/${id_reposicao}/assinaturas`);
-    return response.data; // Deve retornar algo como { alunos: [...], stats: { presentes: X, ausentes: Y } }
+    const response = await api.get('/professor');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const notificar_falta_professor = async (matricula) => {
+  try {
+    const response = await api.post(`/coordenador/professores/${matricula}/notificar-falta`);
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }

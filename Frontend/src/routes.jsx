@@ -1,4 +1,4 @@
-// src/routes.jsx (Atualizado)
+// src/routes.jsx (Atualizado e Completo)
 
 import { createBrowserRouter } from "react-router-dom";
 
@@ -14,14 +14,15 @@ import MinhasReposicoesPage from "./pages/MinhasReposicoesPage/MinhasReposicoesP
 import VisualizarAssinaturasPage from './pages/VisualizarAssinaturasPage/VisualizarAssinaturasPage.jsx';
 import RegistrarReposicoes from './pages/RegistrarReposicoes/RegistrarReposicoes.jsx'
 import Login from './pages/Login/Login.jsx'
+import CadastroPage from './pages/CadastroPage/CadastroPage.jsx';
+import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx'; 
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
   // GRUPO 1: Rotas DENTRO do layout principal (com Navbar)
   {
     path: "/",
-    element: <App />, // App.jsx é o nosso layout principal
-    // As rotas aninhadas (children) serão renderizadas dentro do <Outlet /> do App.jsx
+    element: <App />,
     children: [
       {
         path: "/",
@@ -60,13 +61,21 @@ export const router = createBrowserRouter([
         element: <GerenciarTurmas />,
       },
       {
-        path: '/coordenador/aprovar-reposicoes', // Corrigi o nome da rota para ser mais descritivo
+        path: '/coordenador/aprovar-reposicoes',
         element: <AprovarReposicoes />,
       },
       {
         path: "/login/:tipo_usuario", // ex: /login/coordenador ou /login/professor
         element: <Login />,
       },
+      {
+        path: "/cadastro", // <-- Rota de cadastro para Professor/Coordenador
+        element: <CadastroPage />
+      },
+      {
+        path: "/cadastro/aluno",
+        element: <CadastroAlunoPage />,
+      }
     ],
   },
 ]);
