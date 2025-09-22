@@ -80,6 +80,22 @@ class ReposicaoController {
       return res.status(500).json({ erro: 'Erro interno ao listar solicitações.' });
     }
   }
+
+  async buscarAssinaturas(req, res) {
+    try {
+      const { idReposicao } = req.params;
+      const dadosAssinaturas = await ReposicaoService.buscarAssinaturas(Number(idReposicao));
+      
+      if (!dadosAssinaturas) {
+        return res.status(404).json({ erro: 'Reposição não encontrada ou não possui turma associada.' });
+      }
+
+      return res.json(dadosAssinaturas);
+    } catch (err) {
+      console.error('Erro ao buscar assinaturas:', err);
+      return res.status(500).json({ erro: 'Erro interno ao buscar assinaturas.' });
+    }
+  }
 }
 
 module.exports = new ReposicaoController();

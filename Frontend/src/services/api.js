@@ -125,7 +125,7 @@ export const notificar_falta_professor = async (matricula) => {
 
 export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
   try {
-    const response = await api.get(`/reposicoes/${id_reposicao}/assinaturas`);
+    const response = await api.get(`/reposicao/${id_reposicao}/assinaturas`);
     return response.data;
   } catch (error) {
     throw error.response.data;

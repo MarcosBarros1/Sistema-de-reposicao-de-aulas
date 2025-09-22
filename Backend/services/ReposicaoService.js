@@ -104,6 +104,38 @@ class ReposicaoService {
 
     return { message: 'Assinatura registrada com sucesso.' };
   }
+
+  async buscarAssinaturas(id_solicitacao) {
+    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(id_solicitacao);
+    if (!solicitacao || !solicitacao.idTurma) {
+      return null; // Retorna nulo se a solicitação não existir ou não tiver turma
+    }
+
+    // Busca todos os alunos da turma
+    const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
+    const totalAlunos = alunosDaTurma.length;
+
+    // Busca as assinaturas que já foram feitas para esta solicitação
+    const concordancias = await AssinaturaRepository.contarConcordancias(id_solicitacao);
+
+    // Calcula as estatísticas
+    const stats = {
+      presentes: concordancias, // ou "concordaram"
+      ausentes: 0, // A lógica de ausentes precisaria ser definida (ex: alunos que não concordaram)
+      pendentes: totalAlunos - concordancias // Alunos que ainda não assinaram
+    };
+
+    const dadosCompletos = {
+      reposicao: {
+        disciplina: solicitacao.disciplina, // Supondo que o repositório retorne isso
+        data: solicitacao.data
+      },
+      alunos: alunosDaTurma,
+      stats: stats
+    };
+    
+    return dadosCompletos;
+  }
 }
 
 module.exports = new ReposicaoService();

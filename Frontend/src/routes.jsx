@@ -53,10 +53,6 @@ export const router = createBrowserRouter([
         element: <VisualizarAssinaturasPage />,
       },
       {
-        path: '/professor/assinaturas',
-        element: <VisualizarAssinaturasPage />,
-      },
-      {
         path: "/professor/solicitar-reposicao",
         element: <SolicitarReposicaoPage />,
       },

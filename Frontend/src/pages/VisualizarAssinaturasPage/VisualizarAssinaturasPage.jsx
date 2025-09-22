@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar/NavBar';
 import { useParams } from 'react-router-dom';
-import Navbar from '../../components/Navbar/NavBar';
 import './VisualizarAssinaturasPage.css';
 
 // Importando as ferramentas para o gráfico e a função da API
@@ -25,6 +24,11 @@ const VisualizarAssinaturasPage = () => {
   // useEffect para buscar os dados da API quando o componente carregar
   useEffect(() => {
     const fetchData = async () => {
+      if (!idReposicao || isNaN(idReposicao)) {
+        setError("ID da reposição inválido.");
+        setLoading(false);
+        return; // Para a execução se o ID não for um número válido
+      }
       try {
         const data = await buscarAssinaturasPorReposicao(idReposicao);
         
@@ -34,7 +38,7 @@ const VisualizarAssinaturasPage = () => {
         // Configura os dados para o gráfico de pizza
         if (data.stats) {
           setChartData({
-            labels: ['Presentes', 'Ausentes', 'Pendentes'],
+            labels: ['Concordaram', 'Discordaram', 'Pendentes'],
             datasets: [{
               data: [data.stats.presentes, data.stats.ausentes, data.stats.pendentes],
               backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
