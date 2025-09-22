@@ -47,6 +47,16 @@ export const cadastrarProfessor = async (dadosProfessor) => {
   }
 };
 
+export const cadastrarCoordenador = async (dadosCoordenador) => {
+  try {
+    // O endpoint provavelmente será diferente, ex: '/coordenador/cadastrar'
+    const response = await api.post('/coordenador/cadastrar', dadosCoordenador);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 // Função para buscar todas as turmas
 export const buscar_turmas = async () => {
   try {
