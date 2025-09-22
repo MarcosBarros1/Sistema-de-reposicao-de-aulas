@@ -1,28 +1,44 @@
-import React, { useState } from 'react';
-import Navbar from '../../components/Navbar/NavBar';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Navbar from '../../components/NavBar/NavBar'; // Verifique se o caminho está certo
 import './MinhasReposicoes.css';
 import { FaSearch } from 'react-icons/fa';
-
-// 1. Dados atualizados com as novas informações
-const mockAulas = [
-  { id: 1, data: '22/09/2025', horario: '08:00 - 09:45', turma: '3° Ano Redes', qtdAlunos: 32, status: 'Pendente' },
-  { id: 2, data: '22/09/2025', horario: '10:00 - 11:45', turma: '2° Ano Agro', qtdAlunos: 28, status: 'Aguardando Aprovação' },
-  { id: 3, data: '23/09/2025', horario: '14:00 - 15:45', turma: '1° Ano Redes', qtdAlunos: 35, status: 'Aceita' },
-  { id: 4, data: '24/09/2025', horario: '08:00 - 09:45', turma: '2° Ano Redes', qtdAlunos: 31, status: 'Negada' },
-  { id: 5, data: '25/09/2025', horario: '10:00 - 11:45', turma: '3° Ano Agro', qtdAlunos: 29, status: 'Pendente' },
-];
+import { buscarMinhasReposicoes } from '../../services/api'; // Verifique se o caminho está certo
 
 const MinhasReposicoesPage = () => {
+  const navigate = useNavigate();
   const userData = { name: "NOME DO PROFESSOR", id: "Matrícula do Professor", avatar: "" };
-
-  const [aulas, setAulas] = useState(mockAulas);
+  
+  const [reposicoes, setReposicoes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await buscarMinhasReposicoes();
+        setReposicoes(data);
+      } catch (err) {
+        setError("Não foi possível carregar as reposições.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const filteredAulas = aulas.filter(aula =>
-    aula.turma.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    aula.disciplina.toLowerCase().includes(searchTerm.toLowerCase())
+  const handleNavigateToAssinaturas = (reposicaoId) => {
+    navigate(`/professor/reposicao/${reposicaoId}/assinaturas`);
+  };
+
+  const filteredReposicoes = reposicoes.filter(repo =>
+    (repo.turma?.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (repo.disciplina?.nome || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
+  if (loading) { /* ... (código de loading e error continua o mesmo) ... */ }
+  if (error) { /* ... */ }
 
   return (
     <div className="page-container">
@@ -41,9 +57,10 @@ const MinhasReposicoesPage = () => {
             />
             <FaSearch className="search-icon" />
           </div>
-          <div className="table-container">
-            <table className="reposicoes-table-registro">
-              {/* 2. Cabeçalho da tabela atualizado */}
+
+          {/* 👇 NOVO CONTAINER PARA A TABELA 👇 */}
+          <div className="table-container-white">
+            <table>
               <thead>
                 <tr>
                   <th>Data</th>
@@ -55,22 +72,25 @@ const MinhasReposicoesPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredAulas.map((aula) => (
-                  <tr key={aula.id}>
-                    {/* 3. Células da tabela atualizadas */}
-                    <td>{aula.data}</td>
-                    <td>{aula.horario}</td>
-                    <td>{aula.turma}</td>
-                    <td>{aula.qtdAlunos}</td>
+                {filteredReposicoes.map((repo) => (
+                  <tr key={repo.idSolicitacao}>
+                    <td>{new Date(repo.data).toLocaleDateString()}</td>
+                    <td>{repo.horario}</td>
+                    <td>{repo.turma?.nome || `Sala ${repo.sala}`}</td>
+                    <td>{repo.qt_alunos}</td>
                     <td>
-                      {/* Usamos uma função para gerar a classe CSS baseada no status */}
-                      <span className={`status-badge status-${aula.status.toLowerCase().replace(' ', '-')}`}>
-                        {aula.status}
+                      <span className={`status-badge status-${repo.status.toLowerCase().replace(/_/g, '-')}`}>
+                        {repo.status.replace(/_/g, ' ')}
                       </span>
                     </td>
                     <td>
-                      <div className="action-buttons-container">
-                      </div>
+                      {/* 👇 BOTÃO DE AÇÃO PARA NAVEGAR 👇 */}
+                      <button 
+                        className="action-button-view"
+                        onClick={() => handleNavigateToAssinaturas(repo.idSolicitacao)}
+                      >
+                        Visualizar
+                      </button>
                     </td>
                   </tr>
                 ))}
