@@ -5,45 +5,35 @@ const Aluno = require('../model/Aluno');
 
 class AlunoRepository {
   async salvar(alunoData) {
-    const { nome, email, matricula_aluno, turmas } = alunoData;
+    // Esta é a versão corrigida, sem a senha
+    const { nome, email, matricula_aluno, id_turma } = alunoData;
     const client = await db.pool.connect();
 
     try {
       await client.query('BEGIN');
 
-      // 1. Cria entrada na tabela 'usuario'
       const usuarioSalvo = await UsuarioRepository.salvar(
         { nome, email, tipo: 'Aluno' },
         client
       );
 
-      // 2. Cria entrada na tabela 'aluno'
       const alunoSql = `
         INSERT INTO aluno (matricula_aluno, id_usuario)
         VALUES ($1, $2)
-        RETURNING matricula_aluno
       `;
-      const alunoResult = await client.query(alunoSql, [
+      await client.query(alunoSql, [
         matricula_aluno,
         usuarioSalvo.idUsuario,
       ]);
-      const matriculaAluno = alunoResult.rows[0].matricula_aluno;
 
-
-      // 3. Relaciona aluno às turmas (se houver)
-      if (turmas && turmas.length > 0) {
-        for (const id_turma of turmas) {
-          await client.query(
-            `INSERT INTO aluno_turma (id_turma, matricula_aluno) VALUES ($1, $2)`,
-            [id_turma, matriculaAluno]
-          );
-        }
+      if (id_turma) {
+        const associacaoSql = `INSERT INTO aluno_turma (id_turma, matricula_aluno) VALUES ($1, $2)`;
+        await client.query(associacaoSql, [id_turma, matricula_aluno]);
       }
-
 
       await client.query('COMMIT');
 
-      return new Aluno(usuarioSalvo.idUsuario, nome, email, matricula_aluno, turmas);
+      return new Aluno(usuarioSalvo.idUsuario, nome, email, matricula_aluno, [id_turma]);
     } catch (error) {
       await client.query('ROLLBACK');
       console.error('Erro ao salvar aluno (transação revertida):', error);
@@ -53,8 +43,8 @@ class AlunoRepository {
     }
   }
 
+  // 👇 SUA FUNÇÃO ORIGINAL RESTAURADA E COMPLETA 👇
   async buscarPorMatricula(matricula_aluno) {
-    // CORREÇÃO: Removida a coluna "a.id_aluno" do SELECT, pois ela não existe na tabela "aluno".
     const sql = `
       SELECT a.matricula_aluno, u.id_usuario, u.nome, u.email, u.tipo
       FROM aluno a
@@ -62,8 +52,6 @@ class AlunoRepository {
       WHERE a.matricula_aluno = $1
     `;
     
-    // A conexão com o banco aqui deveria usar o pool, assim como no método salvar.
-    // Vou usar db.query por simplicidade, mas o ideal é usar o pool.
     const result = await db.query(sql, [matricula_aluno]);
 
     if (result.rows.length === 0) {
@@ -71,8 +59,6 @@ class AlunoRepository {
     }
 
     const row = result.rows[0];
-    // OBS: Note que aqui estamos retornando as turmas como um array vazio.
-    // Para buscar as turmas do aluno, a query precisaria ser mais complexa (veja sugestão de melhoria no final).
     return new Aluno(row.id_usuario, row.nome, row.email, row.matricula_aluno, []);
   }
 }
