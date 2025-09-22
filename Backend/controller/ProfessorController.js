@@ -102,6 +102,29 @@ class ProfessorController {
       
     }
   }
+
+  async associarDisciplinas(req, res) {
+    try {
+      const { matricula } = req.params;
+      const { disciplinaIds } = req.body;
+
+      if (!disciplinaIds || !Array.isArray(disciplinaIds)) {
+        return res.status(400).json({ message: 'O campo "disciplinaIds" é obrigatório e deve ser um array.' });
+      }
+
+      const resultado = await ProfessorService.associarDisciplinas(Number(matricula), disciplinaIds);
+      res.status(200).json(resultado);
+
+    } catch (error) {
+      if (error.name === 'RegraDeNegocioException') {
+        res.status(400).json({ message: error.message });
+      } else {
+        console.error(error);
+        res.status(500).json({ message: 'Ocorreu um erro inesperado no servidor.' });
+      }
+    }
+  }
+
 }
 
 module.exports = new ProfessorController();

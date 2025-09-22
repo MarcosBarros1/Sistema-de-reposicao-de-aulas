@@ -89,6 +89,30 @@ class DisciplinaRepository {
       row.professores || []
     ));
   }
+
+  /**
+   * Verifica se todos os IDs de disciplina fornecidos existem no banco.
+   * @param {number[]} ids - Um array de IDs de disciplinas.
+   * @returns {Promise<boolean>} Retorna true se todos existirem, false caso contrário.
+   */
+  async verificarExistenciaPorIds(ids) {
+    if (!ids || ids.length === 0) {
+      return true; // Se não há IDs para verificar, consideramos válido.
+    }
+    // A cláusula '= ANY($1::int[])' é uma forma eficiente no PostgreSQL
+    // de verificar se um valor está presente em um array.
+    const query = `
+      SELECT COUNT(id_disciplina) AS count
+      FROM disciplina
+      WHERE id_disciplina = ANY($1::int[])
+    `;
+    
+    const result = await db.query(query, [ids]);
+    const count = parseInt(result.rows[0].count, 10);
+    
+    return count === ids.length;
+  }
 }
+
 
 module.exports = new DisciplinaRepository();

@@ -7,7 +7,8 @@ const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposi
 const EmailService = require('./EmailService');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus')
 const bcrypt = require('bcrypt');
-const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
+const  RegraDeNegocioException  = require('../exceptions/RegraDeNegocioException');
+const DisciplinaRepository = require('../persistence/DisciplinaRepository');
 
 /**
  * Camada de Serviço para a lógica de negócio de Professores.
@@ -123,6 +124,31 @@ class ProfessorService {
 
     return nova_solicitacao;
   }
+
+  /**
+   * Associa um professor a uma ou mais disciplinas.
+   * @param {number} matricula - A matrícula do professor.
+   * @param {number[]} disciplinaIds - Um array com os IDs das disciplinas.
+   */
+  async associarDisciplinas(matricula, disciplinaIds) {
+    // 1. Regra de negócio: Verificar se o professor existe
+    const professor = await ProfessorRepository.buscarPorMatricula(matricula);
+    if (!professor) {
+      throw new RegraDeNegocioException('Professor não encontrado para a matrícula informada.');
+    }
+
+    // 2. Regra de negócio: Verificar se todas as disciplinas informadas existem
+    const disciplinasExistem = await DisciplinaRepository.verificarExistenciaPorIds(disciplinaIds);
+    if (!disciplinasExistem) {
+      throw new RegraDeNegocioException('Uma ou mais disciplinas informadas são inválidas ou não existem.');
+    }
+
+    // 3. Delegação: Pede para a camada de persistência criar a associação
+    await ProfessorRepository.associarDisciplinas(matricula, disciplinaIds);
+
+    return { message: 'Disciplinas associadas ao professor com sucesso.' };
+  }
+
 }
 
 module.exports = new ProfessorService();

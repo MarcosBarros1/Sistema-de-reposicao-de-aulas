@@ -213,6 +213,46 @@ class ProfessorRepository {
       client.release();
     }
   }
+
+  /**
+   * Associa um professor a um conjunto de disciplinas.
+   * A operação é transacional: apaga as associações antigas e insere as novas.
+   * @param {number} matriculaProfessor - A matrícula do professor.
+   * @param {number[]} disciplinaIds - Um array de IDs de disciplinas.
+   * @returns {Promise<void>}
+   */
+  async associarDisciplinas(matriculaProfessor, disciplinaIds) {
+    try {
+      // Inicia a transação diretamente no 'db'
+      await db.query('BEGIN');
+
+      // 1. Apaga todas as associações existentes para este professor
+      const deleteQuery = 'DELETE FROM professor_disciplina WHERE matricula_professor = $1';
+      // Usamos db.query, não client.query
+      await db.query(deleteQuery, [matriculaProfessor]);
+
+      // 2. Se a lista de disciplinas não estiver vazia, insere as novas associações
+      if (disciplinaIds && disciplinaIds.length > 0) {
+        const insertQuery = 'INSERT INTO professor_disciplina (matricula_professor, id_disciplina) VALUES ($1, $2)';
+        
+        for (const disciplinaId of disciplinaIds) {
+          // Usamos db.query, não client.query
+          await db.query(insertQuery, [matriculaProfessor, disciplinaId]);
+        }
+      }
+
+      // Confirma a transação
+      await db.query('COMMIT');
+
+    } catch (error) {
+      // Desfaz a transação em caso de erro
+      await db.query('ROLLBACK');
+      console.error('Erro na transação de associação de disciplinas:', error);
+      throw new Error('Não foi possível associar as disciplinas.');
+    }
+    // O bloco 'finally' com client.release() não é mais necessário aqui
+  }
+
 }
 
 module.exports = new ProfessorRepository();

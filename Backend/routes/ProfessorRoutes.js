@@ -27,4 +27,7 @@ router.delete('/:matricula', ProfessorController.deletar);
 // Rota para um professor iniciar o processo de solicitação
 router.post('/solicitar-reposicao', ProfessorController.iniciarSolicitacao);
 
+// ... (no final do arquivo, antes do module.exports)
+router.post('/:matricula/disciplinas', ProfessorController.associarDisciplinas);
+
 module.exports = router;
