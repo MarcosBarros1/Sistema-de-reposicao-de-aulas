@@ -1,5 +1,5 @@
 .side-banner-container {
-  background-color: #ffffff;
+  background-color: whitesmoke;
   width: 40%; /* Ocupa 40% da largura da tela */
   display: flex;
   flex-direction: column; /* Itens em coluna */
@@ -10,13 +10,15 @@
 }
 
 .logo {
-  max-width: 200px; /* Define um tamanho máximo para o logo */
-  margin-bottom: 2rem; /* Espaço abaixo do logo */
+  max-width: 250px; /* Define um tamanho máximo para o logo */
+  width: 250px;
+  height: auto;
+  margin-bottom: 2.5rem; /* Espaço abaixo do logo */
 }
 
 .system-title {
   color: #333;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 500;
 }
 

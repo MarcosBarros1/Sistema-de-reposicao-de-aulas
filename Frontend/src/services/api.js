@@ -142,13 +142,12 @@ export const solicitar_reposicao = async (dados_reposicao) => {
   }
 };
 
-export const buscarMinhasReposicoes = async () => {
+export const buscarDisciplinas = async () => {
   try {
-    // Usando a rota GET /reposicao (singular) que está no seu app.js
-    const response = await api.get('/reposicao');
+    // Confirme se o endpoint GET /disciplinas existe no seu backend
+    const response = await api.get('/disciplinas');
     return response.data;
   } catch (error) {
-    console.error("Erro ao buscar reposições: ", error.response);
     throw error.response.data;
   }
 };
