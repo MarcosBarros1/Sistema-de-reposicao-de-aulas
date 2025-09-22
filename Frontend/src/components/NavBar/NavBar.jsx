@@ -1,5 +1,6 @@
 import React from 'react';
 import './Navbar.css';
+import IFCE from '../../assets/logo-branca.png'
 
 
 // Importando os ícones que vamos usar
@@ -13,9 +14,7 @@ const Navbar = ({ userName, userIdentifier, userAvatarUrl }) => {
   return (
     <header className="navbar">
       <div className="navbar-left">
-        <div className="navbar-logo">
-        <img src="../../assets/logo-instituicao-web.png" alt="logo-instituicao-web.png" className="header-logo" />
-        </div>
+        <img src={IFCE} className="header-logo" />
       </div>
 
       <div className="navbar-right">
