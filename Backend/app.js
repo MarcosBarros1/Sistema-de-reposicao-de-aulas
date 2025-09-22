@@ -16,13 +16,13 @@ const webhookRoutes = require('./routes/WebhookRoutes');
 const app = express();
 
 app.use(cors());
-app.use(express.json()); // Middleware para o Express entender JSON
+app.use(express.json());
 
 // Rotas principais
 app.use('/professor', professorRoutes);
 app.use('/coordenador', coordenadorRoutes);
 app.use('/reposicao', reposicaoRoutes);
-app.use('/disciplina', disciplinaRoutes); 
+app.use('/disciplinas', disciplinaRoutes); // <-- CORREÇÃO AQUI (plural)
 app.use('/auth', autenticacaoRoutes);
 app.use('/aluno', alunoRoutes);
 app.use('/turmas', turmaRoutes);
@@ -34,4 +34,4 @@ app.get('/', (req, res) => {
   res.send('API do Sistema de Reposição de Aulas - IFCE Boa Viagem');
 });
 
-module.exports = app; // Exportamos o app para ser usado pelo server.js
+module.exports = app;

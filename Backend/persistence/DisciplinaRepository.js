@@ -71,23 +71,24 @@ class DisciplinaRepository {
    * @returns {Promise<Disciplina[]>}
    */
   async listarTodos() {
-    const query = `
-      SELECT d.id_disciplina, d.codigo, d.nome, d.carga_horaria,
-             ARRAY_REMOVE(ARRAY_AGG(pd.matricula_professor), NULL) AS professores
-      FROM disciplina d
-      LEFT JOIN professor_disciplina pd ON d.id_disciplina = pd.id_disciplina
-      GROUP BY d.id_disciplina
-      ORDER BY d.nome
-    `;
-    const result = await db.query(query);
+    // 👇 ESTA FOI A ÚNICA FUNÇÃO REALMENTE ALTERADA 👇
 
-    return result.rows.map(row => new Disciplina(
-      row.id_disciplina,
-      row.codigo,
-      row.nome,
-      row.carga_horaria,
-      row.professores || []
-    ));
+    console.log("--- 3. CHEGOU NO REPOSITORY: Executando a query de listarTodos ---");
+    // Query SQL simplificada para pegar apenas o essencial para o formulário
+    const query = 'SELECT id_disciplina, nome FROM disciplina ORDER BY nome ASC';
+    
+    try {
+      const result = await db.query(query);
+      
+      console.log("--- 4. RESULTADO DO BANCO DE DADOS: ---", result.rows);
+      
+      // Retorna os dados simples que o frontend precisa
+      return result.rows;
+
+    } catch (error) {
+      console.error("!!! ERRO AO EXECUTAR A QUERY em listarTodos !!!", error);
+      throw error;
+    }
   }
 
   /**
@@ -99,8 +100,6 @@ class DisciplinaRepository {
     if (!ids || ids.length === 0) {
       return true; // Se não há IDs para verificar, consideramos válido.
     }
-    // A cláusula '= ANY($1::int[])' é uma forma eficiente no PostgreSQL
-    // de verificar se um valor está presente em um array.
     const query = `
       SELECT COUNT(id_disciplina) AS count
       FROM disciplina
