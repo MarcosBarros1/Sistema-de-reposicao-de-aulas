@@ -1,68 +1,66 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/NavBar/NavBar';
+import { useParams } from 'react-router-dom';
+import Navbar from '../../components/Navbar/NavBar';
 import './VisualizarAssinaturasPage.css';
+
+// Importando as ferramentas para o gráfico e a função da API
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-
-// 1. Importe a nova função que criamos na nossa API
 import { buscarAssinaturasPorReposicao } from '../../services/api';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const VisualizarAssinaturasPage = () => {
-  const userData = { name: "Márcio (Professor)", id: "Matrícula do Professor", avatar: "" };
+  // O hook useParams pega os parâmetros da URL, como o :idReposicao da rota
+  const { idReposicao } = useParams();
 
-  // 2. Criamos novos estados para controlar o ciclo de vida dos dados
-  const [alunos, setAlunos] = useState([]); // Para a lista da tabela
-  const [chartData, setChartData] = useState(null); // Para os dados do gráfico
-  const [loading, setLoading] = useState(true); // Para saber se estamos carregando os dados
-  const [error, setError] = useState(null); // Para armazenar qualquer erro da API
+  // Estados para os dados, carregamento e erros
+  const [alunos, setAlunos] = useState([]);
+  const [chartData, setChartData] = useState(null);
+  const [reposicaoInfo, setReposicaoInfo] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // 3. useEffect: a mágica para buscar dados quando o componente carrega
+  // useEffect para buscar os dados da API quando o componente carregar
   useEffect(() => {
-    // Função assíncrona para buscar e processar os dados
-    const fetchAssinaturas = async () => {
+    const fetchData = async () => {
       try {
-        // No futuro, o '1' virá da URL (ex: /reposicoes/1/assinaturas)
-        // Usaremos o hook useParams do react-router-dom para isso
-        const idReposicao = 1; // ID de exemplo
         const data = await buscarAssinaturasPorReposicao(idReposicao);
-
-        // Atualiza o estado com os alunos recebidos
+        
         setAlunos(data.alunos || []);
+        setReposicaoInfo(data.reposicao || {});
 
-        // Prepara os dados para o gráfico de pizza
-        const stats = data.stats; // Ex: { presentes: 18, ausentes: 5, pendentes: 7 }
-        if (stats) {
+        // Configura os dados para o gráfico de pizza
+        if (data.stats) {
           setChartData({
             labels: ['Presentes', 'Ausentes', 'Pendentes'],
             datasets: [{
-              data: [stats.presentes, stats.ausentes, stats.pendentes],
-              backgroundColor: ['#2E8B57', '#DC3545', '#6c757d'],
-              borderColor: ['#FFFFFF'],
+              data: [data.stats.presentes, data.stats.ausentes, data.stats.pendentes],
+              backgroundColor: ['#28a745', '#dc3545', '#6c757d'],
+              borderColor: '#ffffff',
               borderWidth: 2,
             }],
           });
         }
       } catch (err) {
-        setError("Falha ao carregar os dados de assinaturas. Tente novamente mais tarde.");
+        setError("Falha ao carregar os dados. Verifique a conexão ou tente mais tarde.");
         console.error(err);
       } finally {
-        // Independentemente de sucesso ou erro, paramos o carregamento
         setLoading(false);
       }
     };
 
-    fetchAssinaturas(); // Chama a função
-  }, []); // O array vazio [] garante que isso rode apenas uma vez
+    fetchData();
+  }, [idReposicao]); // O efeito roda novamente se o ID na URL mudar
 
-  // Opções do gráfico (pode ser movido para fora do componente se não mudar)
   const chartOptions = {
     plugins: { legend: { display: false } },
     maintainAspectRatio: false,
   };
 
-  // 4. Renderização condicional: mostramos diferentes coisas baseadas no estado
+  const userData = { name: "Professor", id: "Matrícula", avatar: "" };
+
+  // Renderização condicional para os estados de carregamento e erro
   if (loading) {
     return (
       <div className="page-container">
@@ -86,23 +84,40 @@ const VisualizarAssinaturasPage = () => {
       <Navbar {...userData} />
       <div className="content-area">
         <div className="content-wrapper">
-          <div className="page-header"><h1>Assinaturas</h1></div>
+          <div className="page-header">
+            <h1>Assinaturas da Reposição</h1>
+            {reposicaoInfo && <h2>{reposicaoInfo.disciplina} - {reposicaoInfo.data}</h2>}
+          </div>
+
           <div className="stats-container">
+            {/* Seção da Tabela (Esquerda) */}
             <div className="table-section">
               <div className="table-container">
                 <table>
-                  <thead><tr><th>Nome</th><th>E-mail</th></tr></thead>
+                  <thead>
+                    <tr>
+                      <th>Nome do Aluno</th>
+                      <th>E-mail</th>
+                    </tr>
+                  </thead>
                   <tbody>
                     {alunos.map(aluno => (
-                      <tr key={aluno.id}><td>{aluno.nome}</td><td>{aluno.email}</td></tr>
+                      <tr key={aluno.id}>
+                        <td>{aluno.nome}</td>
+                        <td>{aluno.email}</td>
+                      </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
+
+            {/* Seção do Gráfico (Direita) */}
             {chartData && (
               <div className="chart-section">
-                <div className="chart-wrapper"><Pie data={chartData} options={chartOptions} /></div>
+                <div className="chart-wrapper">
+                  <Pie data={chartData} options={chartOptions} />
+                </div>
                 <div className="chart-legend">
                   {chartData.labels.map((label, index) => (
                     <div className="legend-item" key={label}>

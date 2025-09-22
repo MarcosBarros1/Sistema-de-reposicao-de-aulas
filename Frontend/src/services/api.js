@@ -111,15 +111,13 @@ export const notificar_falta_professor = async (matricula) => {
   }
 };
 
-// Função para buscar as assinaturas de uma reposição específica
+
 export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
   try {
-    // Vamos supor que seu endpoint no backend seja /reposicoes/:id/assinaturas
     const response = await api.get(`/reposicoes/${id_reposicao}/assinaturas`);
-    return response.data; // Deve retornar algo como { alunos: [...], stats: { presentes: X, ausentes: Y } }
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }
 };
-
 export default api;
