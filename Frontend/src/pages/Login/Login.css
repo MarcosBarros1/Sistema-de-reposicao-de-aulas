@@ -3,12 +3,7 @@
   display: flex;
   width: 100vw;
   height: 100vh;
-  font-family: Arial, sans-serif;
-}
-
-.side-banner-container {
-  flex: 1; /* Ocupa metade do espaço */
-  background-color: #f0f2f5; /* Um cinza claro de fundo */
+  font-family: sans-serif;
 }
 
 .login-form-area {
@@ -16,5 +11,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
+  background-color: #39883E;
 }
