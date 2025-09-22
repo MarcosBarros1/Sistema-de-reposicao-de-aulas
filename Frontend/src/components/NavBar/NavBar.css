@@ -25,19 +25,6 @@
     gap: 20px; /* Espaçamento entre os itens */
   }
   
-  .navbar-logo {
-    display: flex;
-    flex-direction: column;
-    line-height: 1;
-    font-weight: bold;
-    font-size: 14px;
-  }
-  
-  .navbar-logo span:last-child {
-    font-size: 12px;
-    font-weight: normal;
-  }
-  
   .navbar-icon-btn {
     background: none;
     border: none;
@@ -81,4 +68,8 @@
     border-radius: 50%;
     border: 2px solid #FFFFFF;
     object-fit: cover; /* Garante que a imagem não fique distorcida */
+  }
+
+  .header-logo{
+    height: 8vh;
   }
