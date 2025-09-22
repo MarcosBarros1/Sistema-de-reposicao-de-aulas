@@ -10,12 +10,12 @@ import GerenciarProfessores from "./pages/GerenciarProfessores/GerenciarProfesso
 import ProfessorDashboard from "./pages/ProfessorDashboard/ProfessorDashboard.jsx";
 import GerenciarTurmas from './pages/GerenciarTurmas/GerenciarTurmas.jsx';
 import AprovarReposicoes from './pages/AprovarReposicoes/AprovarReposicoes.jsx';
-import MinhasReposicoesPage from "./pages/MinhasReposicoesPage/MinhasReposicoesPage.jsx";
 import VisualizarAssinaturasPage from './pages/VisualizarAssinaturasPage/VisualizarAssinaturasPage.jsx';
-import RegistrarReposicoes from './pages/RegistrarReposicoes/RegistrarReposicoes.jsx'
 import Login from './pages/Login/Login.jsx'
 import CadastroPage from './pages/CadastroPage/CadastroPage.jsx';
-import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx'; 
+import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx';
+import SolicitarReposicaoPage from './pages/SolicitarReposicoes/SolicitarReposicoes.jsx'
+import MinhasReposicoesPage from './pages/MinhasReposicoes/MinhasReposicoes.jsx'
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
@@ -48,13 +48,13 @@ export const router = createBrowserRouter([
         path: "/professor/minhas-reposicoes",
         element: <MinhasReposicoesPage />,
       },
-      { 
+      {
         path: '/professor/assinaturas',
         element: <VisualizarAssinaturasPage />,
       },
-      { 
-        path: '/professor/registrar-reposicao',
-        element: <RegistrarReposicoes />,
+      {
+        path: "/professor/solicitar-reposicao",
+        element: <SolicitarReposicaoPage />,
       },
       {
         path: '/coordenador/turmas',
