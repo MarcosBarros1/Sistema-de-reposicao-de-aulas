@@ -1,22 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // 1. Adicionado useEffect para buscar dados
 import './CadastroPage.css';
 import { useNavigate } from 'react-router-dom';
 import MultiSelectModal from '../../components/MultiSelectModal/MultiSelectModal';
-import { cadastrarProfessor, cadastrarCoordenador } from '../../services/api'; 
+// 2. Importada a nova função para buscar disciplinas
+import { cadastrarProfessor, cadastrarCoordenador, buscarDisciplinas } from '../../services/api'; 
 
-const allDisciplinas = [
-  { id: 1, label: 'Programação Orientada a Objetos' },
-  { id: 2, label: 'Redes de Computadores' },
-  { id: 3, label: 'Interação Humano-Computador' },
-  { id: 4, label: 'Banco de Dados' },
-  { id: 5, label: 'Engenharia de Software' },
-];
+// 3. Array de disciplinas fixo foi REMOVIDO מכאן
 
 const CadastroPage = () => {
   const [role, setRole] = useState('');
   const [disciplinas, setDisciplinas] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  // 4. Novo estado para armazenar as disciplinas vindas do backend
+  const [availableDisciplinas, setAvailableDisciplinas] = useState([]);
 
   const [formData, setFormData] = useState({
     nome: '',
@@ -27,6 +25,23 @@ const CadastroPage = () => {
     confirmarSenha: '',
   });
   const [error, setError] = useState('');
+
+  // 5. useEffect para buscar os dados da API quando a página carregar
+  useEffect(() => {
+    const carregarDisciplinas = async () => {
+      try {
+        const data = await buscarDisciplinas();
+        // Mapeamos os dados para o formato { id, label } que nosso modal espera
+        // ATENÇÃO: Verifique se os nomes 'id_disciplina' e 'nome' correspondem ao que sua API retorna
+        const formattedData = data.map(d => ({ id: d.id_disciplina, label: d.nome }));
+        setAvailableDisciplinas(formattedData);
+      } catch (err) {
+        console.error("Erro ao carregar disciplinas:", err);
+        setError("Não foi possível carregar a lista de disciplinas.");
+      }
+    };
+    carregarDisciplinas();
+  }, []); // O array vazio [] garante que esta função rode apenas uma vez
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -43,6 +58,12 @@ const CadastroPage = () => {
     if (formData.senha !== formData.confirmarSenha) {
       setError('As senhas não coincidem!');
       return;
+    }
+
+    // 6. NOVA VALIDAÇÃO: Verifica se o professor selecionou pelo menos uma disciplina
+    if (role === 'professor' && disciplinas.length === 0) {
+      setError('Um professor deve estar associado a pelo menos uma disciplina.');
+      return; // Impede o envio do formulário
     }
 
     try {
@@ -79,8 +100,9 @@ const CadastroPage = () => {
     }
   };
 
+  // 7. Lógica atualizada para usar a lista dinâmica 'availableDisciplinas'
   const disciplinasDisplay = disciplinas.length > 0
-    ? allDisciplinas
+    ? availableDisciplinas
         .filter(d => disciplinas.includes(d.id))
         .map(d => d.label)
         .join(', ')
@@ -93,6 +115,7 @@ const CadastroPage = () => {
           <h1 className="cadastro-title">Cadastre-se</h1>
           {error && <p className="error-message">{error}</p>}
           <form onSubmit={handleSubmit}>
+            {/* O resto do formulário continua o mesmo */}
             <div className="form-group">
               <label htmlFor="cargo">Selecione seu cargo</label>
               <select id="cargo" value={role} onChange={(e) => setRole(e.target.value)} required>
@@ -155,11 +178,12 @@ const CadastroPage = () => {
         </div>
       </div>
       
+      {/* 8. O Modal agora usa 'availableDisciplinas' para as opções */}
       <MultiSelectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={setDisciplinas}
-        options={allDisciplinas.map(d => ({ value: d.id, label: d.label }))}
+        options={availableDisciplinas.map(d => ({ value: d.id, label: d.label }))}
         selectedValues={disciplinas}
         title="Selecione as Disciplinas"
       />

@@ -30,6 +30,7 @@ class DisciplinaController {
   }
 
   async listarTodos(req, res) {
+    console.log("--- 1. CHEGOU NO CONTROLLER: DisciplinaController.listarTodos ---");
     try {
       const disciplinas = await DisciplinaService.listarTodos();
       return res.json(disciplinas);

@@ -41,6 +41,7 @@ class DisciplinaService {
    * @returns {Promise<Disciplina[]>}
    */
   async listarTodos() {
+    console.log("--- 2. CHEGOU NO SERVICE: DisciplinaService.listarTodos ---");
     return await DisciplinaRepository.listarTodos();
   }
 }

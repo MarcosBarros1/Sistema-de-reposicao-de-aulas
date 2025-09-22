@@ -142,4 +142,14 @@ export const solicitar_reposicao = async (dados_reposicao) => {
   }
 };
 
+export const buscarDisciplinas = async () => {
+  try {
+    // Confirme se o endpoint GET /disciplinas existe no seu backend
+    const response = await api.get('/disciplinas');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
