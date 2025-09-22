@@ -122,4 +122,14 @@ export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
   }
 };
 
+export const solicitar_reposicao = async (dados_reposicao) => {
+  try {
+    // A rota que criamos no backend para esta ação
+    const response = await api.post('/professor/solicitar-reposicao', dados_reposicao);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;

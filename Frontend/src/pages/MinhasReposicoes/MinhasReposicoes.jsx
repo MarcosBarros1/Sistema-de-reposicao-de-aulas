@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Navbar from '../../components/NavBar/NavBar';
-import './RegistrarReposicoes.css';
+import Navbar from '../../components/Navbar/NavBar';
+import './MinhasReposicoes.css';
 import { FaSearch } from 'react-icons/fa';
 
 // 1. Dados atualizados com as novas informações
@@ -12,7 +12,7 @@ const mockAulas = [
   { id: 5, data: '25/09/2025', horario: '10:00 - 11:45', turma: '3° Ano Agro', qtdAlunos: 29, status: 'Pendente' },
 ];
 
-const RegistrarReposicoesPage = () => {
+const MinhasReposicoesPage = () => {
   const userData = { name: "NOME DO PROFESSOR", id: "Matrícula do Professor", avatar: "" };
 
   const [aulas, setAulas] = useState(mockAulas);
@@ -83,4 +83,4 @@ const RegistrarReposicoesPage = () => {
   );
 };
 
-export default RegistrarReposicoesPage;
+export default MinhasReposicoesPage;
