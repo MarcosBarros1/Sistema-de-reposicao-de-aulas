@@ -57,6 +57,17 @@ export const cadastrarCoordenador = async (dadosCoordenador) => {
   }
 };
 
+export const cadastrar_aluno = async (dadosAluno) => {
+  try {
+    // Chama o endpoint POST /aluno que descobrimos
+    const response = await api.post('/aluno', dadosAluno);
+    return response.data;
+  } catch (error) {
+    // Lança o erro para que o componente possa capturá-lo
+    throw error.response.data;
+  }
+};
+
 // Função para buscar todas as turmas
 export const buscar_turmas = async () => {
   try {
@@ -120,4 +131,15 @@ export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
     throw error.response.data;
   }
 };
+
+export const solicitar_reposicao = async (dados_reposicao) => {
+  try {
+    // A rota que criamos no backend para esta ação
+    const response = await api.post('/professor/solicitar-reposicao', dados_reposicao);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;

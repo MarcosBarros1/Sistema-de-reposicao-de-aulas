@@ -1,52 +1,53 @@
 import React from 'react';
-// 1. REMOVA a importação do Header antigo, se houver
-import Navbar from '../../components/Navbar/NavBar'; // 2. ADICIONE a importação da nova Navbar
+// 1. IMPORTE O USEAUTH
+import { useAuth } from '../../context/AuthContext'; 
+import Navbar from '../../components/Navbar/NavBar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import './ProfessorDashboard.css';
-import { BsPersonVcard, BsPeople, BsClipboard2Check } from 'react-icons/bs';
+import { FaClipboardCheck, FaUsers, FaListAlt } from 'react-icons/fa'; // Ícones atualizados
 import { useNavigate } from 'react-router-dom';
 
 const ProfessorDashboard = () => {
   const navigate = useNavigate();
+  // 2. PEGUE OS DADOS DO USUÁRIO DO CONTEXTO
+  const { usuario } = useAuth();
 
-  // 3. Crie um objeto com os dados do usuário Professor (pode ser um placeholder por enquanto)
-  const userData = {
-    name: "NOME DO PROFESSOR AQUI",
-    id: "Matrícula do Professor",
-    avatar: "" // Deixe em branco para usar o avatar padrão
-  };
-
+  // 3. ESTRUTURA DE DADOS DOS CARDS ATUALIZADA PARA MAIOR CLAREZA
   const cardsData = [
     {
-      titulo: "Solicitar Reposições",
-      Icon: BsPersonVcard,
-      link: "/professor/minhas-reposicoes"
-    },
-    {
-      titulo: "Visualizar Assinaturas",
-      Icon: BsPeople,
-      link: "/professor/assinaturas"
+      titulo: "Solicitar Reposição",
+      Icon: FaClipboardCheck,
+      link: "/professor/solicitar-reposicao" // Rota para o formulário de nova solicitação
     },
     {
       titulo: "Minhas Reposições",
-      Icon: BsClipboard2Check,
-      link: "/professor/registrar-reposicao"
+      Icon: FaListAlt,
+      link: "/professor/minhas-reposicoes" // Rota para ver o histórico de solicitações
+    },
+    {
+      titulo: "Visualizar Assinaturas",
+      Icon: FaUsers,
+      link: "/professor/assinaturas" // Rota para ver o status de assinaturas
     }
   ];
 
+  // 4. VERIFICA SE OS DADOS DO USUÁRIO JÁ FORAM CARREGADOS
+  if (!usuario) {
+    return <div>Carregando...</div>;
+  }
+
   return (
-    // 4. Use a div principal 'page-container'
     <div className="page-container">
+      {/* 5. USE OS DADOS REAIS DO USUÁRIO NA NAVBAR */}
       <Navbar
-        userName={userData.name}
-        userIdentifier={userData.id}
-        userAvatarUrl={userData.avatar}
+        userName={usuario.nome.toUpperCase()}
+        userIdentifier={usuario.matriculaProfessor}
+        userAvatarUrl={usuario.avatar || ""}
       />
 
-      {/* 5. Crie o container para o conteúdo específico da página */}
       <div className="dashboard-content-area">
         <h1 className="dashboard-title">Painel do Professor</h1>
-        <main className="cards-grid"> {/* Renomeei de cards-container para cards-grid para consistência */}
+        <main className="cards-grid">
           {cardsData.map((card, index) => (
             <DashboardCard
               key={index}

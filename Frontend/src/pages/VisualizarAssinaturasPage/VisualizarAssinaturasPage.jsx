@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Navbar from '../../components/Navbar/NavBar';
 import { useParams } from 'react-router-dom';
 import Navbar from '../../components/Navbar/NavBar';
 import './VisualizarAssinaturasPage.css';
