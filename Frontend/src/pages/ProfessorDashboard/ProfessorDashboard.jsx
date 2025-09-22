@@ -18,7 +18,7 @@ const ProfessorDashboard = () => {
 
   const cardsData = [
     {
-      titulo: "Minhas Reposições",
+      titulo: "Solicitar Reposições",
       Icon: BsPersonVcard,
       link: "/professor/minhas-reposicoes"
     },
@@ -28,7 +28,7 @@ const ProfessorDashboard = () => {
       link: "/professor/assinaturas"
     },
     {
-      titulo: "Registrar Reposições",
+      titulo: "Minhas Reposições",
       Icon: BsClipboard2Check,
       link: "/professor/registrar-reposicao"
     }

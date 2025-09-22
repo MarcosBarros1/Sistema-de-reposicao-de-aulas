@@ -1,111 +1,118 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/NavBar/NavBar';
 import './VisualizarAssinaturasPage.css';
-
-// 1. Importando as ferramentas para o gráfico
 import { Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
-// 2. Registrando os componentes necessários do Chart.js
-ChartJS.register(ArcElement, Tooltip, Legend);
+// 1. Importe a nova função que criamos na nossa API
+import { buscarAssinaturasPorReposicao } from '../../services/api';
 
-// Dados de exemplo para a tabela de alunos. Virá da API no futuro.
-const mockAlunos = [
-  { id: 1, nome: 'Maria Silva', email: 'maria.silva@email.com' },
-  { id: 2, nome: 'Carlos Souza', email: 'carlos.souza@email.com' },
-  { id: 3, nome: 'Ana Lima', email: 'ana.lima@email.com' },
-  { id: 4, nome: 'Pedro Costa', email: 'pedro.costa@email.com' },
-  { id: 5, nome: 'Joana Pereira', email: 'joana.pereira@email.com' },
-  { id: 6, nome: 'Lucas Martins', email: 'lucas.martins@email.com' },
-  { id: 7, nome: 'Sofia Almeida', email: 'sofia.almeida@email.com' },
-];
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const VisualizarAssinaturasPage = () => {
   const userData = { name: "Márcio (Professor)", id: "Matrícula do Professor", avatar: "" };
 
-  // 3. Dados e configuração para o gráfico de pizza
-  const chartData = {
-    labels: ['Presentes', 'Ausentes', 'Pendentes'],
-    datasets: [
-      {
-        label: '# de Alunos',
-        data: [18, 5, 7], // Dados de exemplo: 18 presentes, 5 ausentes, 7 pendentes
-        backgroundColor: [
-          '#2E8B57', // Verde para Presentes
-          '#DC3545', // Vermelho para Ausentes
-          '#6c757d', // Cinza para Pendentes
-        ],
-        borderColor: [
-          '#FFFFFF',
-          '#FFFFFF',
-          '#FFFFFF',
-        ],
-        borderWidth: 2,
-      },
-    ],
-  };
+  // 2. Criamos novos estados para controlar o ciclo de vida dos dados
+  const [alunos, setAlunos] = useState([]); // Para a lista da tabela
+  const [chartData, setChartData] = useState(null); // Para os dados do gráfico
+  const [loading, setLoading] = useState(true); // Para saber se estamos carregando os dados
+  const [error, setError] = useState(null); // Para armazenar qualquer erro da API
 
+  // 3. useEffect: a mágica para buscar dados quando o componente carrega
+  useEffect(() => {
+    // Função assíncrona para buscar e processar os dados
+    const fetchAssinaturas = async () => {
+      try {
+        // No futuro, o '1' virá da URL (ex: /reposicoes/1/assinaturas)
+        // Usaremos o hook useParams do react-router-dom para isso
+        const idReposicao = 1; // ID de exemplo
+        const data = await buscarAssinaturasPorReposicao(idReposicao);
+
+        // Atualiza o estado com os alunos recebidos
+        setAlunos(data.alunos || []);
+
+        // Prepara os dados para o gráfico de pizza
+        const stats = data.stats; // Ex: { presentes: 18, ausentes: 5, pendentes: 7 }
+        if (stats) {
+          setChartData({
+            labels: ['Presentes', 'Ausentes', 'Pendentes'],
+            datasets: [{
+              data: [stats.presentes, stats.ausentes, stats.pendentes],
+              backgroundColor: ['#2E8B57', '#DC3545', '#6c757d'],
+              borderColor: ['#FFFFFF'],
+              borderWidth: 2,
+            }],
+          });
+        }
+      } catch (err) {
+        setError("Falha ao carregar os dados de assinaturas. Tente novamente mais tarde.");
+        console.error(err);
+      } finally {
+        // Independentemente de sucesso ou erro, paramos o carregamento
+        setLoading(false);
+      }
+    };
+
+    fetchAssinaturas(); // Chama a função
+  }, []); // O array vazio [] garante que isso rode apenas uma vez
+
+  // Opções do gráfico (pode ser movido para fora do componente se não mudar)
   const chartOptions = {
-    plugins: {
-      legend: {
-        display: false, // Vamos criar nossa própria legenda
-      },
-    },
+    plugins: { legend: { display: false } },
     maintainAspectRatio: false,
   };
+
+  // 4. Renderização condicional: mostramos diferentes coisas baseadas no estado
+  if (loading) {
+    return (
+      <div className="page-container">
+        <Navbar {...userData} />
+        <div className="content-area content-wrapper"><h1>Carregando Assinaturas...</h1></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="page-container">
+        <Navbar {...userData} />
+        <div className="content-area content-wrapper"><h1>{error}</h1></div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">
       <Navbar {...userData} />
       <div className="content-area">
         <div className="content-wrapper">
-          <div className="page-header">
-            <h1>Assinaturas</h1>
-          </div>
-
+          <div className="page-header"><h1>Assinaturas</h1></div>
           <div className="stats-container">
-            {/* Seção da Tabela (Esquerda) */}
             <div className="table-section">
               <div className="table-container">
                 <table>
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>E-mail</th>
-                    </tr>
-                  </thead>
+                  <thead><tr><th>Nome</th><th>E-mail</th></tr></thead>
                   <tbody>
-                    {mockAlunos.map(aluno => (
-                      <tr key={aluno.id}>
-                        <td>{aluno.nome}</td>
-                        <td>{aluno.email}</td>
-                      </tr>
+                    {alunos.map(aluno => (
+                      <tr key={aluno.id}><td>{aluno.nome}</td><td>{aluno.email}</td></tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-
-            {/* Seção do Gráfico (Direita) */}
-            <div className="chart-section">
-              <div className="chart-wrapper">
-                <Pie data={chartData} options={chartOptions} />
-              </div>
-              <div className="chart-legend">
-                <div className="legend-item">
-                  <span className="legend-color-box" style={{ backgroundColor: '#2E8B57' }}></span>
-                  Presentes (18)
-                </div>
-                <div className="legend-item">
-                  <span className="legend-color-box" style={{ backgroundColor: '#DC3545' }}></span>
-                  Ausentes (5)
-                </div>
-                <div className="legend-item">
-                  <span className="legend-color-box" style={{ backgroundColor: '#6c757d' }}></span>
-                  Pendentes (7)
+            {chartData && (
+              <div className="chart-section">
+                <div className="chart-wrapper"><Pie data={chartData} options={chartOptions} /></div>
+                <div className="chart-legend">
+                  {chartData.labels.map((label, index) => (
+                    <div className="legend-item" key={label}>
+                      <span className="legend-color-box" style={{ backgroundColor: chartData.datasets[0].backgroundColor[index] }}></span>
+                      {label} ({chartData.datasets[0].data[index]})
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

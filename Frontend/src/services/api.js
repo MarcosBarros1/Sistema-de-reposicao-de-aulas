@@ -83,4 +83,16 @@ export const atualizar_turma = async (id_turma, dados_turma) => {
   }
 };
 
+
+// Função para buscar as assinaturas de uma reposição específica
+export const buscarAssinaturasPorReposicao = async (id_reposicao) => {
+  try {
+    // Vamos supor que seu endpoint no backend seja /reposicoes/:id/assinaturas
+    const response = await api.get(`/reposicoes/${id_reposicao}/assinaturas`);
+    return response.data; // Deve retornar algo como { alunos: [...], stats: { presentes: X, ausentes: Y } }
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;

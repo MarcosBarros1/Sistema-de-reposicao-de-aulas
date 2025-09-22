@@ -17,4 +17,7 @@ router.get('/:id', (req, res) => ReposicaoController.buscarPorId(req, res));
 // Listar todas as solicitações
 router.get('/', (req, res) => ReposicaoController.listarTodos(req, res));
 
+// ROTA NOVA: Buscar todas as assinaturas de uma reposição específica
+router.get('/:id/assinaturas', (req, res) => ReposicaoController.buscarAssinaturas(req, res));
+
 module.exports = router;

@@ -30,7 +30,7 @@ const RegistrarReposicoesPage = () => {
       <div className="content-area">
         <div className="content-wrapper">
           <div className="page-header">
-            <h1>Registrar Reposições</h1>
+            <h1>Minhas Reposições</h1>
           </div>
           <div className="search-bar-reposicoes">
             <input
