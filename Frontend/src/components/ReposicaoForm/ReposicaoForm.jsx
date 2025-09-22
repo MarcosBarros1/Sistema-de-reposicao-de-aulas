@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ReposicaoForm.css'; // Criaremos este CSS a seguir
 
-const ReposicaoForm = ({ on_submit, on_cancel }) => {
+const ReposicaoForm = ({ on_submit, on_cancel, is_enviando }) => {
   const [motivo, set_motivo] = useState('');
   const [data, set_data] = useState('');
   const [horario, set_horario] = useState('');
@@ -9,6 +9,10 @@ const ReposicaoForm = ({ on_submit, on_cancel }) => {
 
   const handle_submit = (evento) => {
     evento.preventDefault();
+    if (new Date(data) < new Date()) {
+      alert("A data da reposição não pode ser no passado nem no dia de hoje.");
+      return;
+    }
     on_submit({ motivo, data, horario, sala });
   };
 
@@ -50,8 +54,8 @@ const ReposicaoForm = ({ on_submit, on_cancel }) => {
         <button type="button" onClick={on_cancel} className="btn-cancel">
           Cancelar
         </button>
-        <button type="submit" className="btn-submit">
-          Enviar Solicitação
+        <button type="submit" className="btn-submit" disabled={is_enviando}>
+          {is_enviando ? 'Enviando...' : 'Enviar Solicitação'}
         </button>
       </div>
     </form>

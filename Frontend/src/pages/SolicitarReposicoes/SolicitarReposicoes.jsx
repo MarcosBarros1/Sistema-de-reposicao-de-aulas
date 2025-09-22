@@ -15,6 +15,9 @@ const SolicitarReposicaoPage = () => {
   const [modal_aberto, set_modal_aberto] = useState(false);
   const [turma_selecionada, set_turma_selecionada] = useState(null);
 
+  // ESTADO PARA CONTROLAR O ENVIO
+  const [enviando, set_enviando] = useState(false);
+
   useEffect(() => {
     const carregar_turmas = async () => {
       try {
@@ -41,6 +44,9 @@ const SolicitarReposicaoPage = () => {
 
   const handle_submit_reposicao = async (dados_form) => {
     try {
+      if (!turma_selecionada || !usuario) return;
+      set_enviando(true);
+
       // Combina os dados do formulário com os dados necessários da turma e do professor
       const payload = {
         ...dados_form,
@@ -53,14 +59,17 @@ const SolicitarReposicaoPage = () => {
       handle_fechar_modal();
     } catch (error) {
       alert(`Falha ao enviar solicitação: ${error.message}`);
+    } finally {
+      set_enviando(false);
     }
+
   };
 
   if (carregando) return <div>Carregando...</div>;
 
   return (
     <div className="page-container">
-      <Navbar 
+      <Navbar
         userName={usuario ? usuario.nome.toUpperCase() : ''}
         userIdentifier={usuario ? usuario.matriculaProfessor : ''}
       />
@@ -78,8 +87,8 @@ const SolicitarReposicaoPage = () => {
                   <h3>{turma.nome}</h3>
                   <p>{turma.semestre} | {turma.alunos.length} aluno(s)</p>
                 </div>
-                <button 
-                  className="solicitar-btn" 
+                <button
+                  className="solicitar-btn"
                   onClick={() => handle_abrir_modal(turma)}
                 >
                   Solicitar Reposição
@@ -95,9 +104,10 @@ const SolicitarReposicaoPage = () => {
         on_close={handle_fechar_modal}
         title={`Nova Reposição para: ${turma_selecionada?.nome}`}
       >
-        <ReposicaoForm 
+        <ReposicaoForm
           on_submit={handle_submit_reposicao}
           on_cancel={handle_fechar_modal}
+          is_enviando={enviando}
         />
       </Modal>
     </div>
