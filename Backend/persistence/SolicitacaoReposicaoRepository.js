@@ -110,6 +110,30 @@ class SolicitacaoReposicaoRepository {
     }
   }
 
+  async buscar_pendentes_aprovacao() {
+    try {
+      const sql = `
+        SELECT 
+          sr.id_solicitacao,
+          sr.motivo,
+          sr.status,
+          sr.data,
+          u.nome AS nome_professor,
+          t.nome AS nome_turma
+        FROM solicitacao_reposicao sr
+        JOIN professor p ON sr.matricula_professor = p.matricula_professor
+        JOIN usuario u ON p.id_usuario = u.id_usuario
+        JOIN turma t ON sr.id_turma = t.id_turma
+        WHERE sr.status = 'AGUARDANDO_APROVACAO'
+        ORDER BY sr.data ASC;
+      `;
+      const result = await db.query(sql);
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao buscar solicitações pendentes de aprovação:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new SolicitacaoReposicaoRepository();
