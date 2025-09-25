@@ -1,23 +1,17 @@
-// routes/reposicaoRoutes.js
-
 const express = require('express');
 const ReposicaoController = require('../controller/ReposicaoController');
-
 const router = express.Router();
 
-// Criar uma nova solicitação de reposição
-router.post('/', (req, res) => ReposicaoController.criar(req, res));
+// Rotas Específicas
+router.get('/pendentes-aprovacao', ReposicaoController.listar_pendentes);
 
-// Atualizar status de uma solicitação
-router.put('/:id/status', (req, res) => ReposicaoController.atualizarStatus(req, res));
+// Rotas Principais
+router.post('/', ReposicaoController.criar);
+router.get('/', ReposicaoController.listarTodos);
 
-// Buscar solicitação por ID
-router.get('/:id', (req, res) => ReposicaoController.buscarPorId(req, res));
-
-// Listar todas as solicitações
-router.get('/', (req, res) => ReposicaoController.listarTodos(req, res));
-
-// ROTA NOVA: Buscar todas as assinaturas de uma reposição específica
-router.get('/:idReposicao/assinaturas', (req, res) => ReposicaoController.buscarAssinaturas(req, res));
+// Rotas com ID (genéricas, vêm por último)
+router.get('/:id_solicitacao', ReposicaoController.buscarPorId);
+router.put('/:id_solicitacao/status', ReposicaoController.atualizarStatus); // Padronizado
+router.get('/:id_solicitacao/assinaturas', ReposicaoController.buscarAssinaturas); // Padronizado
 
 module.exports = router;

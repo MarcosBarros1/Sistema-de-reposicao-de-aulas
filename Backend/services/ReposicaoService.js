@@ -133,8 +133,12 @@ class ReposicaoService {
       alunos: alunosDaTurma,
       stats: stats
     };
-    
+
     return dadosCompletos;
+  }
+
+  async buscar_pendentes_aprovacao() {
+    return await SolicitacaoReposicaoRepository.buscar_pendentes_aprovacao();
   }
 }
 

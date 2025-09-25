@@ -54,8 +54,9 @@ class ReposicaoController {
    */
   async buscarPorId(req, res) {
     try {
-      const { id } = req.params;
-      const solicitacao = await ReposicaoService.buscarPorId(Number(id));
+      const { id_solicitacao } = req.params;
+
+      const solicitacao = await ReposicaoService.buscarPorId(Number(id_solicitacao));
 
       if (!solicitacao) {
         return res.status(404).json({ erro: 'Solicitação não encontrada.' });
@@ -85,7 +86,7 @@ class ReposicaoController {
     try {
       const { idReposicao } = req.params;
       const dadosAssinaturas = await ReposicaoService.buscarAssinaturas(Number(idReposicao));
-      
+
       if (!dadosAssinaturas) {
         return res.status(404).json({ erro: 'Reposição não encontrada ou não possui turma associada.' });
       }
@@ -94,6 +95,15 @@ class ReposicaoController {
     } catch (err) {
       console.error('Erro ao buscar assinaturas:', err);
       return res.status(500).json({ erro: 'Erro interno ao buscar assinaturas.' });
+    }
+  }
+
+  async listar_pendentes(req, res) {
+    try {
+      const solicitacoes = await ReposicaoService.buscar_pendentes_aprovacao();
+      res.status(200).json(solicitacoes);
+    } catch (err) {
+      res.status(500).json({ erro: 'Erro interno ao listar solicitações pendentes.' });
     }
   }
 }

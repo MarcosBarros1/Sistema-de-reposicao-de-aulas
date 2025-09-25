@@ -162,4 +162,23 @@ export const buscarMinhasReposicoes = async () => {
     throw error.response.data;
   }
 };
+
+export const buscar_reposicoes_pendentes = async () => {
+  try {
+    const response = await api.get('/reposicao/pendentes-aprovacao');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const avaliar_reposicao = async (id_solicitacao, decisao, comentario) => {
+  try {
+    const response = await api.post(`/coordenador/solicitacoes/${id_solicitacao}/avaliar`, { decisao, comentario });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
