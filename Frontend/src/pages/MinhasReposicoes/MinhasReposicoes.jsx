@@ -32,8 +32,14 @@ const MinhasReposicoesPage = () => {
     navigate(`/professor/reposicao/${reposicaoId}/assinaturas`);
   };
 
-  const filteredReposicoes = reposicoes.filter(repo =>
-    (repo.turma?.nome || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+  // 1. Primeiro, filtramos para manter apenas as reposições que estão ativas/pendentes
+  const reposicoesAtivas = reposicoes.filter(repo => 
+    repo.status === 'PENDENTE' || repo.status === 'AGUARDANDO_APROVACAO'
+  );
+
+  // 2. Depois, aplicamos o filtro da barra de busca em cima dessa lista já filtrada
+  const filteredReposicoes = reposicoesAtivas.filter(repo =>
+    (repo.turma?.nome || `Sala ${repo.sala}`).toLowerCase().includes(searchTerm.toLowerCase()) ||
     (repo.disciplina?.nome || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
   
