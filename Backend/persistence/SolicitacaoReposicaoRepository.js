@@ -134,6 +134,29 @@ class SolicitacaoReposicaoRepository {
       throw error;
     }
   }
+
+  async buscar_autorizadas() {
+    try {
+      // Adicionamos a condição "sr.data < NOW()" para pegar apenas aulas cuja data já passou
+      const sql = `
+        SELECT 
+          sr.id_solicitacao,
+          sr.motivo,
+          sr.status,
+          sr.data,
+          t.nome AS nome_turma
+        FROM solicitacao_reposicao sr
+        JOIN turma t ON sr.id_turma = t.id_turma
+        WHERE sr.status = 'AUTORIZADA' AND sr.data <= NOW()
+        ORDER BY sr.data DESC;
+      `;
+      const result = await db.query(sql);
+      return result.rows;
+    } catch (error) {
+      console.error('Erro ao buscar solicitações autorizadas:', error);
+      throw error;
+    }
+  }
 }
 
 module.exports = new SolicitacaoReposicaoRepository();

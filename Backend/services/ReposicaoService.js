@@ -8,6 +8,7 @@ const TurmaRepository = require('../persistence/TurmaRepository');
 const NotificacaoRepository = require('../persistence/NotificacaoRepository');
 const CoordenadorRepository = require('../persistence/CoordenadorRepository');
 const EmailService = require('./EmailService');
+const ProfessorRepository = require('../persistence/ProfessorRepository');
 
 class ReposicaoService {
   /**
@@ -139,6 +140,56 @@ class ReposicaoService {
 
   async buscar_pendentes_aprovacao() {
     return await SolicitacaoReposicaoRepository.buscar_pendentes_aprovacao();
+  }
+
+  async buscar_autorizadas() {
+    return await SolicitacaoReposicaoRepository.buscar_autorizadas();
+  }
+
+  async confirmar_realizacao(id_solicitacao, email_coordenador) {
+    // ... (as validações de status e data continuam as mesmas)
+    const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(id_solicitacao);
+    if (!solicitacao) {
+      throw new RegraDeNegocioException('Solicitação não encontrada.');
+    }
+    if (solicitacao.status !== SolicitacaoStatus.AUTORIZADA) {
+      throw new RegraDeNegocioException(`Ação inválida. A solicitação está com o status '${solicitacao.status}'.`);
+    }
+    const data_aula = new Date(solicitacao.data);
+    const hoje = new Date();
+    data_aula.setHours(0, 0, 0, 0);
+    hoje.setHours(0, 0, 0, 0);
+    if (hoje <= data_aula) {
+      throw new RegraDeNegocioException('Você só pode confirmar a realização de uma aula após a data agendada.');
+    }
+
+    await SolicitacaoReposicaoRepository.atualizarStatus(id_solicitacao, SolicitacaoStatus.CONCLUIDA);
+
+    // --- LÓGICA DE E-MAIL ATUALIZADA ---
+    const email_coordenador_notificacao = email_coordenador;
+    const coordenador = await CoordenadorRepository.buscarPorEmail(email_coordenador_notificacao);
+    const professor = await ProfessorRepository.buscarPorMatricula(solicitacao.idProfessor);
+    // 1. BUSCA OS DADOS DA TURMA
+    const turma = await TurmaRepository.buscarPorId(solicitacao.idTurma);
+
+    if (coordenador && professor && turma) {
+      const assunto = `Confirmação de Aula de Reposição: ${professor.nome}`;
+      // 2. ATUALIZA O CORPO DO E-MAIL
+      const corpo_html = `
+        <p>Olá, Coordenador(a),</p>
+        <p>O professor <strong>${professor.nome}</strong> confirmou a realização da seguinte aula de reposição:</p>
+        <ul>
+          <li><strong>Data:</strong> ${new Date(solicitacao.data).toLocaleDateString('pt-BR')}</li>
+          <li><strong>Horário:</strong> ${solicitacao.horario}</li>
+          <li><strong>Turma:</strong> ${turma.nome} (${turma.semestre})</li>
+        </ul>
+        <p>O status da solicitação #${id_solicitacao} foi atualizado para "Concluída".</p>
+        <p><strong>Por favor, acesse o sistema para dar baixa na falta do professor correspondente.</strong></p>
+      `;
+      await EmailService.enviarEmail({ to: coordenador.email, subject: assunto, html: corpo_html });
+    } else {
+      console.error(`AVISO: Não foi possível enviar e-mail de notificação. Coordenador, professor ou turma não encontrados.`);
+    }
   }
 }
 

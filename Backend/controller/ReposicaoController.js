@@ -106,6 +106,39 @@ class ReposicaoController {
       res.status(500).json({ erro: 'Erro interno ao listar solicitações pendentes.' });
     }
   }
+
+  async listar_autorizadas(req, res) {
+    try {
+      const solicitacoes = await ReposicaoService.buscar_autorizadas();
+      res.status(200).json(solicitacoes);
+    } catch (err) {
+      res.status(500).json({ erro: 'Erro interno ao listar solicitações autorizadas.' });
+    }
+  }
+
+  async confirmar_realizacao(req, res) {
+    try {
+      const { id_solicitacao } = req.params;
+      // 1. EXTRAI O E-MAIL DO CORPO DA REQUISIÇÃO
+      const { email_coordenador } = req.body;
+
+      // 2. VALIDAÇÃO: Garante que o e-mail foi enviado
+      if (!email_coordenador) {
+        return res.status(400).json({ erro: 'O e-mail do coordenador é obrigatório no corpo da requisição.' });
+      }
+
+      // 3. PASSA O E-MAIL PARA O SERVIÇO
+      await ReposicaoService.confirmar_realizacao(Number(id_solicitacao), email_coordenador);
+
+      res.status(200).json({ message: 'Confirmação de aula realizada com sucesso.' });
+    } catch (err) {
+      const status = err.name === 'RegraDeNegocioException' ? 400 : 500;
+      res.status(status).json({ erro: err.message });
+    }
+  }
+
 }
+
+
 
 module.exports = new ReposicaoController();
