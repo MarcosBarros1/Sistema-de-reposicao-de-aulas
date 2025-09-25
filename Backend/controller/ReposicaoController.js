@@ -84,8 +84,8 @@ class ReposicaoController {
 
   async buscarAssinaturas(req, res) {
     try {
-      const { idReposicao } = req.params;
-      const dadosAssinaturas = await ReposicaoService.buscarAssinaturas(Number(idReposicao));
+      const { id_solicitacao } = req.params;
+      const dadosAssinaturas = await ReposicaoService.buscarAssinaturas(Number(id_solicitacao));
 
       if (!dadosAssinaturas) {
         return res.status(404).json({ erro: 'Reposição não encontrada ou não possui turma associada.' });

@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
         element: <MinhasReposicoesPage />,
       },
       { 
-        path: '/professor/reposicao/:idReposicao/assinaturas',
+        path: '/professor/reposicao/:id_solicitacao/assinaturas',
         element: <VisualizarAssinaturasPage />,
       },
       {

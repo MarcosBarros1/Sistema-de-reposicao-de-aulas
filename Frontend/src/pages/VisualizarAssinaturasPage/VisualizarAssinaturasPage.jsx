@@ -11,8 +11,8 @@ import { buscarAssinaturasPorReposicao } from '../../services/api';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const VisualizarAssinaturasPage = () => {
-  // O hook useParams pega os parâmetros da URL, como o :idReposicao da rota
-  const { idReposicao } = useParams();
+  // O hook useParams pega os parâmetros da URL, como o :id_solicitacao da rota
+  const { id_solicitacao } = useParams();
 
   // Estados para os dados, carregamento e erros
   const [alunos, setAlunos] = useState([]);
@@ -24,13 +24,13 @@ const VisualizarAssinaturasPage = () => {
   // useEffect para buscar os dados da API quando o componente carregar
   useEffect(() => {
     const fetchData = async () => {
-      if (!idReposicao || isNaN(idReposicao)) {
+      if (!id_solicitacao || isNaN(id_solicitacao)) {
         setError("ID da reposição inválido.");
         setLoading(false);
         return; // Para a execução se o ID não for um número válido
       }
       try {
-        const data = await buscarAssinaturasPorReposicao(idReposicao);
+        const data = await buscarAssinaturasPorReposicao(id_solicitacao);
         
         setAlunos(data.alunos || []);
         setReposicaoInfo(data.reposicao || {});
@@ -56,7 +56,7 @@ const VisualizarAssinaturasPage = () => {
     };
 
     fetchData();
-  }, [idReposicao]); // O efeito roda novamente se o ID na URL mudar
+  }, [id_solicitacao]); // O efeito roda novamente se o ID na URL mudar
 
   const chartOptions = {
     plugins: { legend: { display: false } },
