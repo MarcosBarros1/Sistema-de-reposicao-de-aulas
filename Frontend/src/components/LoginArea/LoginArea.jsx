@@ -4,30 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import './LoginArea.css';
 
 function LoginArea() {
-  // 2. Inicialize o hook
   const navigate = useNavigate();
 
-  const handleCoordenadorClick = () => {
-    // Navega para a página de login, passando 'coordenador' na URL
-    navigate('/login/coordenador');
-  };
-
-  const handleProfessorClick = () => {
-    // Navega para a página de login, passando 'professor' na URL
-    navigate('/login/professor');
+  const handle_login_click = () => {
+    navigate('/login'); // Navega para a página de login unificada
   };
 
   return (
-    // ... o resto do seu JSX continua o mesmo
     <div className="login-form-wrapper">
       <div className="login-card">
-        <h1>Faça login como:</h1>
+        <h1>Acesso ao Sistema</h1>
 
-        <button className="login-button" onClick={handleCoordenadorClick}>
-          Coordenador
-        </button>
-        <button className="login-button" onClick={handleProfessorClick}>
-          Professor
+        <button className="login-button" onClick={handle_login_click}>
+          Fazer Login
         </button>
 
         <a href="#" className="signup-link">Cadastre-se</a>

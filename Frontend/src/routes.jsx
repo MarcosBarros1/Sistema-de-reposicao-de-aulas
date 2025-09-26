@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
         element: <AprovarReposicoes />,
       },
       {
-        path: "/login/:tipo_usuario", // ex: /login/coordenador ou /login/professor
+        path: "/login",
         element: <Login />,
       },
       {
