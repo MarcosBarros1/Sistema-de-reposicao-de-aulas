@@ -25,9 +25,9 @@ const ProfessorDashboard = () => {
       link: "/professor/minhas-reposicoes" // Rota para ver o histórico de solicitações
     },
     {
-      titulo: "Visualizar Assinaturas",
+      titulo: "Confirmar Aula",
       Icon: FaUsers,
-      link: "/professor/assinaturas" // Rota para ver o status de assinaturas
+      link: "/professor/confirmar-aula" // Rota para ver as confirmações de aula
     }
   ];
 
