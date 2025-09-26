@@ -198,4 +198,26 @@ export const deletar_professor = async (matricula) => {
   }
 };
 
+export const buscarReposicoesAutorizadas = async () => {
+  try {
+    // Usando a rota que você enviou: GET /reposicao/autorizadas
+    const response = await api.get('/reposicao/autorizadas');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const confirmarRealizacaoReposicao = async (id_solicitacao, dados) => { // 1. Agora aceita o segundo argumento 'dados'
+  try {
+    const response = await api.post(
+      `/reposicao/${id_solicitacao}/confirmar-realizacao`,
+      dados // 2. Envia os 'dados' como corpo (body) da requisição
+    );
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
