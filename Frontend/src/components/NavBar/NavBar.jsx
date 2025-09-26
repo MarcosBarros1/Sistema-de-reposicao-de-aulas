@@ -18,12 +18,9 @@ const professorNavLinks = [
   // ATENÇÃO: Coloque aqui os caminhos corretos para as páginas do professor
   { name: 'Solicitar Reposição', path: '/professor/solicitar-reposicao' },
   { name: 'Minhas Reposições', path: '/professor/minhas-reposicoes' },
-  { name: 'Visualizar Assinaturas', path: '/professor/assinaturas' },
+  { name: 'Confirmar Aulas', path: '/professor/confirmar-aula' },
 ];
-// {/* --- FIM DA MUDANÇA --- */}
 
-
-// {/* --- INÍCIO DA MUDANÇA --- */}
 // 3. O componente não recebe mais nenhuma informação de fora (props)
 const Navbar = () => {
 // {/* --- FIM DA MUDANÇA --- */}
