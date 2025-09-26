@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../../components/Navbar/NavBar';
 import './GerenciarTurmas.css';
-import { FaSearch } from 'react-icons/fa'; // Ícone para a barra de busca
+import { FaSearch } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { buscar_turmas, remover_turma, criar_turma, atualizar_turma } from '../../services/api';
@@ -21,15 +21,17 @@ const GerenciarTurmas = () => {
   const [modal_aberto, set_modal_aberto] = useState(false);
   const [turma_selecionada, set_turma_selecionada] = useState(null);
 
+  // Estado para controlar o carregamento do formulário
+  const [is_submitting, set_is_submitting] = useState(false);
+
   useEffect(() => {
     const carregar_turmas = async () => {
       try {
         const dados = await buscar_turmas();
-        // Garante que, se 'dados' for undefined, usamos um array vazio
         set_turmas(dados || []);
       } catch (err) {
         set_erro('Falha ao carregar as turmas.');
-        set_turmas([]); // Também garante um array em caso de erro
+        set_turmas([]);
       } finally {
         set_carregando(false);
       }
@@ -46,12 +48,12 @@ const GerenciarTurmas = () => {
   }
 
   const handle_abrir_modal_adicionar = () => {
-    set_turma_selecionada(null); // Garante que o formulário estará vazio
+    set_turma_selecionada(null);
     set_modal_aberto(true);
   };
 
   const handle_abrir_modal_editar = (turma) => {
-    set_turma_selecionada(turma); // Passa os dados da turma para o formulário
+    set_turma_selecionada(turma);
     set_modal_aberto(true);
   };
 
@@ -60,29 +62,29 @@ const GerenciarTurmas = () => {
     set_turma_selecionada(null);
   };
 
+  // ATUALIZADO: Função de submit agora controla o estado 'is_submitting'
   const handle_submit_form = async (dados_form) => {
+    set_is_submitting(true); // Liga o "carregando"
     try {
       if (turma_selecionada) {
-        // --- LÓGICA DE EDIÇÃO ---
         const turma_atualizada = await atualizar_turma(turma_selecionada.id_turma, dados_form);
         set_turmas(turmas.map(t => t.id_turma === turma_atualizada.id_turma ? turma_atualizada : t));
       } else {
-        // --- LÓGICA DE ADIÇÃO ---
         const nova_turma = await criar_turma(dados_form);
         set_turmas([...turmas, nova_turma]);
       }
       handle_fechar_modal();
     } catch (error) {
       alert('Falha ao salvar a turma.');
+    } finally {
+      set_is_submitting(false); // Desliga o "carregando" no final
     }
   };
 
   const handle_remover_turma = async (id_turma) => {
-    // Pede confirmação ao usuário
     if (window.confirm('Tem certeza que deseja excluir esta turma? Esta ação é irreversível.')) {
       try {
         await remover_turma(id_turma);
-        // Atualiza a lista de turmas no frontend, removendo a que foi excluída
         set_turmas(turmas_atuais => turmas_atuais.filter(t => t.id_turma !== id_turma));
       } catch (err) {
         alert('Falha ao remover a turma.');
@@ -99,7 +101,6 @@ const GerenciarTurmas = () => {
       />
 
       <div className="content-area">
-        {/* 👇 ADICIONAMOS ESTE WRAPPER PARA CENTRALIZAR O CONTEÚDO 👇 */}
         <div className="content-wrapper">
           <div className="page-header">
             <h1>Gerenciar Turmas</h1>
@@ -128,7 +129,7 @@ const GerenciarTurmas = () => {
                   <tr key={turma.id_turma}>
                     <td>{turma.nome}</td>
                     <td>{turma.semestre}</td>
-                    <td>{turma.alunos.length}</td>
+                    <td>{turma.alunos ? turma.alunos.length : 0}</td>
                     <td>
                       <div className="action-buttons">
                         <button className="edit-btn" onClick={() => handle_abrir_modal_editar(turma)}>
@@ -144,8 +145,9 @@ const GerenciarTurmas = () => {
               </tbody>
             </table>
           </div>
-        </div> {/* Fim do content-wrapper */}
+        </div>
       </div>
+      
       <Modal
         is_open={modal_aberto}
         on_close={handle_fechar_modal}
@@ -155,6 +157,8 @@ const GerenciarTurmas = () => {
           on_submit={handle_submit_form}
           on_cancel={handle_fechar_modal}
           turma_para_editar={turma_selecionada}
+          // Passando a prop de carregamento para o formulário
+          is_loading={is_submitting}
         />
       </Modal>
     </div>
