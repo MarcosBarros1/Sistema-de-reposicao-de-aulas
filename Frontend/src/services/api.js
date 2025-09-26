@@ -181,4 +181,21 @@ export const avaliar_reposicao = async (id_solicitacao, decisao, comentario) => 
   }
 };
 
+export const atualizar_professor = async (matricula, dados_professor) => {
+  try {
+    const response = await api.put(`/professor/${matricula}`, dados_professor);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const deletar_professor = async (matricula) => {
+  try {
+    await api.delete(`/professor/${matricula}`);
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
 export default api;
