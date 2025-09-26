@@ -73,3 +73,40 @@
   .header-logo{
     height: 8vh;
   }
+
+  /* Adicione estas novas regras ao final do seu Navbar.css */
+
+.navbar-center {
+  display: flex;
+  gap: 30px;
+  /* Posicionamento centralizado que se ajusta ao tamanho */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-link {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-bottom-color 0.2s;
+}
+
+.nav-link:hover {
+  color: #ffffff;
+}
+
+/* Estilo para o link da página ativa (o sublinhado) */
+.nav-link.active {
+  color: #ffffff;
+  font-weight: bold;
+  border-bottom-color: #ffffff;
+}
+
+/* Ajuste no logo para que ele não ocupe a tela toda */
+.header-logo {
+  height: 40px; /* Ajuste o tamanho se necessário */
+}

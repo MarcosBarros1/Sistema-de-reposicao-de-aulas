@@ -16,6 +16,7 @@ import CadastroPage from './pages/CadastroPage/CadastroPage.jsx';
 import CadastroAlunoPage from './pages/CadastroAlunoPage/CadastroAlunoPage.jsx';
 import SolicitarReposicaoPage from './pages/SolicitarReposicoes/SolicitarReposicoes.jsx'
 import MinhasReposicoesPage from './pages/MinhasReposicoes/MinhasReposicoes.jsx'
+import ConfirmarAula from './pages/ConfirmarAula/ConfirmarAula.jsx'; 
 
 // Criamos o roteador centralizado aqui
 export const router = createBrowserRouter([
@@ -65,7 +66,7 @@ export const router = createBrowserRouter([
         element: <AprovarReposicoes />,
       },
       {
-        path: "/login/:tipo_usuario", // ex: /login/coordenador ou /login/professor
+        path: "/login",
         element: <Login />,
       },
       {
@@ -75,7 +76,11 @@ export const router = createBrowserRouter([
       {
         path: "/cadastro/aluno",
         element: <CadastroAlunoPage />,
-      }
+      },
+      {
+        path: "/professor/confirmar-aula",
+        element: <ConfirmarAula />,
+      },
     ],
   },
 ]);
