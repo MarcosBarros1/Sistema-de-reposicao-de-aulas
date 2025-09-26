@@ -1,0 +1,146 @@
+/* ============================================= */
+/* PARTE 1: Estilo do Modal (Para o Componente Pai) */
+/* ============================================= */
+
+/* Fundo escuro que cobre a tela inteira */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* O container branco do formulário */
+.modal-content {
+  background-color: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+}
+
+/* Cabeçalho do Modal (Título e botão de fechar) */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.modal-header .close-button {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+}
+.modal-header .close-button:hover {
+  color: #333;
+}
+
+
+/* =========================================== */
+/* PARTE 2: Estilo do Formulário (Para TurmaForm.jsx) */
+/* =========================================== */
+
+.turma-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* Garante que o padding não aumente a largura */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #28a745; /* Verde do sistema */
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+/* Área dos botões de ação */
+.form-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinha os botões à direita */
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Estilo base para os botões */
+.form-actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.form-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Botão de Cancelar (Secundário) */
+.btn-cancel {
+  background-color: #f0f0f0;
+  color: #555;
+  border: 1px solid #ddd;
+}
+.btn-cancel:hover {
+  background-color: #e0e0e0;
+}
+
+/* Botão de Salvar (Primário) - Com as cores do sistema */
+.btn-submit {
+  background-color: #28a745; /* Verde do sistema */
+  color: white;
+}
+.btn-submit:hover {
+  background-color: #218838; /* Verde mais escuro no hover */
+}

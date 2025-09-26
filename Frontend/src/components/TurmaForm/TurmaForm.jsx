@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import"./TurmaForm.css"
 
-const TurmaForm = ({ on_submit, on_cancel, turma_para_editar }) => {
+const TurmaForm = ({ on_submit, on_cancel, turma_para_editar, is_loading }) => {
     const [nome, set_nome] = useState('');
     const [semestre, set_semestre] = useState('');
-    const [alunos_str, set_alunos_str] = useState('')
+    const [alunos_str, set_alunos_str] = useState('');
 
-    // useEffect para preencher o formulário quando estiver em modo de edição
     useEffect(() => {
         if (turma_para_editar) {
             set_nome(turma_para_editar.nome);
@@ -20,11 +20,10 @@ const TurmaForm = ({ on_submit, on_cancel, turma_para_editar }) => {
 
     const handle_submit = (evento) => {
         evento.preventDefault();
-        // Converte a string de matrículas (separadas por vírgula) em um array de números
         const matriculas_alunos = alunos_str
             .split(',')
             .map(s => parseInt(s.trim(), 10))
-            .filter(n => !isNaN(n)); // Filtra valores que não são números
+            .filter(n => !isNaN(n));
 
         on_submit({ nome, semestre, matriculas_alunos });
     };
@@ -62,11 +61,20 @@ const TurmaForm = ({ on_submit, on_cancel, turma_para_editar }) => {
                 />
             </div>
             <div className="form-actions">
-                <button type="button" onClick={on_cancel} className="btn-cancel">
+                <button
+                    type="button"
+                    onClick={on_cancel}
+                    className="btn-cancel"
+                    disabled={is_loading} // usa a prop
+                >
                     Cancelar
                 </button>
-                <button type="submit" className="btn-submit">
-                    Salvar
+                <button
+                    type="submit"
+                    className="btn-submit"
+                    disabled={is_loading} // usa a prop
+                >
+                    {is_loading ? 'Salvando...' : 'Salvar'} 
                 </button>
             </div>
         </form>
