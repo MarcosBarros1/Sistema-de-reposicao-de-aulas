@@ -3,6 +3,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginArea.css';
 
+import { Link } from 'react-router-dom';
+
 function LoginArea() {
   const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ function LoginArea() {
           Fazer Login
         </button>
 
-        <a href="#" className="signup-link">Cadastre-se</a>
+        <Link to="/cadastro" className="signup-link">Cadastre-se</Link>
       </div>
       <p className="footer-text">
         O sistema foi desenvolvido por alunos do IFCE, para facilitar o gerenciamento de faltas.
