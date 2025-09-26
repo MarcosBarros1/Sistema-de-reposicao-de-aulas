@@ -77,14 +77,12 @@
     border-radius: 15px;
     font-weight: 500;
     font-size: 12px;
-    color: #fff;
+    color: #ffffff;
     white-space: nowrap;
   }
   
-  .status-pendente { background-color: #6c757d; }
-  .status-aguardando-aprovacao { background-color: #ffc107; color: #333; }
-  .status-aceita { background-color: #28a745; }
-  .status-negada { background-color: #dc3545; }
+  .status-autorizada { background-color: #4d9623; }
+  
   
   /* Botão de Ação "Visualizar" */
   .action-button-view {
@@ -103,3 +101,25 @@
   .action-button-view:hover {
     background-color: #0056b3;
   }
+
+  /* Adicione esta classe ao seu arquivo CSS */
+.action-button-confirm {
+  background-color: #28a745; /* Verde */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.action-button-confirm:hover {
+  background-color: #218838;
+}
+
+/* Adicione um estilo para o container dos botões, se ainda não tiver */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}

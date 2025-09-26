@@ -1,0 +1,12 @@
+@import '../MultiSelectModal/MultiSelectModal.css'; /* Reutiliza a base do modal */
+
+.cancel-button {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
