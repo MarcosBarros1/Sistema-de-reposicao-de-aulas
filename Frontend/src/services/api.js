@@ -3,8 +3,7 @@ import axios from 'axios';
 
 // Cria uma instância do axios pré-configurada
 const api = axios.create({
-  // URL base da nossa API que está no Render
-  baseURL: 'http://localhost:3000'
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 // "Interceptor" de Requisições: uma função que é executada ANTES de cada requisição sair
