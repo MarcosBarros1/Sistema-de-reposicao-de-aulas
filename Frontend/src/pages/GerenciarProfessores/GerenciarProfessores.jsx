@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/Navbar';
 import Modal from '../../components/Modal/Modal';
 import ProfessorForm from '../../components/ProfessorForm/ProfessorForm';
 import './GerenciarProfessores.css';

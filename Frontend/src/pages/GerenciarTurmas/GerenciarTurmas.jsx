@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/Navbar';
 import './GerenciarTurmas.css';
 import { FaSearch } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
