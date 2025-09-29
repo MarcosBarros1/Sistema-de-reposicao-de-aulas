@@ -99,6 +99,7 @@ class ProfessorService {
       // Monta o link dinâmico com os dados reais
       const link_formulario =
         `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=pp_url` +
+        `&entry.1661681732=${aluno.email}` +                    // Campo para o E-mail
         `&entry.1310486159=${nova_solicitacao.idSolicitacao}` + // Campo para o ID da Solicitação
         `&entry.476576271=${aluno.matricula_aluno}`;           // Campo para a Matrícula do Aluno
 
