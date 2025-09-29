@@ -372,8 +372,9 @@ O sistema foi construído com tecnologias modernas e robustas, separadas entre B
 ```json
 {
   "nome": "Inteligência Artificial",
-  "carga_horaria": 60,
-  "codigo": "COMP-001"
+  "cargaHoraria": 60,
+  "codigo": "COMP-001",
+	"professores": []
 }
 ```
 
@@ -394,3 +395,10 @@ O sistema foi construído com tecnologias modernas e robustas, separadas entre B
 }
 ```
 </details>
+
+
+## Pontos de melhoria
+
+* Migrar o uso de email para sendgrid
+* Adicionar status de carregamento a todas as funcionalidades
+* Alterar lógica para que um coordenador também possa ser professor
