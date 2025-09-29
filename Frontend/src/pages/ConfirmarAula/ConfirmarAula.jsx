@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/Navbar';
 import './ConfirmarAula.css';
 import { FaSearch } from 'react-icons/fa';
 import { buscarReposicoesAutorizadas, confirmarRealizacaoReposicao } from '../../services/api';

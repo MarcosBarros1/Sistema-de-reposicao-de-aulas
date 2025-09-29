@@ -1,7 +1,7 @@
 import React from 'react';
 // 1. IMPORTE O USEAUTH
 import { useAuth } from '../../context/AuthContext'; 
-import Navbar from '../../components/Navbar/NavBar';
+import Navbar from '../../components/Navbar/Navbar';
 import DashboardCard from '../../components/DashboardCard/DashboardCard';
 import './ProfessorDashboard.css';
 import { FaClipboardCheck, FaUsers, FaListAlt } from 'react-icons/fa'; // Ícones atualizados
@@ -38,7 +38,7 @@ const ProfessorDashboard = () => {
 
   return (
     <div className="page-container">
-      {/* 5. USE OS DADOS REAIS DO USUÁRIO NA NAVBAR */}
+      {/* 5. USE OS DADOS REAIS DO USUÁRIO NA Navbar */}
       <Navbar
         userName={usuario.nome.toUpperCase()}
         userIdentifier={usuario.matriculaProfessor}

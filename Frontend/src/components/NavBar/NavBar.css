@@ -1,6 +1,6 @@
 /* Arquivo: src/components/Navbar/Navbar.css */
 
-.navbar {
+.Navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -12,20 +12,20 @@
     box-sizing: border-box; /* Garante que o padding não aumente a largura */
   }
   
-  .navbar-left,
-  .navbar-right {
+  .Navbar-left,
+  .Navbar-right {
     display: flex;
     align-items: center;
     gap: 20px; /* Espaçamento entre os itens */
   }
 
-  .navbar-center {
+  .Navbar-center {
     display: flex;
     align-items: center;
     gap: 20px; /* Espaçamento entre os itens */
   }
   
-  .navbar-icon-btn {
+  .Navbar-icon-btn {
     background: none;
     border: none;
     color: #FFFFFF;
@@ -37,7 +37,7 @@
     justify-content: center;
   }
   
-  .navbar-user-profile {
+  .Navbar-user-profile {
     display: flex;
     align-items: center;
     gap: 15px;
@@ -76,7 +76,7 @@
 
   /* Adicione estas novas regras ao final do seu Navbar.css */
 
-.navbar-center {
+.Navbar-center {
   display: flex;
   gap: 30px;
   /* Posicionamento centralizado que se ajusta ao tamanho */

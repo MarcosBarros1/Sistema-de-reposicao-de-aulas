@@ -46,14 +46,14 @@ const Navbar = () => {
   // {/* --- FIM DA MUDANÇA --- */}
 
   return (
-    <header className="navbar">
-      <div className="navbar-left">
+    <header className="Navbar">
+      <div className="Navbar-left">
         <img src={IFCE} alt="Logo IFCE" className="header-logo" />
       </div>
 
       {/* 6. A lógica de renderização agora usa as variáveis internas que criamos */}
       {!isDashboard && navLinksParaMostrar && navLinksParaMostrar.length > 0 && (
-        <nav className="navbar-center">
+        <nav className="Navbar-center">
           {navLinksParaMostrar.map(link => (
             <NavLink 
               key={link.name} 
@@ -66,8 +66,8 @@ const Navbar = () => {
         </nav>
       )}
 
-      <div className="navbar-right">
-        <div className="navbar-user-profile">
+      <div className="Navbar-right">
+        <div className="Navbar-user-profile">
           <div className="user-info">
             {/* --- INÍCIO DA MUDANÇA --- */}
             {/* 7. As informações vêm direto do hook 'useAuth' em vez das props */}
