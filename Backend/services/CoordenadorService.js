@@ -89,7 +89,7 @@ class CoordenadorService {
     }
 
     // 2. Preparar o conteúdo do e-mail
-    const linkFront = `http://localhost:5173/login/professor`;
+    const linkFront = `https://sistema-de-reposicao-de-aulas.vercel.app`;
 
     const subject = 'Notificação de Ausência e Solicitação de Reposição';
     const text = `
