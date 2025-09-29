@@ -3,8 +3,7 @@ import axios from 'axios';
 
 // Cria uma instância do axios pré-configurada
 const api = axios.create({
-  // URL base da nossa API que está no Render
-  baseURL: 'http://localhost:3000'
+  baseURL: import.meta.env.VITE_API_URL
 });
 
 // "Interceptor" de Requisições: uma função que é executada ANTES de cada requisição sair
@@ -193,6 +192,28 @@ export const atualizar_professor = async (matricula, dados_professor) => {
 export const deletar_professor = async (matricula) => {
   try {
     await api.delete(`/professor/${matricula}`);
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const buscarReposicoesAutorizadas = async () => {
+  try {
+    // Usando a rota que você enviou: GET /reposicao/autorizadas
+    const response = await api.get('/reposicao/autorizadas');
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const confirmarRealizacaoReposicao = async (id_solicitacao, dados) => { // 1. Agora aceita o segundo argumento 'dados'
+  try {
+    const response = await api.post(
+      `/reposicao/${id_solicitacao}/confirmar-realizacao`,
+      dados // 2. Envia os 'dados' como corpo (body) da requisição
+    );
+    return response.data;
   } catch (error) {
     throw error.response.data;
   }
