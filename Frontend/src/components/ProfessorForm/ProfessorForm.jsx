@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-const ProfessorForm = ({ on_submit, on_cancel, professor_para_editar }) => {
+// ✅ 1. ADICIONADO: A prop 'is_loading' é recebida aqui
+const ProfessorForm = ({ on_submit, on_cancel, professor_para_editar, is_loading }) => {
   const [nome, set_nome] = useState('');
   const [email, set_email] = useState('');
   const [matricula, set_matricula] = useState('');
@@ -24,8 +25,8 @@ const ProfessorForm = ({ on_submit, on_cancel, professor_para_editar }) => {
 
   const handle_submit = (evento) => {
     evento.preventDefault();
-    const dados_form = is_edit_mode 
-      ? { nome, email } 
+    const dados_form = is_edit_mode
+      ? { nome, email }
       : { nome, email, matricula, senha };
     on_submit(dados_form);
   };
@@ -40,7 +41,7 @@ const ProfessorForm = ({ on_submit, on_cancel, professor_para_editar }) => {
         <label htmlFor="email">E-mail</label>
         <input id="email" type="email" value={email} onChange={(e) => set_email(e.target.value)} required />
       </div>
-      
+
       {/* Campos visíveis apenas no modo de Adicionar */}
       {!is_edit_mode && (
         <>
@@ -56,8 +57,14 @@ const ProfessorForm = ({ on_submit, on_cancel, professor_para_editar }) => {
       )}
 
       <div className="form-actions">
-        <button type="button" onClick={on_cancel} className="btn-cancel">Cancelar</button>
-        <button type="submit" className="btn-submit">Salvar</button>
+        {/* ✅ 2. ADICIONADO: O atributo 'disabled' para desabilitar o botão */}
+        <button type="button" onClick={on_cancel} className="btn-cancel" disabled={is_loading}>
+            Cancelar
+        </button>
+        <button type="submit" className="btn-submit" disabled={is_loading}>
+            {/* ✅ 3. ADICIONADO: Lógica para mudar o texto do botão */}
+            {is_loading ? 'Salvando...' : 'Salvar'}
+        </button>
       </div>
     </form>
   );

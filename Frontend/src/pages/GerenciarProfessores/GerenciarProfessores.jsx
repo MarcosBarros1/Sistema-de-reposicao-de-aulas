@@ -5,6 +5,7 @@ import ProfessorForm from '../../components/ProfessorForm/ProfessorForm';
 import './GerenciarProfessores.css';
 import { useAuth } from '../../context/AuthContext';
 import { buscar_professores, notificar_falta_professor, cadastrarProfessor, atualizar_professor, deletar_professor } from '../../services/api';
+import { FaSearch } from 'react-icons/fa'; // Importando o ícone de busca
 
 function GerenciarProfessores() {
   const { usuario } = useAuth();
@@ -15,6 +16,9 @@ function GerenciarProfessores() {
   // Estados para o modal
   const [modal_aberto, set_modal_aberto] = useState(false);
   const [professor_selecionado, set_professor_selecionado] = useState(null);
+  
+  // ✅ 1. ADICIONADO: Estado para controlar o carregamento do formulário
+  const [is_submitting, set_is_submitting] = useState(false);
 
   const carregar_professores = async () => {
     try {
@@ -47,19 +51,21 @@ function GerenciarProfessores() {
     set_professor_selecionado(null);
   };
 
+  // ✅ 2. ATUALIZADO: Função de submit agora controla o estado 'is_submitting'
   const handle_submit_form = async (dados_form) => {
+    set_is_submitting(true);
     try {
       if (professor_selecionado) {
-        // Lógica de Edição
         await atualizar_professor(professor_selecionado.matriculaProfessor, dados_form);
       } else {
-        // Lógica de Adição
         await cadastrarProfessor(dados_form);
       }
       handle_fechar_modal();
-      carregar_professores(); // Recarrega a lista para mostrar as alterações
+      carregar_professores();
     } catch (error) {
-      alert(`Falha ao salvar o professor: ${error.message}`);
+      alert(`Falha ao salvar o professor: ${error.message || 'Erro desconhecido'}`);
+    } finally {
+      set_is_submitting(false);
     }
   };
 
@@ -67,31 +73,30 @@ function GerenciarProfessores() {
     if (window.confirm(`Tem certeza que deseja excluir o professor de matrícula ${matricula}?`)) {
       try {
         await deletar_professor(matricula);
-        carregar_professores(); // Recarrega a lista
+        carregar_professores();
       } catch (error) {
         alert(`Falha ao excluir o professor: ${error.message}`);
       }
     }
   };
-  // Filtra os professores com base na busca
+  
   const professores_filtrados = professores.filter(prof =>
     prof.nome.toLowerCase().includes(filtro.toLowerCase()) ||
-    (prof.disciplinas && prof.disciplinas.join(', ').toLowerCase().includes(filtro.toLowerCase()))
+    (prof.disciplinasMinistradas && prof.disciplinasMinistradas.join(', ').toLowerCase().includes(filtro.toLowerCase()))
   );
 
-  // Função para lidar com a notificação de falta
   const handle_notificar_falta = async (matricula) => {
     if (window.confirm(`Tem certeza que deseja notificar a falta do professor de matrícula ${matricula}?`)) {
       try {
         const response = await notificar_falta_professor(matricula);
-        alert(response.message); // Exibe a mensagem de sucesso da API
+        alert(response.message);
       } catch (error) {
         alert(`Falha ao notificar falta: ${error.message}`);
       }
     }
   };
 
-  if (carregando) return <div>Carregando...</div>;
+  if (carregando && !usuario) return <div>Carregando...</div>;
 
   return (
     <div className="page-container">
@@ -116,6 +121,7 @@ function GerenciarProfessores() {
               value={filtro}
               onChange={(e) => set_filtro(e.target.value)}
             />
+            <FaSearch className="search-icon"/>
           </div>
 
           <div className="table-container">
@@ -132,7 +138,6 @@ function GerenciarProfessores() {
                 {professores_filtrados.map((professor) => (
                   <tr key={professor.matriculaProfessor}>
                     <td>{professor.nome}</td>
-                    {/* Transforma o array de disciplinas em uma string separada por vírgula */}
                     <td>{professor.disciplinasMinistradas.join(', ')}</td>
                     <td>{professor.email}</td>
                     <td className="actions-cell">
@@ -153,7 +158,6 @@ function GerenciarProfessores() {
           </div>
         </div>
       </div>  
-      {/* Modal para Adicionar/Editar */}
       <Modal
         is_open={modal_aberto}
         on_close={handle_fechar_modal}
@@ -163,6 +167,8 @@ function GerenciarProfessores() {
           on_submit={handle_submit_form}
           on_cancel={handle_fechar_modal}
           professor_para_editar={professor_selecionado}
+          // ✅ 3. ADICIONADO: Passando a prop de carregamento para o formulário
+          is_loading={is_submitting}
         />
       </Modal>
     </div>

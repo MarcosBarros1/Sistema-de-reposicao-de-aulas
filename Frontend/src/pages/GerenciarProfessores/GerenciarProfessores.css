@@ -1,108 +1,121 @@
-@import '../CoordenadorDashboard/CoordenadorDashboard.css';
+/* Estilos herdados do global.css (page-container, etc.) */
 
-.main-content {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 2rem;
-  }
-  
-  .page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .add-button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .add-button:hover {
-    background-color: #218838;
-  }
-  
-  .search-bar {
-    margin-bottom: 1.5rem;
-  }
-  
-  .search-bar input {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 1rem;
-    background-color: #f8f9fa;
-  }
-  
-  .table-container {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    overflow: hidden; /* Garante que as bordas da tabela fiquem arredondadas */
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 1rem;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
-  }
-  
-  thead {
-    background-color: #f7f7f7;
-  }
-  
-  th {
-    font-weight: bold;
-    color: #555;
-  }
-  
-  tbody tr:last-child td {
-    border-bottom: none;
-  }
-  
-  .status {
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 0.8rem;
-  }
-  
-  .status-ativo {
-    color: #28a745;
-    background-color: #e9f7ea;
-  }
-  
-  .actions-cell .action-button {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 1rem;
-  }
-  
-  .action-button.edit-button {
-    color: #007bff;
-  }
-  
-  .action-button.delete-button {
-    color: #dc3545;
-  }
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+}
+
+.add-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+.search-bar {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f0f0f5; /* Fundo cinza claro */
+}
+
+/* Container branco para a tabela */
+.table-container {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+thead th {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+/* Célula e Botões de Ação */
+.actions-cell {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.action-button {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.notify-button {
+  background-color: #ffc107; /* Amarelo */
+  color: #333;
+}
+.notify-button:hover {
+  background-color: #e0a800;
+}
+
+.edit-button {
+  background-color: #218838; /* Azul */
+}
+
+
+.delete-button {
+  background-color: #dc3545; /* Vermelho */
+}
+.delete-button:hover {
+  background-color: #c82333;
+}
