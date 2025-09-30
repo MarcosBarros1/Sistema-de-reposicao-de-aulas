@@ -9,6 +9,7 @@ const EmailService = require('./EmailService');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus');
 const bcrypt = require('bcrypt');
 const { RegraDeNegocioException } = require('../exceptions/RegraDeNegocioException');
+const NutricionistaRepository = require('../persistence/NutricionistaRepository');
 
 /**
  * Camada de Serviço para a lógica de negócio de Coordenadores.
@@ -140,7 +141,9 @@ class CoordenadorService {
     // 3. Buscar dados adicionais para os e-mails
     const professor = await ProfessorRepository.buscarPorMatricula(solicitacao.idProfessor);
     const alunos = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
+    const nutricionistas = await NutricionistaRepository.buscar_todos();
     const emails_alunos = alunos.map(aluno => aluno.email);
+    const emails_nutricionistas = nutricionistas.map(n => n.email);
 
     // 4. Disparar e-mails com base na decisão
     if (nova_decisao === SolicitacaoStatus.AUTORIZADA) {
@@ -159,7 +162,7 @@ class CoordenadorService {
 
       // E-mail para Nutricionista (RF11.2)
       await EmailService.enviarEmail({
-        to: 'email.nutricionista@ifce.edu.br', // Substituir por um e-mail real
+        to: emails_nutricionistas,
         subject: `Solicitação de Merenda para Reposição`,
         html: `<p>Solicitação de merenda para uma aula de reposição aprovada.</p>
                <p><strong>Detalhes:</strong></p>

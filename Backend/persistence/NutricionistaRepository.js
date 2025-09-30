@@ -3,6 +3,7 @@
 // persistence/NutricionistaRepository.js
 
 const db = require('../config/db');
+const Nutricionista = require('../model/Nutricionista');
 
 class NutricionistaRepository {
   async criar(dadosNutricionista) {
@@ -40,6 +41,17 @@ class NutricionistaRepository {
     const sql = `SELECT * FROM nutricionista WHERE email = $1`;
     const result = await db.query(sql, [email]);
     return result.rows[0];
+  }
+
+  async buscar_todos() {
+    try {
+      const sql = 'SELECT * FROM nutricionista ORDER BY nome;';
+      const result = await db.query(sql);
+      return result.rows.map(row => new Nutricionista(row.id_nutricionista, row.nome, row.email));
+    } catch (error) {
+      console.error('Erro ao buscar nutricionistas:', error);
+      throw error;
+    }
   }
 }
 
