@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ConfirmEmailModal.css';
 
-const ConfirmEmailModal = ({ isOpen, onClose, onConfirm }) => {
+const ConfirmEmailModal = ({ isOpen, onClose, onConfirm, isLoading }) => {
   const [email, setEmail] = useState('');
 
   if (!isOpen) {
@@ -21,7 +21,7 @@ const ConfirmEmailModal = ({ isOpen, onClose, onConfirm }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>Confirmar Realização e Notificar Coordenador</h3>
-          <button className="close-button" onClick={onClose}>&times;</button>
+          <button className="close-button" onClick={onClose} disabled={isLoading}>&times;</button>
         </div>
         <div className="modal-body">
           <p>Para notificar o coordenador, por favor, insira o e-mail dele abaixo.</p>
@@ -37,8 +37,13 @@ const ConfirmEmailModal = ({ isOpen, onClose, onConfirm }) => {
           </div>
         </div>
         <div className="modal-footer">
-          <button className="cancel-button" onClick={onClose}>Cancelar</button>
-          <button className="confirm-button" onClick={handleConfirm}>Confirmar e Enviar</button>
+          <button className="cancel-button" onClick={onClose} disabled={isLoading}>Cancelar</button>
+          <button className="confirm-button" onClick={handleConfirm} disabled={isLoading}>
+            {isLoading ? 'Enviando...' : 'Confirmar e Enviar'}
+          </button>
+
+          
+
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/NavBar';
 import './ConfirmarAula.css';
 import { FaSearch } from 'react-icons/fa';
 import { buscarReposicoesAutorizadas, confirmarRealizacaoReposicao } from '../../services/api';
@@ -16,9 +16,11 @@ const ConfirmarAula = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 2. NOVOS ESTADOS para controlar o modal de e-mail
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedReposicaoId, setSelectedReposicaoId] = useState(null);
+  
+  // Este estado já existe e está correto
+  const [isConfirming, setIsConfirming] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,46 +37,46 @@ const ConfirmarAula = () => {
   }, []);
 
   const handleOpenConfirmModal = (reposicaoId) => {
-    setSelectedReposicaoId(reposicaoId); // Guarda o ID da reposição que queremos confirmar
+    setSelectedReposicaoId(reposicaoId);
     setIsEmailModalOpen(true);
   };
 
+  // --- INÍCIO DA CORREÇÃO ---
+  // Esta função foi reestruturada para controlar o estado 'isConfirming'
   const handleFinalConfirm = async (emailCoordenador) => {
+    if (!usuario) {
+      alert('Erro: Usuário não autenticado.');
+      return;
+    }
     if (!selectedReposicaoId) return;
+
+    setIsConfirming(true); // 1. LIGA o estado de carregamento
 
     try {
       const dadosConfirmacao = {
-        email_coordenador: emailCoordenador, // O e-mail que o usuário digitou
-        id_professor: usuario.idProfessor // A identificação de quem confirmou
+        email_coordenador: emailCoordenador,
+        id_professor: usuario.idProfessor, // Verifique se 'idProfessor' é o nome correto
       };
 
       await confirmarRealizacaoReposicao(selectedReposicaoId, dadosConfirmacao);
       alert('Aula confirmada com sucesso! O coordenador será notificado.');
-
       setReposicoes(prev => prev.filter(repo => repo.id_solicitacao !== selectedReposicaoId));
+      
+      // Fecha o modal apenas em caso de sucesso
+      setIsEmailModalOpen(false); 
+      setSelectedReposicaoId(null);
+
     } catch (err) {
       console.error("Erro ao confirmar a aula:", err);
       alert('Não foi possível confirmar a aula. Tente novamente.');
     } finally {
-      // Fecha o modal e reseta o ID selecionado
-      setIsEmailModalOpen(false);
-      setSelectedReposicaoId(null);
+      setIsConfirming(false); // 2. DESLIGA o estado de carregamento (sempre, com sucesso ou erro)
     }
   };
+  // --- FIM DA CORREÇÃO ---
 
-  const handleConfirmarAula = async (reposicaoId) => {
-    if (window.confirm('Você confirma que esta aula de reposição foi realizada?')) {
-      try {
-        await confirmarRealizacaoReposicao(reposicaoId);
-        alert('Aula confirmada com sucesso! O coordenador será notificado.');
-        setReposicoes(prevReposicoes => prevReposicoes.filter(repo => repo.id_solicitacao !== reposicaoId));
-      } catch (err) {
-        console.error("Erro ao confirmar a aula:", err);
-        alert('Não foi possível confirmar a aula. Tente novamente.');
-      }
-    }
-  };
-
+  // REMOVEMOS a função 'handleConfirmarAula' antiga e duplicada
+  
   const handleNavigateToAssinaturas = (reposicaoId) => {
     navigate(`/professor/reposicao/${reposicaoId}/assinaturas`);
   };
@@ -111,7 +113,6 @@ const ConfirmarAula = () => {
           <div className="table-container-white">
             <table>
               <thead>
-                {/* --- MUDANÇA: Colunas ajustadas --- */}
                 <tr>
                   <th>Data</th>
                   <th>Turma</th>
@@ -121,7 +122,6 @@ const ConfirmarAula = () => {
               </thead>
               <tbody>
                 {reposicoesParaConfirmar.map((repo) => (
-                  // --- MUDANÇA: Chave e dados ajustados ---
                   <tr key={repo.id_solicitacao}>
                     <td>{new Date(repo.data).toLocaleDateString()}</td>
                     <td>{repo.nome_turma}</td>
@@ -134,7 +134,7 @@ const ConfirmarAula = () => {
                       <div className="action-buttons">
                         <button
                           className="action-button-confirm"
-                          onClick={() => handleOpenConfirmModal(repo.id_solicitacao)} // 5. Chama a função que abre o modal
+                          onClick={() => handleOpenConfirmModal(repo.id_solicitacao)}
                         >
                           Confirmar
                         </button>
@@ -145,7 +145,6 @@ const ConfirmarAula = () => {
                           Visualizar
                         </button>
                       </div>
-
                     </td>
                   </tr>
                 ))}
@@ -155,10 +154,11 @@ const ConfirmarAula = () => {
         </div>
       </div>
       <ConfirmEmailModal
-          isOpen={isEmailModalOpen}
-          onClose={() => setIsEmailModalOpen(false)}
-          onConfirm={handleFinalConfirm}
-        />
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        onConfirm={handleFinalConfirm}
+        isLoading={isConfirming}
+      />
     </div>
   );
 };
