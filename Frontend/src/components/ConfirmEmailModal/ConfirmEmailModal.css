@@ -1,5 +1,16 @@
 @import '../MultiSelectModal/MultiSelectModal.css'; /* Reutiliza a base do modal */
 
+/* --- INÍCIO DA ADIÇÃO --- */
+/* Esta classe controla a área onde os botões ficam */
+.modal-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end; /* Alinha os botões à direita */
+  gap: 10px; /* Adiciona um espaço de 10px entre os botões */
+}
+/* --- FIM DA ADIÇÃO --- */
+
 .cancel-button {
   background-color: #6c757d;
   color: white;
@@ -9,4 +20,15 @@
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.confirm-button:disabled,
+.cancel-button:disabled {
+  background-color: #5a8d67; /* Um verde mais escuro/cinza */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.cancel-button:disabled {
+    background-color: #868e96;
 }
