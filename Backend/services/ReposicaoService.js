@@ -106,29 +106,32 @@ class ReposicaoService {
     return { message: 'Assinatura registrada com sucesso.' };
   }
 
+  // ... (resto da sua classe ReposicaoService) ...
+
   async buscarAssinaturas(id_solicitacao) {
     const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(id_solicitacao);
     if (!solicitacao || !solicitacao.idTurma) {
-      return null; // Retorna nulo se a solicitação não existir ou não tiver turma
+      return null;
     }
 
-    // Busca todos os alunos da turma
+    // A busca por todos os alunos da turma continua igual
     const alunosDaTurma = await TurmaRepository.buscarAlunosPorTurmaId(solicitacao.idTurma);
     const totalAlunos = alunosDaTurma.length;
 
-    // Busca as assinaturas que já foram feitas para esta solicitação
+    // ✅ CORREÇÃO: Buscamos as duas contagens do repositório
     const concordancias = await AssinaturaRepository.contarConcordancias(id_solicitacao);
+    const discordancias = await AssinaturaRepository.contarDiscordancias(id_solicitacao);
 
-    // Calcula as estatísticas
+    // ✅ CORREÇÃO: Usamos os valores reais para calcular as estatísticas
     const stats = {
-      presentes: concordancias, // ou "concordaram"
-      ausentes: 0, // A lógica de ausentes precisaria ser definida (ex: alunos que não concordaram)
-      pendentes: totalAlunos - concordancias // Alunos que ainda não assinaram
+      presentes: concordancias,
+      ausentes: discordancias, // <-- Agora usa o valor real
+      pendentes: totalAlunos - (concordancias + discordancias)
     };
 
     const dadosCompletos = {
       reposicao: {
-        disciplina: solicitacao.disciplina, // Supondo que o repositório retorne isso
+        disciplina: solicitacao.disciplina,
         data: solicitacao.data
       },
       alunos: alunosDaTurma,

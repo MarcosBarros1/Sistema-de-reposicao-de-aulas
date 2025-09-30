@@ -33,6 +33,24 @@ class AssinaturaRepository {
       throw error;
     }
   }
+
+   /**
+   * Conta quantas assinaturas de DISCORDÂNCIA uma solicitação recebeu.
+   * @param {number} id_solicitacao - O ID da solicitação.
+   * @returns {Promise<number>} O número de alunos que discordaram.
+   */
+  async contarDiscordancias(id_solicitacao) {
+    try {
+      // A única diferença é 'concorda = FALSE'
+      const sql = 'SELECT COUNT(*) FROM assinatura_solicitacao WHERE id_solicitacao = $1 AND concorda = FALSE';
+      const result = await db.query(sql, [id_solicitacao]);
+      return parseInt(result.rows[0].count, 10);
+    } catch (error) {
+      console.error(`Erro ao contar discordâncias para solicitação ${id_solicitacao}:`, error);
+      throw error;
+    }
+  }
+
 }
 
 module.exports = new AssinaturaRepository();
