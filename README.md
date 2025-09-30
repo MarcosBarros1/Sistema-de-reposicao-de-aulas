@@ -8,10 +8,10 @@ O Sistema de Gestão de Reposição de Aulas é uma aplicação web desenvolvida
 ## Equipe e Funções
 
 * **Celso Vieira:** Analista técnico da documentação
-* [cite_start]**Erlano Benevides:** Desenvolvedor Fullstack [cite: 18]
+* **Erlano Benevides:** Desenvolvedor Fullstack
 * **Guilherme Alves:** Analista técnico do protótipo
-* [cite_start]**Marcos Barros:** Desenvolvedor Fullstack [cite: 17]
-* [cite_start]**Rafael Maciel:** Scrum Master e Desenvolvedor Fullstack [cite: 16]
+* **Marcos Barros:** Desenvolvedor Fullstack
+* **Rafael Maciel:** Scrum Master e Desenvolvedor Fullstack
 
 
 ## Funcionamento Geral (Fluxo do Usuário)
