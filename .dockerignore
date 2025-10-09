@@ -1,0 +1,26 @@
+# Ignorar apenas node_modules da raiz
+node_modules/
+
+# Ignorar node_modules dentro de subpastas
+Backend/node_modules
+Frontend/node_modules
+
+# Ignorar arquivos de controle e temporários
+.git
+.gitignore
+.vscode
+.vs
+.env
+*.log
+*.dbmdl
+*.user
+*.jfm
+*.lock
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignorar diretórios de build
+dist
+build
+coverage
