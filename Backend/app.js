@@ -22,7 +22,7 @@ app.use(express.json());
 app.use('/professor', professorRoutes);
 app.use('/coordenador', coordenadorRoutes);
 app.use('/reposicao', reposicaoRoutes);
-app.use('/disciplinas', disciplinaRoutes); // <-- CORREÇÃO AQUI (plural)
+app.use('/disciplinas', disciplinaRoutes);
 app.use('/auth', autenticacaoRoutes);
 app.use('/aluno', alunoRoutes);
 app.use('/turmas', turmaRoutes);
