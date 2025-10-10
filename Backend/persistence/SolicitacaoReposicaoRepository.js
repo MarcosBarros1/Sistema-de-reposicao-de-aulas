@@ -85,14 +85,27 @@ class SolicitacaoReposicaoRepository {
   }
 
   /**
-   * Lista todas as solicitações.
-   * @returns {Promise<SolicitacaoReposicao[]>}
-   */
-  async listarTodos() {
-    const query = `SELECT * FROM solicitacao_reposicao ORDER BY data DESC;`;
-    const result = await db.query(query);
-    return result.rows.map(row => SolicitacaoReposicao.fromDatabase(row));
-  }
+   * Lista todas as solicitações, incluindo o nome da turma.
+   * @returns {Promise<Object[]>}
+   */
+  async listarTodos() {
+    // ✅ SQL CORRIGIDO: Adicionamos o JOIN com a tabela 'turma'
+    const query = `
+      SELECT 
+        sr.*, 
+        t.nome AS nome_turma 
+      FROM 
+        solicitacao_reposicao sr
+      JOIN 
+        turma t ON sr.id_turma = t.id_turma
+      ORDER BY 
+        sr.data DESC;
+    `;
+    const result = await db.query(query);
+    
+    // ✅ RETORNO CORRIGIDO: Retornando as linhas brutas com o nome da turma
+    return result.rows;
+  }
 
   async incrementar_alunos_concordantes(id_solicitacao) {
     try {

@@ -43,8 +43,8 @@ const MinhasReposicoesPage = () => {
     (repo.disciplina?.nome || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  if (loading) { /* ... (código de loading e error continua o mesmo) ... */ }
-  if (error) { /* ... */ }
+  if (loading) {  }
+  if (error) {  }
 
   return (
     <div className="page-container">
@@ -82,7 +82,7 @@ const MinhasReposicoesPage = () => {
                   <tr key={repo.idSolicitacao}>
                     <td>{new Date(repo.data).toLocaleDateString()}</td>
                     <td>{repo.horario}</td>
-                    <td>{repo.turma?.nome || `Sala ${repo.sala}`}</td>
+                    <td>{repo.nome_turma}</td>
                     <td>{repo.qt_alunos}</td>
                     <td>
                       <span className={`status-badge status-${repo.status.toLowerCase().replace(/_/g, '-')}`}>
