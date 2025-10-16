@@ -54,6 +54,16 @@
   box-sizing: border-box; /* Garante que o padding não aumente a largura total */
 }
 
+.password-toggle-icon {
+    position: absolute;
+    right: 15px; /* Posição à direita */
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    cursor: pointer; /* Muda o cursor para indicar que é clicável */
+    z-index: 2; /* Garante que o ícone fique sobre o input */
+}
+
 .login-button {
   width: 100%;
   padding: 12px;
