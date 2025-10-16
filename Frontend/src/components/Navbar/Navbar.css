@@ -1,88 +1,76 @@
-/* Arquivo: src/components/Navbar/Navbar.css */
-
 .Navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #39883E; /* Verde escuro do IF */
-    color: #FFFFFF;
-    padding: 0 25px;
-    height: 60px;
-    width: 100%;
-    box-sizing: border-box; /* Garante que o padding não aumente a largura */
-  }
-  
-  .Navbar-left,
-  .Navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 20px; /* Espaçamento entre os itens */
-  }
-
-  .Navbar-center {
-    display: flex;
-    align-items: center;
-    gap: 20px; /* Espaçamento entre os itens */
-  }
-  
-  .Navbar-icon-btn {
-    background: none;
-    border: none;
-    color: #FFFFFF;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .Navbar-user-profile {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-left: 1px solid #4a8a65; /* Linha divisória */
-    padding-left: 20px;
-  }
-  
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-  }
-  
-  .user-name {
-    font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap; /* Evita que o nome quebre a linha */
-  }
-  
-  .user-id {
-    font-size: 12px;
-    color: #d1d1d1; /* Cinza claro para o ID */
-  }
-  
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid #FFFFFF;
-    object-fit: cover; /* Garante que a imagem não fique distorcida */
-  }
-
-  .header-logo{
-    height: 8vh;
-  }
-
-  /* Adicione estas novas regras ao final do seu Navbar.css */
-
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #39883E;
+  color: #FFFFFF;
+  padding: 0 25px;
+  height: 60px;
+  width: 100%;
+  box-sizing: border-box;
+}
+ 
+.Navbar-left,
+.Navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+ 
 .Navbar-center {
   display: flex;
   gap: 30px;
-  /* Posicionamento centralizado que se ajusta ao tamanho */
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+}
+ 
+.Navbar-icon-btn {
+  background: none;
+  border: none;
+  color: #FFFFFF;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.Navbar-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  
+}
+ 
+.user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+ 
+.user-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+ 
+.user-id {
+  font-size: 12px;
+  color: #d1d1d1;
+}
+ 
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  object-fit: cover;
+}
+
+.header-logo{
+  height: 40px;
 }
 
 .nav-link {
@@ -99,14 +87,43 @@
   color: #ffffff;
 }
 
-/* Estilo para o link da página ativa (o sublinhado) */
 .nav-link.active {
   color: #ffffff;
   font-weight: bold;
   border-bottom-color: #ffffff;
 }
 
-/* Ajuste no logo para que ele não ocupe a tela toda */
-.header-logo {
-  height: 40px; /* Ajuste o tamanho se necessário */
+/* --- INÍCIO DA MUDANÇA --- */
+/* 5. Novo container para alinhar o nome e o botão de sair lado a lado */
+.user-name-container {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaçamento entre o nome e o "Sair" */
+  justify-content: flex-end; /* Alinha à direita */
 }
+
+/* 6. Estilo novo para o botão de sair, para que pareça um texto */
+.logout-button {
+  /* Remove a aparência de botão */
+  background: none;
+  border: none;
+  padding: 0;
+
+  border-right: 1px solid #79b882; /* Cria a linha vertical. Usei um verde um pouco mais claro. */
+  padding-right: 10px; /* Adiciona um espaço entre o texto "Sair" e a linha */
+
+  /* Deixa o texto com a mesma aparência do nome do usuário */
+  color: white;
+  font-size: 14px; /* Mesma da classe .user-name */
+  font-weight: 500;  /* Mesma da classe .user-name */
+  font-family: inherit;
+  
+  cursor: pointer;
+  text-decoration: underline; /* Adiciona um sublinhado para parecer um link */
+}
+
+.logout-button:hover {
+  /* Apenas clareia um pouco o texto ao passar o mouse */
+  opacity: 0.8;
+}
+/* --- FIM DA MUDANÇA --- */
