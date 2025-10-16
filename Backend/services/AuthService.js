@@ -1,62 +1,45 @@
-// services/AuthService.js
+// services/AutenticacaoService.js
 
 const ProfessorRepository = require('../persistence/ProfessorRepository');
 const CoordenadorRepository = require('../persistence/CoordenadorRepository');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const AutenticacaoInvalidaException = require('../exceptions/AutenticacaoInvalidaException');
+const { AutenticacaoInvalidaException } = require('../exceptions/AutenticacaoInvalidaException');
 
 class AutenticacaoService {
 
   async login(email, senha) {
-    let usuario = null;
-    let tipo = null; // Variável para armazenar o tipo de usuário
-
-    // 1. Procura o usuário como Professor
-    usuario = await ProfessorRepository.buscarPorEmail(email);
-    if (usuario) {
-      tipo = 'professor';
-    } else {
-      // 2. Se não for Professor, procura como Coordenador
-      usuario = await CoordenadorRepository.buscarPorEmail(email);
-      if (usuario) {
-        tipo = 'coordenador';
-      }
-    }
-
-    // Mensagem genérica para usuário não encontrado ou senha incorreta
-    const erroLogin = () => {
-      throw new AutenticacaoInvalidaException('E-mail ou senha inválidos.');
-    };
-
-    // 3. Se nenhum usuário for encontrado, lança o erro
+    // 1. Procura o usuário primeiro como Professor, depois como Coordenador
+    let usuario = await ProfessorRepository.buscarPorEmail(email);
     if (!usuario) {
-      erroLogin();
+      usuario = await CoordenadorRepository.buscarPorEmail(email);
     }
 
-    // 4. Compara a senha enviada com a senha armazenada no banco
+    // 2. Se não encontrar o usuário por e-mail, lança um erro
+    if (!usuario) {
+      throw new AutenticacaoInvalidaException('Credenciais inválidas.');
+    }
+
+    // 3. Compara a senha enviada com o hash salvo no banco
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
-
-    // 5. Se a senha for inválida, lança o mesmo erro
     if (!senhaValida) {
-      erroLogin();
+      throw new AutenticacaoInvalidaException('Credenciais inválidas.');
     }
 
-    // 6. Se a autenticação for bem-sucedida, gera o token JWT
+    // 4. Se a senha for válida, gera o Token JWT
     const payload = {
-      id: usuario.id_usuario,
-      // Usamos o operador de coalescência nula para pegar a matrícula correta
-      matricula: usuario.matricula_professor ?? usuario.matricula_coordenador,
-      nome: usuario.nome,
+      id: usuario.idUsuario,
       email: usuario.email,
-      tipo: tipo,
+      tipo: usuario.tipo
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: '8h',
+      expiresIn: '8h' // Token expira em 8 horas
     });
 
-    return { token, usuario: payload };
+    // 5. Retorna o token e os dados do usuário (sem a senha)
+    delete usuario.senha;
+    return { token, usuario };
   }
 }
 

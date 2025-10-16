@@ -124,6 +124,6 @@
 
 .logout-button:hover {
   /* Apenas clareia um pouco o texto ao passar o mouse */
-  opacity: 0.8;
+  color: red;
+  font-size: 15px;
 }
-/* --- FIM DA MUDANÇA --- */
