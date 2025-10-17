@@ -1,6 +1,7 @@
 // controller/ProfessorController.js
 
 const ProfessorService = require('../services/ProfessorService');
+const ReposicaoService = require('../services/ReposicaoService');
 
 class ProfessorController {
 

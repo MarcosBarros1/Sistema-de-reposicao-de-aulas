@@ -106,7 +106,15 @@ class ReposicaoService {
     return { message: 'Assinatura registrada com sucesso.' };
   }
 
-  // ... (resto da sua classe ReposicaoService) ...
+  /**
+   * Lista todas as solicitações de um professor específico.
+   * @param {number} matriculaProfessor - A matrícula do professor.
+   * @returns {Promise<SolicitacaoReposicao[]>}
+   */
+  async listarPorProfessor(matriculaProfessor) {
+    // Apenas delega a chamada para o repositório
+    return await SolicitacaoReposicaoRepository.listarPorProfessor(matriculaProfessor);
+  }
 
   async buscarAssinaturas(id_solicitacao) {
     const solicitacao = await SolicitacaoReposicaoRepository.buscarPorId(id_solicitacao);
