@@ -125,6 +125,17 @@ class ProfessorController {
     }
   }
 
+  async listarReposicoes(req, res) {
+    try {
+      const { matricula } = req.params;
+      const reposicoes = await ReposicaoService.listarPorProfessor(matricula);
+      return res.status(200).json(reposicoes);
+    } catch (error) {
+      console.error('Erro ao listar reposições do professor:', error);
+      return res.status(500).json({ erro: 'Erro interno ao buscar reposições.' });
+    }
+  }
+
 }
 
 module.exports = new ProfessorController();

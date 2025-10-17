@@ -151,10 +151,10 @@ export const buscarDisciplinas = async () => {
   }
 };
 
-export const buscarMinhasReposicoes = async () => {
+export const buscarMinhasReposicoes = async (matriculaProfessor) => {
   try {
-    // Usando a rota GET /reposicao (singular) que está no seu app.js
-    const response = await api.get('/reposicao');
+    // Chamando o novo endpoint do backend
+    const response = await api.get(`/professor/${matriculaProfessor}/reposicoes`);
     return response.data;
   } catch (error) {
     console.error("Erro ao buscar reposições: ", error.response);

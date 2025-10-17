@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../components/Navbar/Navbar'; // Verifique se o caminho está certo
+import { useAuth } from '../../context/AuthContext';
+import Navbar from '../../components/Navbar/Navbar';
 import './MinhasReposicoes.css';
 import { FaSearch } from 'react-icons/fa';
-import { buscarMinhasReposicoes } from '../../services/api'; // Verifique se o caminho está certo
+import { buscarMinhasReposicoes } from '../../services/api';
 
 const MinhasReposicoesPage = () => {
   const navigate = useNavigate();
-  const userData = { name: "NOME DO PROFESSOR", id: "Matrícula do Professor", avatar: "" };
-  
+  const { usuario, loading: authLoading } = useAuth();
+
   const [reposicoes, setReposicoes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,39 +17,41 @@ const MinhasReposicoesPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const data = await buscarMinhasReposicoes();
-        setReposicoes(data);
-      } catch (err) {
-        setError("Não foi possível carregar as reposições.");
-      } finally {
+      if (usuario && usuario.matriculaProfessor) {
+        setLoading(true);
+        try {
+          const data = await buscarMinhasReposicoes(usuario.matriculaProfessor);
+          setReposicoes(data || []);
+        } catch (err) {
+          setError("Não foi possível carregar suas reposições.");
+        } finally {
+          setLoading(false);
+        }
+      } else if (!authLoading) {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [usuario, authLoading]);
 
   const handleNavigateToAssinaturas = (reposicaoId) => {
     navigate(`/professor/reposicao/${reposicaoId}/assinaturas`);
   };
 
-  // 1. Primeiro, filtramos para manter apenas as reposições que estão ativas/pendentes
-  const reposicoesAtivas = reposicoes.filter(repo => 
-    repo.status === 'PENDENTE' || repo.status === 'AGUARDANDO_APROVACAO'
-  );
-
-  // 2. Depois, aplicamos o filtro da barra de busca em cima dessa lista já filtrada
-  const filteredReposicoes = reposicoesAtivas.filter(repo =>
-    (repo.turma?.nome || `Sala ${repo.sala}`).toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (repo.disciplina?.nome || '').toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredReposicoes = reposicoes.filter(repo =>
+    (repo.nome_turma || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  if (loading) {  }
-  if (error) {  }
+  if (loading || authLoading) {
+    return <div>Carregando...</div>; 
+  }
 
   return (
     <div className="page-container">
-      <Navbar {...userData} />
+      <Navbar 
+        userName={usuario ? usuario.nome.toUpperCase() : ''}
+        userIdentifier={usuario ? usuario.matriculaProfessor : ''}
+      />
       <div className="content-area">
         <div className="content-wrapper">
           <div className="page-header">
@@ -64,7 +67,6 @@ const MinhasReposicoesPage = () => {
             <FaSearch className="search-icon" />
           </div>
 
-          {/* 👇 NOVO CONTAINER PARA A TABELA 👇 */}
           <div className="table-container-white">
             <table>
               <thead>
@@ -78,28 +80,30 @@ const MinhasReposicoesPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredReposicoes.map((repo) => (
-                  <tr key={repo.idSolicitacao}>
-                    <td>{new Date(repo.data).toLocaleDateString()}</td>
-                    <td>{repo.horario}</td>
-                    <td>{repo.nome_turma}</td>
-                    <td>{repo.qt_alunos}</td>
-                    <td>
-                      <span className={`status-badge status-${repo.status.toLowerCase().replace(/_/g, '-')}`}>
-                        {repo.status.replace(/_/g, ' ')}
-                      </span>
-                    </td>
-                    <td>
-                      {/* 👇 BOTÃO DE AÇÃO PARA NAVEGAR 👇 */}
-                      <button 
-                        className="action-button-view"
-                        onClick={() => handleNavigateToAssinaturas(repo.idSolicitacao)}
-                      >
-                        Visualizar
-                      </button>
-                    </td>
+                {filteredReposicoes.length > 0 ? (
+                  filteredReposicoes.map((repo) => (
+                    <tr key={repo.id_solicitacao} onClick={() => handleNavigateToAssinaturas(repo.id_solicitacao)} className="clickable-row">
+                      <td>{new Date(repo.data).toLocaleDateString()}</td>
+                      <td>{repo.horario}</td>
+                      <td>{repo.nome_turma}</td>
+                      <td>{repo.qt_alunos}</td>
+                      <td>
+                        <span className={`status-badge status-${repo.status.toLowerCase().replace(/_/g, '-')}`}>
+                          {repo.status.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td>
+                        <button className="action-button-view">
+                          Visualizar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center' }}>Nenhuma reposição encontrada.</td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -109,4 +113,5 @@ const MinhasReposicoesPage = () => {
   );
 };
 
+// AQUI ESTÁ A CORREÇÃO
 export default MinhasReposicoesPage;

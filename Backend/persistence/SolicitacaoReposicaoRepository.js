@@ -170,6 +170,36 @@ class SolicitacaoReposicaoRepository {
       throw error;
     }
   }
+
+  /**
+   * Lista todas as solicitações de um professor específico.
+   * @param {number} matriculaProfessor - A matrícula do professor.
+   * @returns {Promise<Object[]>}
+   */
+  async buscarPorProfessor(matriculaProfessor) {
+    const query = `
+      SELECT 
+        sr.id_solicitacao,
+        sr.motivo,
+        sr.status,
+        sr.data,
+        sr.horario,
+        sr.sala,
+        sr.qt_alunos,
+        t.nome AS nome_turma 
+      FROM 
+        solicitacao_reposicao sr
+      JOIN 
+        turma t ON sr.id_turma = t.id_turma
+      WHERE 
+        sr.matricula_professor = $1
+      ORDER BY 
+        sr.data DESC;
+    `;
+    const result = await db.query(query, [matriculaProfessor]);
+    return result.rows;
+  }
+
 }
 
 module.exports = new SolicitacaoReposicaoRepository();

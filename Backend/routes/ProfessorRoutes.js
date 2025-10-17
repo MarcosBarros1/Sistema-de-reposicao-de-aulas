@@ -14,6 +14,7 @@ router.post('/cadastrar', ProfessorController.cadastrar);
 // Read
 router.get('/', ProfessorController.listarTodos);
 router.get('/:matricula', ProfessorController.buscarPorMatricula);
+router.get('/:matricula/reposicoes', (req, res) => ProfessorController.listarReposicoes(req, res));
 
 // Update
 router.put('/:matricula', ProfessorController.atualizar);
