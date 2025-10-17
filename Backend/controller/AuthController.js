@@ -1,6 +1,7 @@
 // controller/AuthController.js
 
 const AutenticacaoService = require('../services/AuthService');
+const AutenticacaoInvalidaException = require('../exceptions/AutenticacaoInvalidaException');
 
 class AutenticacaoController {
 

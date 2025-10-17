@@ -9,9 +9,9 @@ const CadastroAlunoPage = () => {
   
   const [formData, setFormData] = useState({
     nome: '',
-    matricula_aluno: '', // Nome corrigido
+    matricula_aluno: '',
     email: '',
-    id_turma: '',      // Nome corrigido
+    id_turma: '',
   });
   const [error, setError] = useState('');
 
@@ -42,7 +42,7 @@ const CadastroAlunoPage = () => {
 
     try {
       await cadastrar_aluno(formData);
-      alert('Aluno cadastrado com sucesso! (simulação)');
+      alert('Aluno cadastrado com sucesso!');
       navigate('/');
     } catch (err) {
       console.error("Erro ao cadastrar aluno:", err);

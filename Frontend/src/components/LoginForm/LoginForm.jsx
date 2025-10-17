@@ -1,44 +1,46 @@
 import React, { useState } from 'react';
-import { FaUser, FaLock } from 'react-icons/fa'; // Ícones para os campos
+import { FaUser, FaLock, FaEye, FaEyeSlash } from 'react-icons/fa'; 
 import './LoginForm.css';
 import logoIFCE from '../../assets/logo-ifce.png';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-// Recebe a prop 'tipo_usuario'
 const LoginForm = ({ tipo_usuario }) => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    const [mostrarSenha, setMostrarSenha] = useState(false); 
     const [erro, setError] = useState('');
     const [carregando, setCarregando] = useState(false);
 
-    const { login } = useAuth(); // 2. Pegue a função de login do contexto
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        setError(''); // Limpa erros antigos
+        setError('');
         setCarregando(true);
 
         try {
-            // 3. Chame a função de login do contexto
             const usuarioLogado = await login(email, senha);
 
-            // 4. Lógica de redirecionamento
             if (usuarioLogado.tipo.toLowerCase() === 'coordenador') {
                 navigate('/coordenador/dashboard');
             } else if (usuarioLogado.tipo.toLowerCase() === 'professor') {
                 navigate('/professor/dashboard');
             } else {
-                navigate('/inicio'); // Rota padrão
+                navigate('/inicio');
             }
 
         } catch (err) {
-            // 2. Captura o erro da API e atualiza o estado
             setError('Falha no login. Verifique suas credenciais.');
         } finally {
-            setCarregando(false); // Finaliza o feedback de carregamento
+            setCarregando(false);
         }
+    };
+
+    // Função para alternar a visibilidade da senha
+    const toggleMostrarSenha = () => {
+        setMostrarSenha(!mostrarSenha);
     };
 
     return (
@@ -62,12 +64,16 @@ const LoginForm = ({ tipo_usuario }) => {
                 <div className="input-group">
                     <FaLock className="input-icon" />
                     <input
-                        type="password"
+                        type={mostrarSenha ? 'text' : 'password'} 
                         placeholder="Digite sua senha"
                         value={senha}
                         onChange={(e) => setSenha(e.target.value)}
                         required
                     />
+                    {/* Ícone para ver/esconder a senha */}
+                    <span onClick={toggleMostrarSenha} className="password-toggle-icon">
+                        {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+                    </span>
                 </div>
 
                 {erro && <p className="error-message">{erro}</p>}
