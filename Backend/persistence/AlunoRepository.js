@@ -2,10 +2,11 @@
 const db = require('../config/db');
 const UsuarioRepository = require('./UsuarioRepository');
 const Aluno = require('../model/Aluno');
+// NOVO: Importe sua exceção customizada para usá-la aqui
+const RegraDeNegocioException = require('../exceptions/RegraDeNegocioException');
 
 class AlunoRepository {
   async salvar(alunoData) {
-    // Esta é a versão corrigida, sem a senha
     const { nome, email, matricula_aluno, id_turma } = alunoData;
     const client = await db.pool.connect();
 
@@ -36,14 +37,25 @@ class AlunoRepository {
       return new Aluno(usuarioSalvo.idUsuario, nome, email, matricula_aluno, [id_turma]);
     } catch (error) {
       await client.query('ROLLBACK');
-      console.error('Erro ao salvar aluno (transação revertida):', error);
+      console.error('Erro ao salvar aluno:', error); // Log do erro original é bom para debug
+
+      // ALTERADO: Lógica para tratar o erro específico de chave única
+      if (error.code === '23505') { // 23505 é o código do PostgreSQL para "unique_violation"
+        if (error.constraint && error.constraint.includes('email')) {
+          throw new RegraDeNegocioException('Já existe um aluno com este e-mail.');
+        }
+        if (error.constraint && error.constraint.includes('matricula')) {
+          throw new RegraDeNegocioException('Já existe um aluno com esta matrícula.');
+        }
+      }
+      
+      // Erro genérico para outros problemas
       throw new Error('Falha ao salvar aluno. A operação foi revertida.');
     } finally {
       client.release();
     }
   }
 
-  // 👇 SUA FUNÇÃO ORIGINAL RESTAURADA E COMPLETA 👇
   async buscarPorMatricula(matricula_aluno) {
     const sql = `
       SELECT a.matricula_aluno, u.id_usuario, u.nome, u.email, u.tipo

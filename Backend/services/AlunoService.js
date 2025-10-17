@@ -12,7 +12,13 @@ class AlunoService {
       throw new RegraDeNegocioException('O e-mail informado já está em uso.');
     }
 
-    // 2. Delegação: pede para a camada de persistência salvar
+    // 2. Regra de negócio: verificar se a matrícula já existe
+    const alunoComMesmaMatricula = await AlunoRepository.buscarPorMatricula(dadosAluno.matricula_aluno);
+    if (alunoComMesmaMatricula) {
+      throw new RegraDeNegocioException('Já existe um aluno com esta matrícula.');
+    }
+
+    // 3. Delegação: pede para a camada de persistência salvar
     const novoAluno = await AlunoRepository.salvar(dadosAluno);
 
     return novoAluno;
