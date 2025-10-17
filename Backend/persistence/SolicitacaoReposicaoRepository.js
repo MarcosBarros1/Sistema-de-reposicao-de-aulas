@@ -85,12 +85,12 @@ class SolicitacaoReposicaoRepository {
   }
 
   /**
-   * Lista todas as solicitações, incluindo o nome da turma.
-   * @returns {Promise<Object[]>}
-   */
-  async listarTodos() {
+   * Lista todas as solicitações, incluindo o nome da turma.
+   * @returns {Promise<Object[]>}
+   */
+  async listarTodos() {
     // ✅ SQL CORRIGIDO: Adicionamos o JOIN com a tabela 'turma'
-    const query = `
+    const query = `
       SELECT 
         sr.*, 
         t.nome AS nome_turma 
@@ -101,11 +101,11 @@ class SolicitacaoReposicaoRepository {
       ORDER BY 
         sr.data DESC;
     `;
-    const result = await db.query(query);
-    
+    const result = await db.query(query);
+
     // ✅ RETORNO CORRIGIDO: Retornando as linhas brutas com o nome da turma
-    return result.rows;
-  }
+    return result.rows;
+  }
 
   async incrementar_alunos_concordantes(id_solicitacao) {
     try {
@@ -167,6 +167,31 @@ class SolicitacaoReposicaoRepository {
       return result.rows;
     } catch (error) {
       console.error('Erro ao buscar solicitações autorizadas:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Busca todas as solicitações de reposição de um professor específico.
+   * @param {number} matriculaProfessor
+   * @returns {Promise<any[]>}
+   */
+  async listarPorProfessor(matriculaProfessor) {
+    const query = `
+      SELECT 
+        sr.*, 
+        t.nome AS nome_turma 
+      FROM solicitacao_reposicao sr
+      LEFT JOIN turma t ON sr.id_turma = t.id_turma
+      WHERE sr.matricula_professor = $1
+      ORDER BY sr.data DESC;
+    `;
+    try {
+      const { rows } = await db.query(query, [matriculaProfessor]);
+      // Note que aqui não usamos o 'fromDatabase' pois o frontend precisa do nome_turma também
+      return rows;
+    } catch (error) {
+      console.error('Erro ao buscar reposições por professor no repositório:', error);
       throw error;
     }
   }
