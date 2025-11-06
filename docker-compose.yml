@@ -1,0 +1,71 @@
+# Definimos os "serviços" (contêineres)
+services:
+
+  # -- BACKEND -- 
+  backend:
+    # 'build' diz ao compose para construir uma imagem
+    build:
+      # O 'contexto' é a pasta onde o Dockerfile está
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      # Mapeia a porta 3000 do HOST para a 3000 do CONTÊINER
+      - "3000:3000"
+    volumes:
+      # 'Monta' o código-fonte para 'hot-reloading'
+      # Qualquer mudança no seu PC reflete no contêiner
+      - ./Backend:/app
+      # 'Volume anônimo' para proteger a node_modules
+      # Isso impede que a pasta node_modules do seu PC
+      # sobrescreva a que foi instalada DENTRO do contêiner.
+      - /app/node_modules
+    env_file:
+      - Backend/.env 
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # -- FRONTEND --
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    ports:
+      # Mapeia a porta 5173 do HOST para a 5173 do CONTÊINER
+      - "5173:5173"
+    volumes:
+      # Mesma técnica de volume do backend
+      - ./Frontend:/app
+      - /app/node_modules
+    env_file:
+      - Frontend/.env 
+    restart: unless-stopped
+    # O frontend não depende diretamente do backend para iniciar
+    # (o servidor de dev pode rodar, mesmo que as chamadas API falhem)
+
+  # -- BANCO DE DADOS --
+  db:
+    # Usamos a imagem oficial que você mencionou
+    image: postgres:15-alpine
+    environment:
+      # Define as credenciais do banco
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      # Expõe a porta do Postgres para o seu PC (opcional)
+      # Útil para conectar um DBeaver, DataGrip, etc.
+      - "5432:5432"
+    volumes:
+      # 'Volume nomeado' para persistir os dados do banco
+      # Se você destruir o contêiner, seus dados ficam salvos.
+      - postgres-data:/var/lib/postgresql/data
+      # Monta o script de inicialização
+      - ./db-init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+# Declara os volumes nomeados
+volumes:
+  postgres-data:
+    # 'driver: local' é o padrão, mas é bom ser explícito
+    driver: local
