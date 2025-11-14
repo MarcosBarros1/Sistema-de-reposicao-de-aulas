@@ -7,12 +7,14 @@ const SolicitacaoReposicaoRepository = require('../persistence/SolicitacaoReposi
 const EmailService = require('./EmailService');
 const SolicitacaoStatus = require('../constants/SolicitacaoStatus')
 const bcrypt = require('bcrypt');
-const  RegraDeNegocioException  = require('../exceptions/RegraDeNegocioException');
+const RegraDeNegocioException = require('../exceptions/RegraDeNegocioException');
 const DisciplinaRepository = require('../persistence/DisciplinaRepository');
 
 /**
  * Camada de Serviço para a lógica de negócio de Professores.
  */
+
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 class ProfessorService {
 
@@ -80,28 +82,25 @@ class ProfessorService {
    * @param {object} dadosSolicitacao - { motivo, data, horario, sala, qt_alunos, idTurma, idProfessor }
    */
   async iniciarSolicitacaoReposicao(dados_solicitacao) {
-    // 1. Cria a solicitação de reposição no banco com status PENDENTE
+    // 1. Cria a solicitação
     const nova_solicitacao = await SolicitacaoReposicaoRepository.salvar({
       ...dados_solicitacao,
       status: SolicitacaoStatus.PENDENTE,
       qt_alunos: 0
     });
 
-    // 2. Busca todos os alunos da turma informada
+    // 2. Busca alunos
     const alunos_da_turma = await TurmaRepository.buscarAlunosPorTurmaId(dados_solicitacao.idTurma);
     if (alunos_da_turma.length === 0) {
       console.log(`Nenhum aluno encontrado para a turma ${dados_solicitacao.idTurma}. Nenhum e-mail enviado.`);
       return nova_solicitacao;
     }
 
-    // 3. Preparar e enviar um e-mail para cada aluno
+    // 3. Preparar e enviar e-mails
     for (const aluno of alunos_da_turma) {
-      // Monta o link dinâmico com os dados reais
+
       const link_formulario =
-        `https://docs.google.com/forms/d/e/1FAIpQLSdKSi1MRhtkEYlPA7kib63xXcqVMhzffwvkUy41MWmZG39g2Q/viewform?usp=pp_url` +
-        `&entry.1661681732=${aluno.email}` +                    // Campo para o E-mail
-        `&entry.1310486159=${nova_solicitacao.idSolicitacao}` + // Campo para o ID da Solicitação
-        `&entry.476576271=${aluno.matricula_aluno}`;           // Campo para a Matrícula do Aluno
+        `${FRONTEND_URL}/assinar/${nova_solicitacao.idSolicitacao}/${aluno.matricula_aluno}`;
 
       const subject = `Convite para Aula de Reposição`;
       const html = `

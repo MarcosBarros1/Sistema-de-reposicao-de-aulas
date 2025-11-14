@@ -107,18 +107,16 @@ class SolicitacaoReposicaoRepository {
     return result.rows;
   }
 
-  async incrementar_alunos_concordantes(id_solicitacao) {
+  async atualizarContagemAlunos(id_solicitacao, novaContagem) {
     try {
-      // Esta query é atômica e segura para concorrência.
-      // Ela lê o valor atual, soma 1 e salva de volta em uma única operação.
       const sql = `
         UPDATE solicitacao_reposicao 
-        SET qt_alunos = qt_alunos + 1 
-        WHERE id_solicitacao = $1;
+        SET qt_alunos = $1 
+        WHERE id_solicitacao = $2;
       `;
-      await db.query(sql, [id_solicitacao]);
+      await db.query(sql, [novaContagem, id_solicitacao]);
     } catch (error) {
-      console.error(`Erro ao incrementar contador para solicitação ${id_solicitacao}:`, error);
+      console.error(`Erro ao ATUALIZAR contador para solicitação ${id_solicitacao}:`, error);
       throw error;
     }
   }
